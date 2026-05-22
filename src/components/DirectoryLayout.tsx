@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ToolCard from '@/components/ToolCard';
 import SubmissionModal from '@/components/SubmissionModal';
 import { SeedItem } from '@/lib/seeds';
@@ -32,9 +33,28 @@ const CATEGORIES = [
 ];
 
 export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLayoutProps) {
+  const router = useRouter();
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [lastClickTime, setLastClickTime] = useState(0);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    const now = Date.now();
+    if (now - lastClickTime > 1500) {
+      setLogoClicks(1);
+    } else {
+      const newCount = logoClicks + 1;
+      if (newCount >= 7) {
+        e.preventDefault();
+        router.push('/admin');
+        return;
+      }
+      setLogoClicks(newCount);
+    }
+    setLastClickTime(now);
+  };
 
   // Combine database items and seed items safely without duplicating IDs
   const combinedItemsMap = new Map<string, any>();
@@ -69,7 +89,11 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
       {/* TopNavBar */}
       <header className="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm shrink-0">
         <div className="flex items-center gap-base">
-          <Link href="/" className="text-headline-md font-headline-md font-bold text-on-surface hover:text-primary transition-colors">
+          <Link 
+            href="/" 
+            onClick={handleLogoClick}
+            className="text-headline-md font-headline-md font-bold text-on-surface hover:text-primary transition-colors select-none"
+          >
             EcomStacks
           </Link>
         </div>
