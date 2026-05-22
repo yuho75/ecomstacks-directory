@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ToolCard from '@/components/ToolCard';
@@ -40,6 +40,11 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
 
+  useEffect(() => {
+    // Clear any lingering admin entry keys when the user lands on the homepage
+    sessionStorage.removeItem('allow_admin_access');
+  }, []);
+
   const handleLogoClick = (e: React.MouseEvent) => {
     const now = Date.now();
     if (now - lastClickTime > 1500) {
@@ -48,6 +53,7 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
       const newCount = logoClicks + 1;
       if (newCount >= 7) {
         e.preventDefault();
+        sessionStorage.setItem('allow_admin_access', 'true');
         router.push('/admin');
         return;
       }

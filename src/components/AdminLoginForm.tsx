@@ -1,13 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { loginAdmin } from '@/app/actions';
 
 export default function AdminLoginForm() {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    // Check if the administrator navigated via the Easter Egg logo click sequence
+    const allowed = sessionStorage.getItem('allow_admin_access');
+    if (allowed === 'true') {
+      setAuthorized(true);
+    } else {
+      // Not authorized! Redirect them directly to the landing page
+      router.replace('/');
+    }
+  }, [router]);
+
+  if (authorized === null) {
+    return <div className="min-h-[calc(100vh-160px)]" />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +35,8 @@ export default function AdminLoginForm() {
     try {
       const result = await loginAdmin(username, password);
       if (result.success) {
+        // Clear temporary entry permission as we are now fully authenticated via cookie
+        sessionStorage.removeItem('allow_admin_access');
         // Refresh the page so the server component re-checks the cookies and renders the AdminPanel
         window.location.reload();
       } else {
