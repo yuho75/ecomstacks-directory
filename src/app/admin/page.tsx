@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import AdminPanel from '@/components/AdminPanel';
 import AdminLoginForm from '@/components/AdminLoginForm';
-import { logoutAdmin } from '@/app/actions';
+import { logoutAdmin, logoutAndRedirectToHome } from '@/app/actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,20 +59,27 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       {/* Admin TopNavBar */}
       <header className="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm shrink-0">
         <div className="flex items-center gap-base">
-          <Link href="/" className="text-headline-md font-headline-md font-bold text-on-surface hover:text-primary transition-colors">
-            EcomStacks Control Room
-          </Link>
+          <form action={logoutAndRedirectToHome} className="inline flex items-center">
+            <button 
+              type="submit" 
+              className="text-headline-md font-headline-md font-bold text-on-surface hover:text-primary transition-colors bg-transparent border-none p-0 cursor-pointer align-middle select-none text-left"
+            >
+              EcomStacks Control Room
+            </button>
+          </form>
           <span className="bg-primary/10 text-primary px-sm py-xs rounded-full font-label-sm text-[11px] uppercase tracking-wider font-semibold border border-primary/20">
             System Admin
           </span>
         </div>
         <div className="flex items-center gap-md">
-          <Link 
-            href="/"
-            className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100"
-          >
-            View Live Directory
-          </Link>
+          <form action={logoutAndRedirectToHome} className="inline flex items-center">
+            <button 
+              type="submit"
+              className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 cursor-pointer"
+            >
+              View Live Directory
+            </button>
+          </form>
           {isAuthenticated && (
             <form action={logoutAdmin}>
               <button 

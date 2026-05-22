@@ -104,7 +104,6 @@ export async function loginAdmin(usernameInput: string, passwordInput: string) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 1 week session
       path: '/'
     });
     return { success: true };
@@ -120,5 +119,14 @@ export async function logoutAdmin() {
   const cookieStore = cookies();
   cookieStore.delete('ecomstacks_admin_session');
   redirect('/admin');
+}
+
+/**
+ * Server Action: Clears the administrator session cookie and redirects to the home page.
+ */
+export async function logoutAndRedirectToHome() {
+  const cookieStore = cookies();
+  cookieStore.delete('ecomstacks_admin_session');
+  redirect('/');
 }
 
