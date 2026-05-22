@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EcomStacks | High-Trust Directory for E-commerce AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Use Provided Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#7e3000",
+                    "inverse-surface": "#213145",
+                    "on-surface": "#0b1c30",
+                    "outline": "#777587",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "surface-container": "#e5eeff",
+                    "inverse-primary": "#c3c0ff",
+                    "secondary": "#565e74",
+                    "primary": "#3525cd",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "on-primary-container": "#dad7ff",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "background": "#f8f9ff",
+                    "tertiary-fixed-dim": "#ffb695",
+                    "surface-variant": "#d3e4fe",
+                    "on-background": "#0b1c30",
+                    "surface-dim": "#cbdbf5",
+                    "primary-fixed": "#e2dfff",
+                    "on-tertiary-fixed": "#351000",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "on-surface-variant": "#464555",
+                    "on-primary-fixed": "#0f0069",
+                    "surface-tint": "#4d44e3",
+                    "primary-container": "#4f46e5",
+                    "surface-container-high": "#dce9ff",
+                    "on-tertiary-fixed-variant": "#7b2f00",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-bright": "#f8f9ff",
+                    "on-secondary": "#ffffff",
+                    "tertiary-container": "#a44100",
+                    "outline-variant": "#c7c4d8",
+                    "on-tertiary-container": "#ffd2be",
+                    "on-secondary-fixed": "#131b2e",
+                    "on-secondary-container": "#5c647a",
+                    "secondary-fixed": "#dae2fd",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdbcc",
+                    "secondary-container": "#dae2fd"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "xl": "80px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "sm": "12px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "lg": "48px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .card-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        .card-shadow:hover {
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
+        }
+        .glass-overlay {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(4px);
+        }
+        input, select, textarea {
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar (Shared Component) -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-base">
+<span class="text-headline-md font-headline-md font-bold text-on-surface">EcomStacks</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary py-2 transition-colors" href="#">Tools</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Categories</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Resources</a>
+</nav>
+<button class="bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100" onclick="toggleModal()">
+            Submit Your Tool ($9.99)
+        </button>
+</header>
+<main class="max-w-container-max mx-auto px-gutter pb-xl">
+<!-- Hero Section -->
+<section class="py-xl md:py-[120px] text-center flex flex-col items-center">
+<h1 class="font-display-lg text-display-lg text-on-surface max-w-4xl mb-md">
+                EcomStacks
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-lg">
+                The Best Micro AI &amp; SaaS Tools to Scale Your E-commerce Brand. Join 5,000+ founders using our curated stack.
+            </p>
+<div class="flex flex-col sm:flex-row gap-base">
+<button class="bg-primary-container text-on-primary hover:bg-primary px-lg py-md rounded-lg font-label-md text-label-md shadow-lg transition-all active:scale-95" onclick="toggleModal()">
+                    Submit Your Tool ($9.99)
+                </button>
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-lg py-md rounded-lg font-label-md text-label-md transition-all active:scale-95">
+                    Explore Directory
+                </button>
+</div>
+</section>
+<!-- Filtering Tabs -->
+<div class="flex flex-wrap items-center justify-center gap-sm mb-lg border-b border-outline-variant pb-md">
+<button class="px-md py-base rounded-full bg-primary text-on-primary font-label-sm text-label-sm transition-all">All</button>
+<button class="px-md py-base rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-all">Visual &amp; Design</button>
+<button class="px-md py-base rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-all">Copywriting &amp; Marketing</button>
+<button class="px-md py-base rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-all">Store Optimization</button>
+<button class="px-md py-base rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-all">Automation</button>
+</div>
+<!-- Tool Card Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="ShopGen AI Interface" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean and modern dashboard interface of an e-commerce automation tool shown on a professional laptop screen. The lighting is soft and airy, typical of high-end tech photography. The UI features Electric Indigo accents and a minimalist white layout consistent with a professional productivity environment. The surrounding workspace is bright, with a white marble desk and soft bokeh in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGBljR89XVYmNs13jcYk07ccsLZtrVzjZPqd7VYiZkSPRgbhy5GRYsyP4-pMPF6-kyQSxJBfJsAVfLZHnRs6-XAKpLhfHt442BnkxnMipPdGxOMobw2E2DJ3r-ywdPCm8uY-EQkYdzCYE1hdZEsfeZAjIy78U98hQaLXRaHyb_5R9DA3vtq1qpkV3udN-4EK29ZlrFoRHA1OXOcKKaZZJGfyajK-AtMI4v9l18ft9WEtNlbes1ZPmBbJRFEe5-Hxf5sB6zAAQuQQY"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">ShopGen AI</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Automation</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        Automate your product descriptions and metadata in seconds using trained LLMs for retail.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="Visual Analytics Tool" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Sophisticated data visualization charts showing sales growth for an online brand. The charts use vibrant indigo and soft gray tones against a crisp white background. The aesthetic is clean and high-trust, reflecting professional SaaS software. Soft daylight illuminates the screen, creating a focused and productive atmosphere for e-commerce entrepreneurs." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB29cB5m9h6ktRxqRy5tHkFLLVV0SO12Z2lBlKhwwZgfAn8TuhezD2pwl8bI5VGn7_rpIPyua_KMT79ahGdpyGkegljMQfk-kaH3pWYy5VwSiOQcarE7mn30jeR3obOnzj3xYQb1mAre0OhvOi34tnXw_EVFDYXZlcZn_95c_Yk5rJJy3a4rUR3Smaz3ThKMILgXzxoX0W1wGoqb_F-IH3j8COTDHJUcCUvvmPqG0xUbykfVU6b8YWuAVJqZOzizm7SjfmPwC2ggpk"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">PixelPerfect</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Visual &amp; Design</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        AI-powered image enhancement and background removal optimized for Shopify storefronts.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="Market Research Interface" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A focused close-up of a high-resolution display showing marketing strategy maps and copywriting blocks. The color palette is dominated by pure whites and deep Electric Indigo accents. The scene is bright and professional, suggesting a workspace dedicated to high-trust marketing tools. The lighting is crisp, highlighting the clean typography and grid-based layout of the software." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6giOtUhTAJWARO-cDFhUDzAWJhrDcbWJRbwvHmU43F-Fspua4c83LhcK_-ebq66hPzW8q-BwCZjy58bR9qJxquFcsXypIxaLMsHhPDJpglfD_Psl1D1BQCWChnePVBqwp73NTJKUiS-bE0WIHMqNYLEbaEc74wvpqHI5UYd9inoQ2hwgp539WyEcYyxC0UgXjImGXLV5paIJS2ZEzCurNQvhjT0cllq4eEk_3LcDcwvlvhEWOcZjX_oEVndceRf32NNT5IIJZ-Dk"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">CopyFlow</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Copywriting</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        High-converting ad copy generator specifically tuned for e-commerce conversion rates.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="Dashboard Statistics" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A cinematic shot of a tablet screen displaying real-time e-commerce sales data and funnel metrics. The design language uses the EcomStacks palette of indigo and slate. The room is modern and minimal with soft sunlight streaming across the desk. The image conveys a sense of growth, stability, and professional authority for digital business owners." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHwBZtoN0bYHTcm-csI6AMkreF97py9iGT6oznT0o-wYMWACjY_dG39Nu3utTJ_70hNsX18dSDn7lY94etHotQnhjm-ZPvP4ILH9Y5C2O2QbpkttoCR3sEeIGUUBvzzvIyM4ZMmEQQ8UEhxbm7VTYqvtXhX9MQNLOJGrKyNcMpbjdOG9X8ATTeZe04inWInsABJzQ4zpqkEdAu8S61nYEO8RDQWi43fIZBkKBaF5Dga7MXi7-jOHDPBx4fLICePbnRDiQa3BjQAN0"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">CartBoost</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Store Optimization</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        Advanced cart recovery engine using behavioral triggers and dynamic discounting.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="Team Collaboration" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, minimalist composition showing a collaborative digital workspace where team members are reviewing SaaS tool metrics. The visual style is high-key with plenty of white space and refined Electric Indigo details. The atmosphere is professional, tech-forward, and calm. Soft shadows and a sharp focus on the digital elements emphasize modern efficiency and sophisticated business tools." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxGntgFzzQafRF09JiDceVk6WlKpgTsMPHS6kK8xs5d-szwL9dHXba8rxoB8IVzXK0TdE8r5XwWZBu_W30JZI1fNqagmmqG0Wezi5Vw5-uu9vvcejnC5_Pg0dqzJmM5B-WvsPLT-H2iscgM3GnLBGyBcfYBkxYnbKvvOE-d9k01dbd1y66QDNa07E3OC-6JUwkqJaNq12P7-QPTe62MwkLCshzbOsKTEu2LKAIP3lo3bsJn-uFaohRa5I92KAtWZhO1pOg2jwpfsc"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">LinkStack</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Marketing</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        Omni-channel link management for influencers and affiliate marketing campaigns.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow transition-all group">
+<div class="aspect-video relative overflow-hidden bg-surface-container-high">
+<img alt="Abstract Network" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An abstract visualization of a digital neural network, representing AI connectivity in a sleek e-commerce ecosystem. The art uses glowing indigo lines against a pristine white background. The mood is sophisticated and futuristic, aligning with the high-trust professional identity of EcomStacks. Soft ambient lighting and high-contrast elements create a striking visual that feels like a premium SaaS brand asset." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5ZNCuiun1u1sxYL5tlt7PkUpco74UqvoRevsi531PO_3VQE1geyYCRBwnZ5QETL15Pn81aX5Eol3XKq5cUwV464q1-68kgy_weA5h7wN3Q54rXU1DzCcgqRWAKVTzt3PuPHpyv3ZjnAEepSKmDFb-F28tz8N0wUoBtUKzrEHGVRI_-g0q9VGoSsMEZDtex-bKSRyel5qmV_KjeQCzrJ-V0kvH-ulfSc6L-vckK6VN1qPhYrukmOFBqHe3CDgp08RQp6kEQV2aBGg"/>
+<div class="absolute inset-0 glass-overlay opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-on-surface font-label-md bg-white/80 px-md py-sm rounded-lg backdrop-blur">View Details</span>
+</div>
+</div>
+<div class="p-md">
+<div class="flex justify-between items-start mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">OmniSearch</h3>
+<span class="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider">Store Optimization</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">
+                        Lightning-fast semantic search for large-scale e-commerce product catalogs.
+                    </p>
+<a class="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline" href="#">
+                        Visit Website <span class="material-symbols-outlined text-[16px]">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-xl px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-base bg-surface-container-low border-t border-outline-variant">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface">EcomStacks</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 EcomStacks. High-trust directory for e-commerce AI.</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Contact</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-all" href="#">Twitter</a>
+</div>
+</footer>
+<!-- Submission Modal -->
+<div class="fixed inset-0 z-[100] hidden items-center justify-center p-md" id="submissionModal">
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="toggleModal()"></div>
+<div class="relative bg-surface-container-lowest w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+<div class="p-lg">
+<div class="flex justify-between items-center mb-md">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Submit Your Tool</h2>
+<button class="text-on-surface-variant hover:text-primary transition-colors" onclick="toggleModal()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="space-y-md">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Tool Name</label>
+<input class="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary" placeholder="e.g. ShopGen AI" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Website URL</label>
+<input class="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary" placeholder="https://example.com" type="url"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">One-line Pitch</label>
+<input class="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary" placeholder="Explain your tool in 10 words or less" type="text"/>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Category</label>
+<select class="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary">
+<option>Visual &amp; Design</option>
+<option>Copywriting &amp; Marketing</option>
+<option>Store Optimization</option>
+<option>Automation</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Creator Email</label>
+<input class="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary" placeholder="you@example.com" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Thumbnail Image (16:9 Recommended)</label>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-lg flex flex-col items-center justify-center bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors mb-xs">cloud_upload</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Drag and drop or <span class="text-primary">click to upload</span></p>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant mt-lg">
+<div class="flex justify-between items-center mb-md">
+<div>
+<p class="font-label-md text-label-md text-on-surface">Listing Fee</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">One-time payment for lifetime listing.</p>
+</div>
+<span class="font-headline-md text-headline-md text-primary">$9.99</span>
+</div>
+<!-- Reserved for PayPal Standard Card Buttons -->
+<div class="w-full py-md px-md bg-[#f4f4f4] rounded-lg border border-outline-variant flex flex-col items-center justify-center gap-xs">
+<div class="flex gap-xs grayscale opacity-50">
+<span class="material-symbols-outlined text-lg">payments</span>
+<span class="material-symbols-outlined text-lg">credit_card</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">PayPal Checkout Integration Area</p>
+<!-- Note: Placeholder for real button script -->
+<div class="w-full h-[45px] bg-[#ffc439] rounded-full mt-xs flex items-center justify-center cursor-pointer hover:bg-[#e6af33] transition-colors">
+<span class="font-bold text-[#111]">PayPal</span>
+</div>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+<script>
+        function toggleModal() {
+            const modal = document.getElementById('submissionModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Simple Tab Logic
+        const tabs = document.querySelectorAll('.flex.items-center.justify-center.gap-sm button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('bg-primary', 'text-on-primary');
+                    t.classList.add('bg-surface-container', 'text-on-surface-variant');
+                });
+                tab.classList.add('bg-primary', 'text-on-primary');
+                tab.classList.remove('bg-surface-container', 'text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-on-background font-sans overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed;
+  }
+}
+
+/* Custom material symbols settings to match Stitch exactly */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Custom tool card shadows and hover transitions */
+.tool-card-shadow {
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.tool-card-hover {
+  transition: all 0.3s ease;
+}
+
+.tool-card-hover:hover {
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Custom horizontal/vertical scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Fade in section observer styling */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  visibility: hidden;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+}

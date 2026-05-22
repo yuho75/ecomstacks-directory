@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PixelPerfect | EcomStacks - AI Image Enhancement for Shopify</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#4d44e3",
+                        "on-secondary-container": "#5c647a",
+                        "surface": "#f8f9ff",
+                        "secondary-container": "#dae2fd",
+                        "outline-variant": "#c7c4d8",
+                        "on-surface": "#0b1c30",
+                        "surface-container-high": "#dce9ff",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#213145",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#131b2e",
+                        "inverse-primary": "#c3c0ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "tertiary": "#7e3000",
+                        "on-surface-variant": "#464555",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cbdbf5",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#351000",
+                        "tertiary-container": "#a44100",
+                        "surface-container": "#e5eeff",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "primary-fixed": "#e2dfff",
+                        "on-primary-fixed": "#0f0069",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-primary-container": "#dad7ff",
+                        "background": "#f8f9ff",
+                        "secondary": "#565e74",
+                        "primary-container": "#4f46e5",
+                        "outline": "#777587",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "tertiary-fixed": "#ffdbcc",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "secondary-fixed": "#dae2fd",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "primary": "#3525cd",
+                        "on-tertiary-container": "#ffd2be"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "sm": "12px",
+                        "lg": "48px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "base": "8px",
+                        "xl": "80px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tool-card-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        .tool-card-hover:hover {
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm">
+<div class="flex items-center gap-lg">
+<span class="text-headline-md font-headline-md font-bold text-on-surface">EcomStacks</span>
+<nav class="hidden md:flex items-center gap-md">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary py-2 px-1" href="#">Tools</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 px-1" href="#">Categories</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 px-1" href="#">Resources</a>
+</nav>
+</div>
+<button class="bg-primary-container text-white px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all">
+            Submit Your Tool ($9.99)
+        </button>
+</header>
+<main class="max-w-container-max mx-auto px-gutter py-md">
+<!-- Back Button -->
+<div class="mb-md">
+<a class="inline-flex items-center gap-xs bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Tools
+            </a>
+</div>
+<!-- Hero Section Tool Card -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg tool-card-shadow flex flex-col md:flex-row gap-lg mb-xl">
+<div class="w-full md:w-1/2 aspect-video rounded-lg overflow-hidden border border-outline-variant bg-surface-container-low group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A high-resolution dashboard screenshot on a modern sleek monitor showing complex data visualizations and image processing metrics. The background is a clean minimalist studio setup with soft neutral lighting and electric indigo accents reflecting the EcomStacks brand identity. The overall aesthetic is professional, crisp, and high-trust for e-commerce professionals." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXT39R_fZTf8aAQpl5sDPIZjsGWe5CRYhJDv1IDTQKDS2lBTqrWT1vv_-1PFDwFtEslz8TiEIwEIRydc_C7h4dI6SIoVr3vUNNI7xH2GJzajJ-MHFCyl6PSoPVwlPx6t401N2tQspfO2D1nkR2pKLo65FXWAObmhtSr1zkCicWfKVW_S6DZTdM3bwX7lESD1yQuO1MqrgLFOIrldCxPXI4ItASdnq6jFN0KF1B2O0RNgb1k1NjjH29xj7fhtRN5lZ1ZzR_pY2SivU"/>
+</div>
+<div class="w-full md:w-1/2 flex flex-col justify-center">
+<div class="flex items-center gap-sm mb-base">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">auto_fix_high</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">PixelPerfect</h1>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-md">
+                    AI-powered image enhancement and background removal optimized specifically for Shopify storefronts and high-conversion product pages.
+                </p>
+<div class="flex flex-wrap gap-sm mb-lg">
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider border border-outline-variant">Shopify Optimized</span>
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider border border-outline-variant">Background Removal</span>
+<span class="bg-surface-container-high text-on-surface-variant px-sm py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider border border-outline-variant">AI-Enhanced</span>
+</div>
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="bg-primary text-on-primary px-lg py-md rounded-lg font-headline-md text-headline-md flex items-center justify-center gap-sm hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto">
+                        Visit Website 
+                        <span class="material-symbols-outlined">north_east</span>
+</button>
+<div class="flex items-center gap-xs text-on-surface-variant font-label-md px-md">
+<span class="material-symbols-outlined text-primary">verified</span>
+                        Developer: <span class="font-bold ml-1">EcomStacks</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Two Column Layout -->
+<div class="flex flex-col lg:flex-row gap-xl">
+<!-- Left Column (70%) -->
+<div class="lg:w-[70%] space-y-xl">
+<!-- Detailed Description -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Detailed Overview</h2>
+<div class="space-y-md text-on-surface-variant font-body-md leading-relaxed">
+<p>PixelPerfect is the next generation of visual optimization for e-commerce. By leveraging proprietary neural networks trained on millions of product images, our tool automatically transforms average smartphone photos into studio-quality marketing assets in seconds.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
+<div class="space-y-base">
+<h3 class="font-headline-md text-[20px] text-on-surface">Advanced AI Enhancement</h3>
+<p>Automatically adjust lighting, contrast, and sharpness to meet the strict requirements of high-end Shopify themes. Our AI recognizes textures and materials to preserve realistic details.</p>
+</div>
+<div class="space-y-base">
+<h3 class="font-headline-md text-[20px] text-on-surface">Bulk Background Removal</h3>
+<p>Process hundreds of images simultaneously. Our edge-detection algorithm handles complex subjects like hair, mesh, and transparent objects with pixel-perfect precision.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Features -->
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Key Features</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+<span class="material-symbols-outlined text-primary mb-base" style="font-variation-settings: 'FILL' 1;">image</span>
+<h4 class="font-headline-md text-[18px] text-on-surface mb-xs">Lossless Upscaling</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Scale small product photos up to 4k resolution without losing clarity or introducing noise.</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+<span class="material-symbols-outlined text-primary mb-base" style="font-variation-settings: 'FILL' 1;">layers</span>
+<h4 class="font-headline-md text-[18px] text-on-surface mb-xs">Shadow Generation</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Add natural-looking contact shadows to removed backgrounds for a professional float-depth effect.</p>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+<span class="material-symbols-outlined text-primary mb-base" style="font-variation-settings: 'FILL' 1;">api</span>
+<h4 class="font-headline-md text-[18px] text-on-surface mb-xs">Developer API</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Integrate our enhancement engine directly into your custom CMS or mobile management app.</p>
+</div>
+</div>
+</section>
+<!-- Customer Reviews -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h2 class="font-headline-md text-headline-md text-on-surface">Customer Reviews</h2>
+<div class="flex gap-xs">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold">4.9</span>
+<span class="text-on-surface-variant text-body-sm">(124 reviews)</span>
+</div>
+</div>
+<div class="flex gap-md overflow-x-auto pb-md custom-scrollbar">
+<!-- Review Card 1 -->
+<div class="min-w-[320px] bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow shrink-0">
+<div class="flex gap-xs mb-sm">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-md italic">"Saved us over 40 hours of manual editing last month alone. The bulk feature is a game changer."</p>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Reviewer" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4QO4BtWSuvLBJrXP82qpr5-XLveNOBYi3tPzQ9C14NqVPOSY8ERSxTasscMUiTPTrXs0C_8nAzIptj0Nto-SFoKBPW4QsgBU7Sy9C_8a6jUCdFa4j1wpAHM3A3hpNwtPbTxWyR3QmdlFUkeAOxmrpBgrkkMmzcmbnJPzZiKb0ZE_x4Itl8281M2R1Vr8UsmTQ7uUGRbXXv_I3A9k5q45c6RKvZBPaO3ooyYr0cQ6CONceXNnDz4aWNExW930qFAhnEdpRka0ky2o"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Sarah J. - Shopify Plus Merchant</span>
+</div>
+</div>
+<!-- Review Card 2 -->
+<div class="min-w-[320px] bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow shrink-0">
+<div class="flex gap-xs mb-sm">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-md text-on-surface-variant mb-md italic">"The AI enhancement makes our jewelry photos look professional without a studio setup. Highly recommend."</p>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Reviewer" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHsg99cc7jp0xHQJsEkGp6TTsqBGcxoBqQradyXhnXLpntZEUUD9hb5Op7BQ742UYsLqTPpQ2Xohe3zS9otTkiJZK4d15BQM-y4esHulaQ2cvb8ExB_wQi3hFUS14t03bV07SkQD8_H73cjnBA-Zk5WfyBmru5OoYCPJIcs7JL3_LsH7eOZBBECBHSndyIi46R4bI0I-n81LtXgpNkqFor1AzC5nMvSVAjXrfWwchk7DMqLl85lAfa-vwjJAncWnpTXA1Ef45F-Qs"/>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface">Michael L. - Brand Owner</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Integration Guide & Docs -->
+<section class="bg-surface-container-low p-lg rounded-xl border border-outline-variant">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">Integration Guide &amp; Docs</h2>
+<ul class="space-y-sm">
+<li>
+<a class="flex items-center gap-sm text-primary hover:underline group" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="font-body-md">PixelPerfect Setup Guide for Shopify Stores</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm text-primary hover:underline group" href="#">
+<span class="material-symbols-outlined text-[20px]">code</span>
+<span class="font-body-md">API Documentation: Image Processing Endpoints</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-sm text-primary hover:underline group" href="#">
+<span class="material-symbols-outlined text-[20px]">play_circle</span>
+<span class="font-body-md">Video Tutorial: Mastering Bulk Background Removal</span>
+<span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+</a>
+</li>
+</ul>
+</section>
+</div>
+<!-- Right Column Sidebar (30%) -->
+<aside class="lg:w-[30%] space-y-lg">
+<div class="sticky top-28 space-y-lg">
+<h2 class="font-headline-md text-[20px] text-on-surface">Recommended Similar Tools</h2>
+<!-- Tool Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden tool-card-shadow tool-card-hover">
+<div class="h-32 bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A clean, professional e-commerce dashboard showing a grid of beautifully color-corrected fashion products. The UI is minimalist with Electric Indigo buttons and soft gray borders, maintaining a cohesive aesthetic with the EcomStacks brand. Soft daylight lighting fills the digital scene." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi7c2ADt5VwPC2pAiM4VN47FsanL3q7ANwYjB41lbBygI_-r2obMmnTv7sL1bbyIrHHpuskDycY84BUkEloRsh3su8sgopAcCYrG8ubaiAE5ofvq5hm722C-1W1yMNmU-P80lCuigvoEao8ayq9C4JjA247Wg5jOkDUjHwzROIqDjVAz_qV0b68eNyXk75xW54n1Wfq8_iw8BeRGy-FUt5-6z4cCzgay3rXAos_nrQgmYNHXCpgtB3u8dlPg2TLg5urZCU-rnYqs"/>
+</div>
+<div class="p-md">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-headline-md text-[16px] text-on-surface">ColorMaster AI</h3>
+<span class="material-symbols-outlined text-tertiary-container text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Intelligent color correction for massive product catalogs.</p>
+<a class="text-primary font-label-sm text-label-sm flex items-center gap-xs hover:underline" href="#">
+                                View Details <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Tool Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden tool-card-shadow tool-card-hover">
+<div class="h-32 bg-surface-container-low overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist UI mockup of an AI background generation tool. It shows a central product image being surrounded by beautiful 3D rendered studio backgrounds. The lighting is bright and high-key, with the signature Electric Indigo palette of EcomStacks appearing in the primary action buttons." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg0F64woHfmX_ATyc3PyyDJNaBhrescd6Z0He97iBLGI7UoTj75fWaRecqWsJYYniUHKeg2IdMNw_a2KaWOGAXKyB2moMS4Hm3IbxJf8QnK6ChEoDYYTRQahDR6BUrD2WCSVSYHslUccvdzyuUXWzl4FZ02icTPAkE8wV4WpDFPkqPC_MLV21JfyrXulRvpzKCzYdTdCDAANgyGtSloyvDsKWhtDNjARtah-wbvx6wP8lH-H8SnvAQ2uWmS4bYUevgyN4FKsIw2aM"/>
+</div>
+<div class="p-md">
+<div class="flex items-center justify-between mb-xs">
+<h3 class="font-headline-md text-[16px] text-on-surface">StudioGen</h3>
+<span class="material-symbols-outlined text-tertiary-container text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">Generate AI backgrounds for products in various studio settings.</p>
+<a class="text-primary font-label-sm text-label-sm flex items-center gap-xs hover:underline" href="#">
+                                View Details <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Sidebar CTA -->
+<div class="bg-primary-container p-md rounded-xl text-white">
+<h4 class="font-headline-md text-[18px] mb-xs">List your AI tool</h4>
+<p class="font-body-sm text-body-sm text-on-primary-container mb-md">Reach 50,000+ Shopify merchants searching for AI solutions every month.</p>
+<button class="bg-white text-primary px-md py-sm rounded-lg font-label-md text-label-md w-full hover:bg-surface-container-lowest transition-colors">
+                            Get Started
+                        </button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant bg-surface-container-low">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface">EcomStacks</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">© 2024 EcomStacks. High-trust directory for e-commerce AI.</p>
+</div>
+<nav class="flex flex-wrap justify-center gap-md">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Contact</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Twitter</a>
+</nav>
+</footer>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mousedown', function() {
+                this.classList.add('scale-95');
+            });
+            button.addEventListener('mouseup', function() {
+                this.classList.remove('scale-95');
+            });
+            button.addEventListener('mouseleave', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+
+        // Simple smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Optional: Intersection Observer for fade-in effects
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(section);
+        });
+    </script>
+</body></html>
