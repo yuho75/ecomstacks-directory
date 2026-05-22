@@ -3,6 +3,7 @@
 
 import { supabaseAdmin } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 
 /**
  * Server Action: Approves a pending tool submission.
@@ -11,7 +12,12 @@ import { revalidatePath } from 'next/cache';
  */
 export async function approveItem(id: string, secretKey: string | null) {
   const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
-  if (secretKey !== adminSecret) {
+  
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
     throw new Error('Unauthorized administrative action.');
   }
 
@@ -49,7 +55,12 @@ export async function approveItem(id: string, secretKey: string | null) {
  */
 export async function rejectItem(id: string, secretKey: string | null) {
   const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
-  if (secretKey !== adminSecret) {
+  
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
     throw new Error('Unauthorized administrative action.');
   }
 
@@ -78,3 +89,35 @@ export async function rejectItem(id: string, secretKey: string | null) {
 
   return { success: true };
 }
+
+/**
+ * Server Action: Validates administrator credentials and sets an HTTP-only session cookie.
+ */
+export async function loginAdmin(usernameInput: string, passwordInput: string) {
+  const adminUser = process.env.ADMIN_USERNAME || 'admin';
+  const adminPass = process.env.ADMIN_PASSWORD || 'admin123';
+
+  if (usernameInput === adminUser && passwordInput === adminPass) {
+    const cookieStore = cookies();
+    cookieStore.set('ecomstacks_admin_session', 'authenticated', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7, // 1 week session
+      path: '/'
+    });
+    return { success: true };
+  } else {
+    return { success: false, error: 'Incorrect username or password.' };
+  }
+}
+
+/**
+ * Server Action: Clears the administrator session cookie.
+ */
+export async function logoutAdmin() {
+  const cookieStore = cookies();
+  cookieStore.delete('ecomstacks_admin_session');
+  return { success: true };
+}
+

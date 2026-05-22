@@ -18,10 +18,10 @@ interface Item {
 
 interface AdminPanelProps {
   initialPending: Item[];
-  secretKey: string;
+  secretKey?: string | null;
 }
 
-export default function AdminPanel({ initialPending, secretKey }: AdminPanelProps) {
+export default function AdminPanel({ initialPending, secretKey = null }: AdminPanelProps) {
   const [items, setItems] = useState<Item[]>(initialPending);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

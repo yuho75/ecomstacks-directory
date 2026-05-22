@@ -1,8 +1,10 @@
 import React from 'react';
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import AdminPanel from '@/components/AdminPanel';
+import AdminLoginForm from '@/components/AdminLoginForm';
+import { logoutAdmin } from '@/app/actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,39 +15,43 @@ interface AdminPageProps {
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
-  const secretKey = searchParams.key;
-  const expectedKey = process.env.ADMIN_SECRET_KEY;
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
 
-  // Enforce silent redirect back to landing if the verification key is absent or incorrect
-  if (!expectedKey || secretKey !== expectedKey) {
-    redirect('/');
-  }
+  const secretKey = searchParams.key || null;
+  const expectedKey = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
+  const isKeyAuthenticated = !!(secretKey && secretKey === expectedKey);
 
-  // Retrieve pending queue listings directly from database
+  const isAuthenticated = isSessionAuthenticated || isKeyAuthenticated;
+
+  // Retrieve pending queue listings directly from database if authenticated
   let pendingItems: any[] = [];
-  try {
-    const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
-    const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
-    
-    if (!isPlaceholder && !isBypass) {
-      const { data, error } = await supabaseAdmin
-        .from('items')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false });
+  if (isAuthenticated) {
+    try {
+      const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+      const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+      
+      if (!isPlaceholder && !isBypass) {
+        const { data, error } = await supabaseAdmin
+          .from('items')
+          .select('*')
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false });
 
-      if (!error && data) {
-        pendingItems = data;
-      } else if (error) {
-        console.error('Database query returned an error inside admin page:', error);
+        if (!error && data) {
+          pendingItems = data;
+        } else if (error) {
+          console.error('Database query returned an error inside admin page:', error);
+        }
+      } else {
+        const { getMockItems } = await import('@/lib/mockDb');
+        pendingItems = await getMockItems('pending');
+        console.log('Loaded pending items from local Mock DB:', pendingItems.length);
       }
-    } else {
-      const { getMockItems } = await import('@/lib/mockDb');
-      pendingItems = await getMockItems('pending');
-      console.log('Loaded pending items from local Mock DB:', pendingItems.length);
+    } catch (err) {
+      console.error('Failed to establish database fetch for pending queue:', err);
     }
-  } catch (err) {
-    console.error('Failed to establish database fetch for pending queue:', err);
   }
 
   return (
@@ -60,31 +66,50 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             System Admin
           </span>
         </div>
-        <Link 
-          href="/"
-          className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100"
-        >
-          View Live Directory
-        </Link>
+        <div className="flex items-center gap-md">
+          <Link 
+            href="/"
+            className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100"
+          >
+            View Live Directory
+          </Link>
+          {isAuthenticated && (
+            <form action={logoutAdmin}>
+              <button 
+                type="submit"
+                className="bg-error/10 border border-error/20 text-error hover:bg-error hover:text-on-error px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 flex items-center gap-xs"
+              >
+                <span className="material-symbols-outlined text-[18px]">logout</span>
+                Logout
+              </button>
+            </form>
+          )}
+        </div>
       </header>
 
       {/* Admin Panel Workspace */}
       <main className="max-w-container-max w-full mx-auto px-gutter py-xl flex-grow">
-        <div className="mb-lg">
-          <h1 className="font-display-lg text-[32px] text-on-surface mb-xs tracking-tight font-extrabold flex items-center gap-xs">
-            <span className="material-symbols-outlined text-[36px] text-primary">gavel</span>
-            Pending Submissions
-          </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">
-            Verify payment completions, review submissions descriptions, and approve or reject submissions to update the live EcomStacks directory globally in real-time.
-          </p>
-        </div>
+        {!isAuthenticated ? (
+          <AdminLoginForm />
+        ) : (
+          <>
+            <div className="mb-lg">
+              <h1 className="font-display-lg text-[32px] text-on-surface mb-xs tracking-tight font-extrabold flex items-center gap-xs">
+                <span className="material-symbols-outlined text-[36px] text-primary">gavel</span>
+                Pending Submissions
+              </h1>
+              <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                Verify payment completions, review submissions descriptions, and approve or reject submissions to update the live EcomStacks directory globally in real-time.
+              </p>
+            </div>
 
-        {/* Dynamic reactive approval flow */}
-        <AdminPanel 
-          initialPending={pendingItems} 
-          secretKey={secretKey} 
-        />
+            {/* Dynamic reactive approval flow */}
+            <AdminPanel 
+              initialPending={pendingItems} 
+              secretKey={secretKey} 
+            />
+          </>
+        )}
       </main>
 
       {/* Admin Footer */}
