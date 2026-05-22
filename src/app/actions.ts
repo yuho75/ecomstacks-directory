@@ -4,6 +4,7 @@
 import { supabaseAdmin } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 /**
  * Server Action: Approves a pending tool submission.
@@ -118,6 +119,6 @@ export async function loginAdmin(usernameInput: string, passwordInput: string) {
 export async function logoutAdmin() {
   const cookieStore = cookies();
   cookieStore.delete('ecomstacks_admin_session');
-  return { success: true };
+  redirect('/admin');
 }
 
