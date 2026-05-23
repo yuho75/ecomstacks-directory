@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import ToolCard from '@/components/ToolCard';
 import SubmissionModal from '@/components/SubmissionModal';
+import Header from '@/components/Header';
 
 interface Item {
   id: string;
@@ -32,9 +32,6 @@ const CATEGORIES = [
 ];
 
 export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) {
-  const router = useRouter();
-  const [logoClicks, setLogoClicks] = useState(0);
-  const [lastClickTime, setLastClickTime] = useState(0);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
@@ -47,24 +44,16 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
   useEffect(() => {
     // Clear any lingering admin entry keys when the user lands on the homepage
     sessionStorage.removeItem('allow_admin_access');
-  }, []);
 
-  const handleLogoClick = (e: React.MouseEvent) => {
-    const now = Date.now();
-    if (now - lastClickTime > 1500) {
-      setLogoClicks(1);
-    } else {
-      const newCount = logoClicks + 1;
-      if (newCount >= 7) {
-        e.preventDefault();
-        sessionStorage.setItem('allow_admin_access', 'true');
-        router.push('/admin');
-        return;
-      }
-      setLogoClicks(newCount);
+    // Handle auto-opening of submission modal via query parameters (e.g. from Pricing page)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('submit') === 'true') {
+      setIsModalOpen(true);
+      // Remove query param from URL without page reload
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
     }
-    setLastClickTime(now);
-  };
+  }, []);
 
   const allTools = [...itemsList];
 
@@ -96,68 +85,7 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
   return (
     <>
       {/* TopNavBar */}
-      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
-        <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
-          <div className="flex items-center gap-base">
-            <Link 
-              href="/" 
-              onClick={handleLogoClick}
-              className="flex items-center gap-xs font-bold text-on-surface hover:text-primary transition-colors select-none group"
-            >
-              <div className="relative w-8 h-8 flex items-center justify-center bg-black rounded-md shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
-                <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
-                  <path d="M3 12L12 16.5L21 12" />
-                  <path d="M3 16.5L12 21L21 16.5" />
-                </svg>
-              </div>
-              <span 
-                className="text-[22px] font-extrabold tracking-[-0.045em] text-on-surface select-none" 
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                Ecom<span className="text-on-surface-variant">Stacks</span>
-              </span>
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center gap-lg">
-            <Link 
-              href="/" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-black transition-colors py-2"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Tools
-            </Link>
-            <Link 
-              href="/pricing" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Pricing
-            </Link>
-            <a 
-              href="#footer-anchor" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('footer-anchor')?.scrollIntoView({ behavior: 'smooth' });
-                setTimeout(() => {
-                  const emailInput = document.querySelector('input[name="email"]') as HTMLInputElement;
-                  if (emailInput) emailInput.focus();
-                }, 800);
-              }}
-            >
-              Subscribe
-            </a>
-          </nav>
-          <button 
-            onClick={() => setIsModalOpen(true)}
-            className="bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm"
-          >
-            Submit Your Tool (Free)
-          </button>
-        </div>
-      </header>
+      <Header onSubmitClick={() => setIsModalOpen(true)} />
 
       {/* Main Container */}
       <main className="max-w-container-max w-full mx-auto px-gutter pb-xl flex-grow">
