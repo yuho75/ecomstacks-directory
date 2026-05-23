@@ -119,18 +119,18 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
           </div>
           <nav className="hidden md:flex items-center gap-lg">
             <Link 
-              href="/pricing" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-            >
-              Pricing
-            </Link>
-            <Link 
               href="/" 
               className="text-[15px] font-extrabold tracking-[-0.045em] text-black transition-colors py-2"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
               Tools
+            </Link>
+            <Link 
+              href="/pricing" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Pricing
             </Link>
             <a 
               href="#footer-anchor" 
