@@ -219,12 +219,12 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
           <div className="space-y-md">
             {/* Featured Section */}
             {displayedTools.filter(t => t.tier === 'featured' || t.tier === 'premium').length > 0 && (
-              <div className="mb-xl p-md md:p-lg bg-primary/5 border-2 border-primary rounded-2xl relative shadow-sm">
-                <div className="absolute -top-3.5 left-6 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                  <span className="material-symbols-outlined text-[14px]">star</span>
-                  Featured Tools
+              <div className="mb-xl p-md md:p-lg bg-gradient-to-br from-surface-container-lowest to-primary/5 border-[3px] border-primary rounded-2xl relative shadow-[0_0_25px_rgba(59,130,246,0.25)]">
+                <div className="absolute -top-4 left-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[13px] font-extrabold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-primary/40 z-10">
+                  <span className="material-symbols-outlined text-[16px] animate-pulse text-yellow-300">stars</span>
+                  FEATURED SPONSORS
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
+                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
                   {displayedTools.filter(t => t.tier === 'featured' || t.tier === 'premium').map((tool) => (
                     <ToolCard key={tool.id} item={tool} />
                   ))}
