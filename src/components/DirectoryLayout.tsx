@@ -39,6 +39,11 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
   const [activeCategory, setActiveCategory] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  useEffect(() => {
+    setVisibleCount(8);
+  }, [activeCategory]);
 
   useEffect(() => {
     // Clear any lingering admin entry keys when the user lands on the homepage
@@ -72,11 +77,16 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
 
   const allTools = Array.from(combinedItemsMap.values());
 
+  // Sort by created_at DESC (Newest first) so that recently registered sites show at the top!
+  allTools.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
   // Filter tools based on selected activeCategory tab
   const filteredTools = allTools.filter(tool => {
     if (activeCategory === 'All') return true;
     return tool.category.toLowerCase().trim() === activeCategory.toLowerCase().trim();
   });
+
+  const displayedTools = filteredTools.slice(0, visibleCount);
 
   const handleRefreshData = async () => {
     try {
@@ -93,58 +103,78 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
   return (
     <>
       {/* TopNavBar */}
-      <header className="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm shrink-0">
-        <div className="flex items-center gap-base">
-          <Link 
-            href="/" 
-            onClick={handleLogoClick}
-            className="text-headline-md font-headline-md font-bold text-on-surface hover:text-primary transition-colors select-none"
+      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
+        <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
+          <div className="flex items-center gap-base">
+            <Link 
+              href="/" 
+              onClick={handleLogoClick}
+              className="flex items-center gap-xs font-bold text-on-surface hover:text-primary transition-colors select-none group"
+            >
+              <div className="relative w-8 h-8 flex items-center justify-center bg-black rounded-md shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
+                  <path d="M3 12L12 16.5L21 12" />
+                  <path d="M3 16.5L12 21L21 16.5" />
+                </svg>
+              </div>
+              <span 
+                className="text-[22px] font-extrabold tracking-[-0.045em] text-on-surface select-none" 
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Ecom<span className="text-on-surface-variant">Stacks</span>
+              </span>
+            </Link>
+          </div>
+          <nav className="hidden md:flex items-center gap-lg">
+            <Link 
+              href="/" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Tools
+            </Link>
+            <a 
+              href="#directory-anchor" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('directory-anchor')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Categories
+            </a>
+            <a 
+              href="#footer-anchor" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('footer-anchor')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Resources
+            </a>
+          </nav>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm"
           >
-            EcomStacks
-          </Link>
+            Submit Your Tool ($9.99)
+          </button>
         </div>
-        <nav className="hidden md:flex items-center gap-lg">
-          <Link 
-            href="/" 
-            className="font-label-md text-label-md text-primary border-b-2 border-primary py-2 transition-colors"
-          >
-            Tools
-          </Link>
-          <a 
-            href="#directory-anchor" 
-            className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('directory-anchor')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Categories
-          </a>
-          <a 
-            href="#footer-anchor" 
-            className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('footer-anchor')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            Resources
-          </a>
-        </nav>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm"
-        >
-          Submit Your Tool ($9.99)
-        </button>
       </header>
 
       {/* Main Container */}
       <main className="max-w-container-max w-full mx-auto px-gutter pb-xl flex-grow">
         {/* Hero Section */}
         <section className="py-xl md:py-[100px] text-center flex flex-col items-center max-w-4xl mx-auto">
-          <h1 className="font-display-lg text-display-lg text-on-surface mb-md tracking-tight leading-tight">
-            EcomStacks
+          <h1 
+            className="font-extrabold text-[52px] md:text-[64px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-md select-none" 
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          >
+            Ecom<span className="text-on-surface-variant">Stacks</span>
           </h1>
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-lg">
             Double your revenue with a curated directory of high-converting micro-tools built specifically for 1-person brands, Shopify builders, and e-commerce growth.
@@ -195,27 +225,59 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md animate-in fade-in duration-500">
-            {filteredTools.map((tool) => (
-              <ToolCard key={tool.id} item={tool} />
-            ))}
+          <div className="space-y-md">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
+              {displayedTools.map((tool) => (
+                <ToolCard key={tool.id} item={tool} />
+              ))}
+            </div>
+            {filteredTools.length > visibleCount && (
+              <div className="flex justify-center pt-md">
+                <button
+                  onClick={() => setVisibleCount(prev => prev + 8)}
+                  className="group flex items-center justify-center gap-xs bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-primary px-lg py-md rounded-xl font-label-md text-label-md transition-all duration-300 active:scale-95 shadow-sm hover:shadow-lg border border-primary hover:border-transparent relative overflow-hidden"
+                >
+                  <span>Load More Tools</span>
+                  <span className="material-symbols-outlined text-[20px] transition-transform duration-300 group-hover:translate-y-1 group-hover:scale-110">
+                    expand_more
+                  </span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer id="footer-anchor" className="w-full py-xl px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-md border-t border-outline-variant bg-surface-container-low shrink-0">
-        <div className="flex flex-col items-center md:items-start gap-xs">
-          <span className="font-headline-md text-[20px] font-bold text-on-surface">EcomStacks</span>
-          <p className="font-body-sm text-body-sm text-on-surface-variant text-center md:text-left">
-            © {new Date().getFullYear()} EcomStacks. High-trust directory for e-commerce.
-          </p>
+      <footer id="footer-anchor" className="w-full bg-[#09090b] border-t border-neutral-800 shrink-0 py-md">
+        <div className="max-w-container-max w-full mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-md">
+          <div className="flex flex-col md:flex-row items-center gap-sm md:gap-md text-center md:text-left">
+            <div className="flex items-center gap-xs">
+              <div className="relative w-7 h-7 flex items-center justify-center bg-black rounded shrink-0">
+                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
+                  <path d="M3 12L12 16.5L21 12" />
+                  <path d="M3 16.5L12 21L21 16.5" />
+                </svg>
+              </div>
+              <span 
+                className="text-[20px] font-extrabold tracking-[-0.045em] text-white select-none" 
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Ecom<span className="text-neutral-400">Stacks</span>
+              </span>
+            </div>
+            <span className="hidden md:inline text-neutral-600 text-sm">•</span>
+            <p className="font-body-sm text-body-sm text-neutral-400">
+              © {new Date().getFullYear()} EcomStacks. High-trust directory for e-commerce.
+            </p>
+          </div>
+          <nav className="flex flex-wrap justify-center md:justify-end gap-md">
+            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-colors" href="#">Terms of Service</a>
+            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-colors" href="#">Privacy Policy</a>
+            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-colors" href="#">Contact Support</a>
+          </nav>
         </div>
-        <nav className="flex flex-wrap justify-center gap-md">
-          <a className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors hover:underline" href="#">Terms of Service</a>
-          <a className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors hover:underline" href="#">Privacy Policy</a>
-          <a className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors hover:underline" href="#">Contact Support</a>
-        </nav>
       </footer>
 
       {/* Submission Modal Wrapper */}

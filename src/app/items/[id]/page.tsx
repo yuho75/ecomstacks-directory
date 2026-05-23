@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { SEED_ITEMS } from '@/lib/seeds';
 import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
 import type { Metadata } from 'next';
+import EditToolButton from '@/components/EditToolButton';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -27,7 +28,10 @@ async function getToolById(id: string) {
     try {
       const { getMockItemById } = await import('@/lib/mockDb');
       const mockItem = await getMockItemById(id);
-      if (mockItem) return mockItem;
+      if (mockItem) {
+        if (mockItem.status === 'deleted') return null;
+        return mockItem;
+      }
     } catch (e) {
       console.error('Error fetching item from Mock DB:', e);
     }
@@ -43,6 +47,7 @@ async function getToolById(id: string) {
       .single();
 
     if (!error && data) {
+      if (data.status === 'deleted') return null;
       return data;
     }
   } catch (e) {
@@ -123,26 +128,55 @@ export default async function Page({ params }: PageProps) {
   return (
     <>
       {/* TopNavBar */}
-      <header className="sticky top-0 z-50 flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-20 bg-surface-container-lowest border-b border-outline-variant shadow-sm shrink-0">
-        <div className="flex items-center gap-base">
-          <Link href="/" className="text-headline-md font-headline-md font-bold text-on-surface">
-            EcomStacks
+      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
+        <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
+          <div className="flex items-center gap-base">
+            <Link 
+              href="/" 
+              className="flex items-center gap-xs font-bold text-on-surface hover:text-primary transition-colors select-none group"
+            >
+              <div className="relative w-8 h-8 flex items-center justify-center bg-black rounded-md shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
+                  <path d="M3 12L12 16.5L21 12" />
+                  <path d="M3 16.5L12 21L21 16.5" />
+                </svg>
+              </div>
+              <span 
+                className="text-[22px] font-extrabold tracking-[-0.045em] text-on-surface select-none" 
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Ecom<span className="text-on-surface-variant">Stacks</span>
+              </span>
+            </Link>
+          </div>
+          <nav className="hidden md:flex items-center gap-lg">
+            <Link 
+              href="/" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-black transition-colors py-2 px-1"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Tools
+            </Link>
+            <Link 
+              href="/#directory-anchor" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2 px-1"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Categories
+            </Link>
+            <Link 
+              href="/#footer-anchor" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2 px-1"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Resources
+            </Link>
+          </nav>
+          <Link href="/" className="bg-primary-container text-white px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all block">
+            Submit Your Tool ($9.99)
           </Link>
         </div>
-        <nav className="hidden md:flex items-center gap-lg">
-          <Link href="/" className="font-label-md text-label-md text-primary border-b-2 border-primary py-2 px-1">
-            Tools
-          </Link>
-          <Link href="/#directory-anchor" className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 px-1">
-            Categories
-          </Link>
-          <Link href="/#footer-anchor" className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-2 px-1">
-            Resources
-          </Link>
-        </nav>
-        <Link href="/" className="bg-primary-container text-white px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all block">
-          Submit Your Tool ($9.99)
-        </Link>
       </header>
 
       {/* Main content */}
@@ -188,18 +222,19 @@ export default async function Page({ params }: PageProps) {
                 1-Person Scale
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-md items-start sm:items-center">
+            <div className="flex flex-col sm:flex-row gap-md items-stretch sm:items-center">
               <a 
                 href={item.url} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="bg-primary text-on-primary px-lg py-md rounded-lg font-headline-md text-headline-md flex items-center justify-center gap-sm hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto text-center"
+                className="bg-primary text-on-primary px-md py-sm rounded-lg font-semibold text-[15px] flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto text-center whitespace-nowrap shadow-sm"
               >
                 Visit Website 
-                <span className="material-symbols-outlined">north_east</span>
+                <span className="material-symbols-outlined text-[18px]">north_east</span>
               </a>
-              <div className="flex items-center gap-xs text-on-surface-variant font-label-md px-md">
-                <span className="material-symbols-outlined text-primary">verified</span>
+              <EditToolButton itemId={item.id} itemTitle={item.title} />
+              <div className="flex items-center gap-xs text-on-surface-variant font-label-md whitespace-nowrap self-center">
+                <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
                 Verified Listing
               </div>
             </div>
@@ -215,7 +250,7 @@ export default async function Page({ params }: PageProps) {
               <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Detailed Overview</h2>
               <div className="space-y-md text-on-surface-variant font-body-md leading-relaxed">
                 <p>
-                  {item.title} represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments, description generations, or conversion rate optimization, this tool removes technical barriers and allows founders to focus entirely on high-level growth and scaling strategies.
+                  {item.detailed_overview || `${item.title} represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments, description generations, or conversion rate optimization, this tool removes technical barriers and allows founders to focus entirely on high-level growth and scaling strategies.`}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
                   <div className="space-y-base">
@@ -233,23 +268,43 @@ export default async function Page({ params }: PageProps) {
             {/* Key Features */}
             <section>
               <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Key Features</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-                <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
-                  <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>image</span>
-                  <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Visual Excellence</h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Elevate product and marketing visuals into stunning premium-grade graphics with simple inputs.</p>
+              {item.key_features && item.key_features.length >= 3 ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>image</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[0]}</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Elevate product and marketing visuals into stunning premium-grade graphics with simple inputs.</p>
+                  </div>
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[1]}</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Tuned specifically around retail psychology to capture traffic and maximize checkout actions.</p>
+                  </div>
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>integration_instructions</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[2]}</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Zero complex integrations required. Deploy, embed, or integrate into storefront configurations instantly.</p>
+                  </div>
                 </div>
-                <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
-                  <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
-                  <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Conversion Lift</h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Tuned specifically around retail psychology to capture traffic and maximize checkout actions.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>image</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Visual Excellence</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Elevate product and marketing visuals into stunning premium-grade graphics with simple inputs.</p>
+                  </div>
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Conversion Lift</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Tuned specifically around retail psychology to capture traffic and maximize checkout actions.</p>
+                  </div>
+                  <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
+                    <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>integration_instructions</span>
+                    <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Simple Launch</h4>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">Zero complex integrations required. Deploy, embed, or integrate into storefront configurations instantly.</p>
+                  </div>
                 </div>
-                <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
-                  <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>integration_instructions</span>
-                  <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">Simple Launch</h4>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant">Zero complex integrations required. Deploy, embed, or integrate into storefront configurations instantly.</p>
-                </div>
-              </div>
+              )}
             </section>
 
             {/* Customer Reviews */}
@@ -270,9 +325,9 @@ export default async function Page({ params }: PageProps) {
                       <span key={s} className="material-symbols-outlined text-tertiary-container text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                     ))}
                   </div>
-                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">&quot;Saved us over 40 hours of manual editing last month alone. Absolute game-changer for solo sellers!&quot;</p>
+                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">&quot;{item.customer_review || "Saved us over 40 hours of manual editing last month alone. Absolute game-changer for solo sellers!"}&quot;</p>
                   <div className="flex items-center gap-sm">
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">Sarah J. - Shopify Plus Merchant</span>
+                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">{item.customer_review_author || "Sarah J. - Shopify Plus Merchant"}</span>
                   </div>
                 </div>
                 {/* Review Card 2 */}
@@ -297,14 +352,14 @@ export default async function Page({ params }: PageProps) {
                 <li>
                   <a className="flex items-center gap-sm text-primary hover:underline group" href="#">
                     <span className="material-symbols-outlined text-[20px]">description</span>
-                    <span className="font-body-md">{item.title} Setup Guide for E-commerce</span>
+                    <span className="font-body-md">{item.integration_guide_1_label || `${item.title} Setup Guide for E-commerce`}</span>
                     <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
                   </a>
                 </li>
                 <li>
                   <a className="flex items-center gap-sm text-primary hover:underline group" href="#">
                     <span className="material-symbols-outlined text-[20px]">code</span>
-                    <span className="font-body-md">SaaS Integration Endpoints</span>
+                    <span className="font-body-md">{item.integration_guide_2_label || "SaaS Integration Endpoints"}</span>
                     <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
                   </a>
                 </li>
@@ -332,7 +387,7 @@ export default async function Page({ params }: PageProps) {
                       </div>
                       <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-1">{rec.description}</p>
                       <Link className="text-primary font-label-sm text-label-sm flex items-center gap-xs hover:underline" href={`/items/${rec.id}`}>
-                        View Details <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        View Details
                       </Link>
                     </div>
                   </div>
@@ -358,16 +413,35 @@ export default async function Page({ params }: PageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-xl px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant bg-surface-container-low shrink-0">
-        <div className="flex flex-col items-center md:items-start gap-xs">
-          <span className="font-headline-md text-headline-md font-bold text-on-surface">EcomStacks</span>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">© {new Date().getFullYear()} EcomStacks. High-trust directory for e-commerce.</p>
+      <footer className="w-full bg-[#09090b] border-t border-neutral-800 shrink-0 py-md">
+        <div className="max-w-container-max w-full mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-md">
+          <div className="flex flex-col md:flex-row items-center gap-sm md:gap-md text-center md:text-left">
+            <div className="flex items-center gap-xs">
+              <div className="relative w-7 h-7 flex items-center justify-center bg-black rounded shrink-0">
+                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
+                  <path d="M3 12L12 16.5L21 12" />
+                  <path d="M3 16.5L12 21L21 16.5" />
+                </svg>
+              </div>
+              <span 
+                className="text-[20px] font-extrabold tracking-[-0.045em] text-white select-none" 
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Ecom<span className="text-neutral-400">Stacks</span>
+              </span>
+            </div>
+            <span className="hidden md:inline text-neutral-600 text-sm">•</span>
+            <p className="font-body-sm text-body-sm text-neutral-400">
+              © {new Date().getFullYear()} EcomStacks. High-trust directory for e-commerce.
+            </p>
+          </div>
+          <nav className="flex flex-wrap justify-center md:justify-end gap-md">
+            <Link className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="/">Home</Link>
+            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="#">Terms of Service</a>
+            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="#">Privacy Policy</a>
+          </nav>
         </div>
-        <nav className="flex flex-wrap justify-center gap-md">
-          <Link className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="/">Home</Link>
-          <a className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Terms of Service</a>
-          <a className="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-opacity hover:underline" href="#">Privacy Policy</a>
-        </nav>
       </footer>
     </>
   );

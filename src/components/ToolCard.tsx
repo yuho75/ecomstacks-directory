@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { getOptimizedCloudinaryUrl } from '@/lib/utils';
+import RequestEditModal from './RequestEditModal';
 
 interface Item {
   id: string;
@@ -21,6 +22,7 @@ interface ToolCardProps {
 }
 
 export default function ToolCard({ item }: ToolCardProps) {
+  const [isEditOpen, setIsEditOpen] = useState(false);
   // Apply Cloudinary real-time URL transformer for speed
   const optimizedImageSrc = getOptimizedCloudinaryUrl(item.image_url);
 
@@ -37,25 +39,23 @@ export default function ToolCard({ item }: ToolCardProps) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-on-surface/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <span className="text-on-surface font-label-md bg-white/90 px-md py-sm rounded-lg backdrop-blur shadow-md transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-            View Details
-          </span>
-        </div>
+
       </Link>
 
       {/* Info Area */}
       <div className="p-md flex flex-col justify-between flex-grow">
         <div>
-          <div className="flex justify-between items-start gap-xs mb-xs">
-            <h3 className="font-headline-md text-[18px] text-on-surface font-bold line-clamp-1">
+          <div className="flex flex-col gap-1 mb-2">
+            <div>
+              <span className="bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider whitespace-nowrap border border-outline-variant/30">
+                {displayCategory}
+              </span>
+            </div>
+            <h3 className="font-headline-md text-[18px] text-on-surface font-bold line-clamp-1 min-w-0">
               <Link href={`/items/${item.id}`} className="hover:text-primary transition-colors">
                 {item.title}
               </Link>
             </h3>
-            <span className="bg-surface-container text-on-secondary-container px-xs py-xs rounded font-label-sm text-[10px] uppercase tracking-wider whitespace-nowrap shrink-0">
-              {displayCategory}
-            </span>
           </div>
           <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2 min-h-[40px]">
             {item.description}
@@ -67,23 +67,37 @@ export default function ToolCard({ item }: ToolCardProps) {
             href={item.url} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary hover:underline group/link"
+            className="inline-flex items-center gap-xs font-label-sm text-label-sm text-primary group/link"
           >
             Visit Website 
-            <span className="material-symbols-outlined text-[16px] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform">
-              north_east
-            </span>
           </a>
           
-          <Link 
-            href={`/items/${item.id}`}
-            className="text-on-surface-variant hover:text-primary text-[12px] font-medium flex items-center gap-xs transition-colors"
-          >
-            Learn More
-            <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-          </Link>
+          <div className="flex items-center gap-xs">
+            <button
+              onClick={() => setIsEditOpen(true)}
+              className="text-neutral-400 hover:text-neutral-700 text-[12px] font-medium flex items-center gap-xs transition-colors focus:outline-none"
+              title="Request edit link"
+            >
+              <span className="material-symbols-outlined text-[14px]">edit</span>
+              Edit
+            </button>
+            <span className="text-neutral-300 select-none">|</span>
+            <Link 
+              href={`/items/${item.id}`}
+              className="text-on-surface-variant hover:text-primary text-[12px] font-medium flex items-center gap-xs transition-colors"
+            >
+              Learn More
+            </Link>
+          </div>
         </div>
       </div>
+
+      <RequestEditModal 
+        isOpen={isEditOpen} 
+        onClose={() => setIsEditOpen(false)} 
+        itemId={item.id} 
+        itemTitle={item.title} 
+      />
     </div>
   );
 }

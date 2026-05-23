@@ -25,7 +25,6 @@
 
 .tool-card-hover:hover {
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
 }
 
 /* Custom horizontal/vertical scrollbars */

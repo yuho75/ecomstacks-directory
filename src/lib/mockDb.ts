@@ -9,9 +9,11 @@ export interface MockItem {
   image_url: string;
   category: string;
   email: string;
-  status: 'pending_payment' | 'pending' | 'approved' | 'rejected';
+  status: 'pending_payment' | 'pending' | 'approved' | 'rejected' | 'deleted';
   paypal_order_id?: string;
   created_at: string;
+  edit_token?: string;
+  edit_token_expires_at?: string;
 }
 
 // In-memory cache for serverless environments where filesystem is read-only
@@ -65,7 +67,7 @@ export async function writeMockDb(data: MockItem[]): Promise<boolean> {
   }
 }
 
-export async function getMockItems(status?: 'pending_payment' | 'pending' | 'approved' | 'rejected'): Promise<MockItem[]> {
+export async function getMockItems(status?: 'pending_payment' | 'pending' | 'approved' | 'rejected' | 'deleted'): Promise<MockItem[]> {
   const items = await readMockDb();
   if (status) {
     return items.filter(item => item.status === status);
@@ -98,6 +100,45 @@ export async function updateMockItemStatus(id: string, status: MockItem['status'
     if (paypalOrderId) {
       items[index].paypal_order_id = paypalOrderId;
     }
+    await writeMockDb(items);
+    return items[index];
+  }
+  return null;
+}
+
+export async function updateMockItemToken(id: string, token: string | null, expiresAt: string | null): Promise<MockItem | null> {
+  const items = await readMockDb();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    if (token === null) {
+      delete items[index].edit_token;
+      delete items[index].edit_token_expires_at;
+    } else {
+      items[index].edit_token = token;
+      items[index].edit_token_expires_at = expiresAt || undefined;
+    }
+    await writeMockDb(items);
+    return items[index];
+  }
+  return null;
+}
+
+export async function updateMockItemDetails(
+  id: string,
+  title: string,
+  url: string,
+  description: string,
+  category: string,
+  imageUrl: string
+): Promise<MockItem | null> {
+  const items = await readMockDb();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    items[index].title = title;
+    items[index].url = url;
+    items[index].description = description;
+    items[index].category = category;
+    items[index].image_url = imageUrl;
     await writeMockDb(items);
     return items[index];
   }

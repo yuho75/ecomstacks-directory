@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS public.items (
     email TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending_payment', 'pending', 'approved', 'rejected')),
     paypal_order_id TEXT UNIQUE,
+    edit_token TEXT,
+    edit_token_expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
