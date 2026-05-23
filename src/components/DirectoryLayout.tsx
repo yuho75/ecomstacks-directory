@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ToolCard from '@/components/ToolCard';
 import SubmissionModal from '@/components/SubmissionModal';
-import { SeedItem } from '@/lib/seeds';
 
 interface Item {
   id: string;
@@ -21,7 +20,6 @@ interface Item {
 
 interface DirectoryLayoutProps {
   initialItems: Item[];
-  seedItems: SeedItem[];
 }
 
 const CATEGORIES = [
@@ -32,7 +30,7 @@ const CATEGORIES = [
   'Automation'
 ];
 
-export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLayoutProps) {
+export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) {
   const router = useRouter();
   const [logoClicks, setLogoClicks] = useState(0);
   const [lastClickTime, setLastClickTime] = useState(0);
@@ -67,15 +65,7 @@ export default function DirectoryLayout({ initialItems, seedItems }: DirectoryLa
     setLastClickTime(now);
   };
 
-  // Combine database items and seed items safely without duplicating IDs
-  const combinedItemsMap = new Map<string, any>();
-  
-  // Seed items first
-  seedItems.forEach(item => combinedItemsMap.set(item.id, item));
-  // Database items overwrite if same ID, or append
-  itemsList.forEach(item => combinedItemsMap.set(item.id, item));
-
-  const allTools = Array.from(combinedItemsMap.values());
+  const allTools = [...itemsList];
 
   // Sort by created_at DESC (Newest first) so that recently registered sites show at the top!
   allTools.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

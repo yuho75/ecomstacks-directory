@@ -1,6 +1,5 @@
 import React from 'react';
 import { supabase } from '@/lib/supabase';
-import { SEED_ITEMS } from '@/lib/seeds';
 import DirectoryLayout from '@/components/DirectoryLayout';
 
 // Force next to pre-render EcomStacks as a highly optimized static page.
@@ -41,7 +40,6 @@ export default async function Page() {
   return (
     <DirectoryLayout 
       initialItems={initialItems}
-      seedItems={SEED_ITEMS}
     />
   );
 }
