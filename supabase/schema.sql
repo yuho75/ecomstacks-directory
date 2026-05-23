@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.items (
     category TEXT NOT NULL,
     email TEXT NOT NULL,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending_payment', 'pending', 'approved', 'rejected')),
+    tier TEXT NOT NULL DEFAULT 'standard' CHECK (tier IN ('standard', 'featured', 'premium')),
     paypal_order_id TEXT UNIQUE,
     edit_token TEXT,
     edit_token_expires_at TIMESTAMPTZ,
@@ -37,3 +38,25 @@ WITH CHECK (true);
 -- Indexing for quick lookups by status (important for ISR and public landing page)
 CREATE INDEX IF NOT EXISTS idx_items_status ON public.items(status) WHERE status = 'approved';
 CREATE INDEX IF NOT EXISTS idx_items_paypal_order_id ON public.items(paypal_order_id);
+
+-- Create subscribers table for Newsletter
+CREATE TABLE IF NOT EXISTS public.subscribers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert to subscribers"
+ON public.subscribers
+FOR INSERT
+TO public
+WITH CHECK (true);
+
+CREATE POLICY "Allow service_role full access to subscribers"
+ON public.subscribers
+FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);

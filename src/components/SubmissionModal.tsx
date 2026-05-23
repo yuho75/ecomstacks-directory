@@ -16,6 +16,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
   const [category, setCategory] = useState('Visual & Design');
   const [email, setEmail] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [tier, setTier] = useState<'standard' | 'featured'>('standard');
 
   const [uploading, setUploading] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -120,7 +121,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
       const res = await fetch('/api/paypal/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, url, description, category, email, image_url: imageUrl }),
+        body: JSON.stringify({ title, url, description, category, email, image_url: imageUrl, tier }),
       });
 
       const data = await res.json();
@@ -342,117 +343,72 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
                 )}
               </div>
 
-              {/* Price and Checkout */}
-              <div className="pt-md border-t border-outline-variant mt-lg">
-                <div className="flex justify-between items-center mb-md">
-                  <div>
-                    <p className="font-label-md text-label-md text-on-surface">Listing Fee</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">One-time payment for lifetime listing.</p>
-                  </div>
-                  <span className="font-headline-md text-headline-md text-primary">$9.99</span>
-                </div>
+              {/* Plan Selection */}
+              <div className="pt-md border-t border-outline-variant mt-lg space-y-md">
+                <p className="font-headline-md text-headline-md text-on-surface">Select Plan</p>
+                
+                <div className="flex flex-col gap-sm">
+                  {/* Standard Option */}
+                  <label className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${tier === 'standard' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-outline'}`}>
+                    <div className="flex items-center gap-sm">
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${tier === 'standard' ? 'border-primary' : 'border-outline-variant'}`}>
+                        {tier === 'standard' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div>
+                        <p className="font-label-md text-on-surface text-[15px]">Standard Listing</p>
+                        <p className="font-body-sm text-on-surface-variant">Permanent directory listing.</p>
+                      </div>
+                    </div>
+                    <span className="font-label-lg text-primary text-[16px]">Free</span>
+                  </label>
 
+                  {/* Featured Option (Coming Soon) */}
+                  <label className="relative flex items-center justify-between p-md border border-outline-variant rounded-xl opacity-60 cursor-not-allowed bg-surface-container-lowest">
+                    <div className="flex items-center gap-sm">
+                      <div className="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center"></div>
+                      <div>
+                        <div className="flex items-center gap-xs">
+                          <p className="font-label-md text-on-surface text-[15px]">Featured Placement</p>
+                          <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Coming Soon</span>
+                        </div>
+                        <p className="font-body-sm text-on-surface-variant">Pinned to top for 30 days.</p>
+                      </div>
+                    </div>
+                    <span className="font-label-lg text-on-surface-variant text-[16px] line-through">$49.00</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Checkout Button */}
+              <div className="pt-sm mt-sm">
                 {!isFormValid ? (
                   <div className="w-full py-md px-md bg-surface-container rounded-lg border border-outline-variant flex flex-col items-center justify-center gap-xs">
                     <p className="font-label-sm text-label-sm text-on-surface-variant text-center">
-                      Please fill out all fields above and upload a thumbnail to unlock payment options.
+                      Please fill out all fields above to submit your tool.
                     </p>
                   </div>
                 ) : (
-                  <div className="w-full space-y-sm">
-                    {/* Render standard PayPal script provider if a client ID exists */}
-                    {paypalClientId ? (
-                      <PayPalScriptProvider 
-                        options={{ 
-                          clientId: paypalClientId,
-                          components: 'buttons',
-                          currency: 'USD'
-                        }}
-                      >
-                        <PayPalButtons 
-                          style={{ layout: 'vertical', shape: 'rect', label: 'pay' }}
-                          disabled={submitting}
-                          createOrder={async () => {
-                            try {
-                              const res = await fetch('/api/paypal/create-order', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  title,
-                                  url,
-                                  description,
-                                  category,
-                                  email,
-                                  image_url: imageUrl
-                                })
-                              });
-                              const data = await res.json();
-                              if (!res.ok) throw new Error(data.error || 'PayPal order creation failing.');
-                              return data.id; // Returns order.id to PayPal Buttons SDK
-                            } catch (err: any) {
-                              setError(err.message || 'PayPal payment setup failed.');
-                              throw err;
-                            }
-                          }}
-                          onApprove={async (data, actions) => {
-                            // PayPal popup closes, payment captures
-                            setSubmitting(true);
-                            try {
-                              if (actions.order) {
-                                const details = await actions.order.capture();
-                                console.log('PayPal Captured transaction details:', details);
-                                setSubmitSuccess(true);
-                                setTimeout(() => {
-                                  onSuccess();
-                                  onClose();
-                                  resetForm();
-                                }, 3000);
-                              } else {
-                                throw new Error('Action context unavailable.');
-                              }
-                            } catch (err: any) {
-                              console.error(err);
-                              setError('Payment capture succeeded, but state update failed. Our administrators will review the payment.');
-                            } finally {
-                              setSubmitting(false);
-                            }
-                          }}
-                          onError={(err) => {
-                            console.error('PayPal button error:', err);
-                            setError('PayPal payment encountered an error.');
-                          }}
-                        />
-                      </PayPalScriptProvider>
+                  <button 
+                    type="button"
+                    onClick={handleBypassSubmit}
+                    disabled={submitting}
+                    className="bg-primary text-white w-full py-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-md"
+                  >
+                    {submitting ? (
+                      <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
                     ) : (
-                      /* Developer Bypass Mode: Shows when PAYPAL_CLIENT_ID is not configured */
-                      <div className="bg-primary/5 p-md rounded-lg border border-primary/20 flex flex-col items-center justify-center space-y-xs">
-                        <span className="font-label-sm text-label-sm text-primary font-bold">Dev Sandbox Bypass Mode</span>
-                        <p className="font-body-sm text-body-sm text-on-surface-variant text-center max-w-sm">
-                          Real PayPal Credentials not configured in .env. Click below to submit this tool directly into standard `pending` approval status.
-                        </p>
-                        <button 
-                          type="button"
-                          onClick={handleBypassSubmit}
-                          disabled={submitting}
-                          className="bg-primary text-white w-full py-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all"
-                        >
-                          {submitting ? (
-                            <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                            </svg>
-                          ) : (
-                            <>
-                              Submit & Pay ($9.99 Sandbox Demo)
-                              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
+                      <>
+                        Submit Your Tool for Free
+                        <span className="material-symbols-outlined text-[18px]">rocket_launch</span>
+                      </>
                     )}
-                  </div>
+                  </button>
                 )}
               </div>
+
             </form>
           )}
         </div>

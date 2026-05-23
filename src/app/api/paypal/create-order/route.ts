@@ -4,19 +4,19 @@ import { supabaseAdmin } from '@/lib/supabase';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, url, description, category, email, image_url } = body;
+    const { title, url, description, category, email, image_url, tier = 'standard' } = body;
 
     // Validate inputs
     if (!title || !url || !description || !category || !email || !image_url) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+    const isBypass = true; // Force bypass for Phase 1 (Free submissions)
     const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
 
     let item: any;
 
-    if (isPlaceholder || isBypass) {
+    if (isPlaceholder) {
       const { insertMockItem } = await import('@/lib/mockDb');
       item = await insertMockItem({
         title,
@@ -25,7 +25,8 @@ export async function POST(request: Request) {
         category,
         email,
         image_url,
-        status: 'pending_payment'
+        status: 'pending_payment',
+        tier
       });
     } else {
       // 1. Insert draft item into Supabase with 'pending_payment' status
@@ -38,7 +39,8 @@ export async function POST(request: Request) {
           category,
           email,
           image_url,
-          status: 'pending_payment'
+          status: 'pending_payment',
+          tier
         })
         .select()
         .single();
@@ -56,11 +58,11 @@ export async function POST(request: Request) {
     const apiUrl = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
 
     if (!clientId || !clientSecret || isBypass || isPlaceholder) {
-      console.warn('PayPal environment variables are missing or mock mode active. Using mock/bypass checkout mode.');
+      console.warn('Bypassing PayPal checkout for early bird free phase.');
       
       // If credentials are missing, we bypass PayPal for easier developer experience
       // and immediately promote to pending status for demo testing
-      if (isPlaceholder || isBypass) {
+      if (isPlaceholder) {
         const { updateMockItemStatus } = await import('@/lib/mockDb');
         await updateMockItemStatus(item.id, 'pending', `mock_order_${Date.now()}`);
       } else {

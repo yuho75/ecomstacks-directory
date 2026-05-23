@@ -10,11 +10,13 @@ export interface MockItem {
   category: string;
   email: string;
   status: 'pending_payment' | 'pending' | 'approved' | 'rejected' | 'deleted';
+  tier: 'standard' | 'featured' | 'premium';
   paypal_order_id?: string;
   created_at: string;
   edit_token?: string;
   edit_token_expires_at?: string;
 }
+
 
 // In-memory cache for serverless environments where filesystem is read-only
 let memoryDb: MockItem[] = [];
