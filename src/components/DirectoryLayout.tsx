@@ -150,9 +150,13 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('footer-anchor')?.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                  const emailInput = document.querySelector('input[name="email"]') as HTMLInputElement;
+                  if (emailInput) emailInput.focus();
+                }, 800);
               }}
             >
-              Resources
+              Subscribe
             </a>
           </nav>
           <button 
