@@ -77,7 +77,9 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
     return tool.category.toLowerCase().trim() === activeCategory.toLowerCase().trim();
   });
 
-  const displayedTools = filteredTools.slice(0, visibleCount);
+  const featuredTools = filteredTools.filter(t => t.tier === 'featured' || t.tier === 'premium');
+  const standardTools = filteredTools.filter(t => !t.tier || t.tier === 'standard');
+  const displayedStandardTools = standardTools.slice(0, visibleCount);
 
   const handleRefreshData = async () => {
     try {
@@ -218,14 +220,14 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
         ) : (
           <div className="space-y-md">
             {/* Featured Section */}
-            {displayedTools.filter(t => t.tier === 'featured' || t.tier === 'premium').length > 0 && (
+            {featuredTools.length > 0 && (
               <div className="mb-xl p-md md:p-lg bg-gradient-to-br from-surface-container-lowest to-primary/5 border-[3px] border-primary rounded-2xl relative shadow-[0_0_25px_rgba(59,130,246,0.25)]">
                 <div className="absolute -top-4 left-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[13px] font-extrabold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-primary/40 z-10">
                   <span className="material-symbols-outlined text-[16px] animate-pulse text-yellow-300">stars</span>
                   FEATURED SPONSORS
                 </div>
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
-                  {displayedTools.filter(t => t.tier === 'featured' || t.tier === 'premium').map((tool) => (
+                  {featuredTools.map((tool) => (
                     <ToolCard key={tool.id} item={tool} />
                   ))}
                 </div>
@@ -234,11 +236,11 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
 
             {/* Standard Tools */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
-              {displayedTools.filter(t => !t.tier || t.tier === 'standard').map((tool) => (
+              {displayedStandardTools.map((tool) => (
                 <ToolCard key={tool.id} item={tool} />
               ))}
             </div>
-            {filteredTools.length > visibleCount && (
+            {standardTools.length > visibleCount && (
               <div className="flex justify-center pt-md">
                 <button
                   onClick={() => setVisibleCount(prev => prev + 8)}
