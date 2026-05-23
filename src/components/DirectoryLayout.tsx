@@ -160,14 +160,14 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
       {/* Main Container */}
       <main className="max-w-container-max w-full mx-auto px-gutter pb-xl flex-grow">
         {/* Hero Section */}
-        <section className="py-xl md:py-[100px] text-center flex flex-col items-center max-w-4xl mx-auto">
+        <section className="pt-md pb-sm md:pt-lg md:pb-md text-center flex flex-col items-center max-w-4xl mx-auto">
           <h1 
-            className="font-extrabold text-[52px] md:text-[64px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-md select-none" 
+            className="font-extrabold text-[44px] md:text-[56px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-sm select-none" 
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             Ecom<span className="text-on-surface-variant">Stacks</span>
           </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-lg">
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-md">
             Double your revenue with a curated directory of high-converting micro-tools built specifically for 1-person brands, Shopify builders, and e-commerce growth.
           </p>
           <div className="flex flex-col sm:flex-row gap-base">
@@ -187,10 +187,10 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
         </section>
 
         {/* Directory Anchor */}
-        <div id="directory-anchor" className="scroll-mt-24"></div>
+        <div id="directory-anchor" className="scroll-mt-20"></div>
 
         {/* Filtering Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-sm mb-lg border-b border-outline-variant pb-md">
+        <div className="flex flex-wrap items-center justify-center gap-sm mb-md border-b border-outline-variant pb-sm">
           {CATEGORIES.map(category => (
             <button 
               key={category}
