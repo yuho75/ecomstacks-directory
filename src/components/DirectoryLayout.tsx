@@ -133,17 +133,6 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
               Tools
             </Link>
             <a 
-              href="#directory-anchor" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
-              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById('directory-anchor')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            >
-              Categories
-            </a>
-            <a 
               href="#footer-anchor" 
               className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
