@@ -10,21 +10,57 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant">
-        <div className="max-w-7xl mx-auto px-md md:px-xl h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-lg shadow-sm group-hover:scale-105 transition-transform">
-              E
-            </div>
-            <span className="font-extrabold text-[18px] tracking-[-0.04em] text-on-surface" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              EcomStacks
-            </span>
-          </Link>
-          <nav className="flex items-center gap-md">
-            <Link href="/" className="text-[14px] font-bold text-on-surface-variant hover:text-on-surface transition-colors">
-              Back to Directory
+      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
+        <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
+          <div className="flex items-center gap-base">
+            <Link 
+              href="/" 
+              className="flex items-center gap-xs font-bold text-on-surface hover:text-primary transition-colors select-none group"
+            >
+              <div className="relative w-8 h-8 flex items-center justify-center bg-black rounded-md shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 shadow-sm">
+                <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
+                  <path d="M3 12L12 16.5L21 12" />
+                  <path d="M3 16.5L12 21L21 16.5" />
+                </svg>
+              </div>
+              <span 
+                className="text-[22px] font-extrabold tracking-[-0.045em] text-on-surface select-none" 
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Ecom<span className="text-on-surface-variant">Stacks</span>
+              </span>
+            </Link>
+          </div>
+          <nav className="hidden md:flex items-center gap-lg">
+            <Link 
+              href="/" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Tools
+            </Link>
+            <Link 
+              href="/pricing" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Pricing
+            </Link>
+            <Link 
+              href="/#footer-anchor" 
+              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Subscribe
             </Link>
           </nav>
+          <Link 
+            href="/"
+            className="bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm"
+          >
+            Submit Your Tool (Free)
+          </Link>
         </div>
       </header>
 
