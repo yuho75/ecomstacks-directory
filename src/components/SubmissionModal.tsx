@@ -318,29 +318,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
                     )}
                   </div>
                 )}
-                {!imageUrl && (
-                  <div className="mt-xs text-center">
-                    <span className="text-on-surface-variant font-body-sm text-[12px]">또는 </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const mockUrls = [
-                          'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
-                          'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80',
-                          'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80',
-                          'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80'
-                        ];
-                        const randomUrl = mockUrls[Math.floor(Math.random() * mockUrls.length)];
-                        setImageUrl(randomUrl);
-                        setError(null);
-                      }}
-                      className="text-primary font-semibold hover:underline font-body-sm text-[12px] inline-flex items-center gap-xs"
-                    >
-                      <span className="material-symbols-outlined text-[14px]">image</span>
-                      테스트용 고화질 데모 이미지 자동 선택하기
-                    </button>
-                  </div>
-                )}
+
               </div>
 
               {/* Plan Selection */}
