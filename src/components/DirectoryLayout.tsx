@@ -169,7 +169,7 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
           >
             Ecom<span className="text-on-surface-variant">Stacks</span>
           </h1>
-          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-md">
+          <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mb-md">
             Double your revenue with a curated directory of high-converting micro-tools built specifically for 1-person brands, Shopify builders, and e-commerce growth.
           </p>
           <div className="flex flex-col sm:flex-row gap-base">
