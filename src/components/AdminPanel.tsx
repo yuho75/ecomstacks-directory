@@ -407,49 +407,40 @@ export default function AdminPanel({
                 </h4>
                 <div className="space-y-sm">
                   {(() => {
-                    // 내부 관리 페이지는 제외하고 의미 있는 페이지만 표시
-                    const internalPaths = ['/admin', '/pricing', '/api'];
-                    const filtered = analytics.topPages.filter(p =>
-                      !internalPaths.some(ip => p.path === ip || p.path.startsWith(ip + '/'))
-                    );
-                    const maxHits = filtered[0]?.count || 1;
+                    // 도구 상세 페이지만 필터링 (메인홈, 내부 페이지 모두 제외)
+                    const toolPages = analytics.topPages
+                      .filter(p =>
+                        p.path.startsWith('도구:') || p.path.startsWith('/items/')
+                      )
+                      .slice(0, 5); // 상위 5개만
 
-                    if (filtered.length === 0) {
+                    const maxHits = toolPages[0]?.count || 1;
+
+                    if (toolPages.length === 0) {
                       return (
                         <p className="text-[12px] text-neutral-400 text-center py-md">
-                          아직 방문 데이터가 없습니다.
+                          아직 도구 방문 데이터가 없습니다.
                         </p>
                       );
                     }
 
-                    return filtered.map((page, index) => {
+                    return toolPages.map((page, index) => {
                       const fillPercent = (page.count / maxHits) * 100;
-                      const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}위`;
+                      const rank = index + 1;
 
-                      let label: string;
-                      let badgeColor: string;
-
-                      if (page.path === '/') {
-                        label = '메인 홈';
-                        badgeColor = 'bg-indigo-50 text-indigo-700';
-                      } else if (page.path.startsWith('도구:')) {
-                        // "도구: Pebblely" → "Pebblely"
-                        label = page.path.replace('도구:', '').trim();
-                        badgeColor = 'bg-emerald-50 text-emerald-700';
-                      } else if (page.path.startsWith('/items/')) {
-                        label = '도구 상세 페이지';
-                        badgeColor = 'bg-emerald-50 text-emerald-700';
-                      } else {
-                        label = page.path;
-                        badgeColor = 'bg-neutral-100 text-neutral-600';
-                      }
+                      // "도구: Pebblely" → "Pebblely"
+                      const label = page.path.startsWith('도구:')
+                        ? page.path.replace('도구:', '').trim()
+                        : '도구 상세';
 
                       return (
                         <div key={index} className="space-y-1">
                           <div className="flex justify-between items-center text-[12px]">
                             <div className="flex items-center gap-xs min-w-0">
-                              <span className="text-[13px] shrink-0">{rankEmoji}</span>
-                              <span className={`px-xs py-0.5 rounded-md text-[11px] font-bold truncate max-w-[140px] ${badgeColor}`}>
+                              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-extrabold flex items-center justify-center shrink-0">
+                                {rank}
+                              </span>
+                              <span className="font-bold text-on-surface truncate max-w-[140px]">
                                 {label}
                               </span>
                             </div>
