@@ -71,7 +71,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
     e.preventDefault();
     if (!email || !email.includes('@')) {
       setStatus('error');
-      setMessage('올바른 이메일 주소를 입력해 주세요.');
+      setMessage('Please enter a valid email.');
       setTimeout(() => setStatus('idle'), 4000);
       return;
     }
@@ -93,15 +93,15 @@ export default function Header({ onSubmitClick }: HeaderProps) {
       } else {
         setStatus('error');
         if (res.status === 409) {
-          setMessage('이미 구독된 이메일입니다.');
+          setMessage('Already subscribed.');
         } else {
-          setMessage(data.error || '구독 신청 중 오류가 발생했습니다.');
+          setMessage(data.error || 'Subscription failed.');
         }
         setTimeout(() => setStatus('idle'), 4000);
       }
     } catch (err) {
       setStatus('error');
-      setMessage('네트워크 오류가 발생했습니다.');
+      setMessage('Network error. Please try again.');
       setTimeout(() => setStatus('idle'), 4000);
     }
   };
@@ -116,7 +116,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
               NEWSLETTER
             </span>
             <span className="text-[12px] text-neutral-300 font-medium tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              매주 매출을 2배로 키워줄 고효율 e커머스 성장 툴을 이메일로 받아보세요!
+              Get high-converting e-commerce growth tools in your inbox weekly!
             </span>
           </div>
           
@@ -126,7 +126,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                구독 신청이 완료되었습니다!
+                Subscribed successfully!
               </span>
             ) : status === 'error' ? (
               <span className="inline-flex items-center gap-1.5 text-rose-400 text-[12px] font-bold animate-in fade-in duration-300">
@@ -143,7 +143,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="이메일 주소 입력"
+                  placeholder="Enter your email"
                   disabled={status === 'loading'}
                   className="bg-neutral-900 border border-neutral-800 rounded-md px-3 py-1 text-[11px] text-white placeholder-neutral-500 focus:outline-none focus:border-primary w-40 sm:w-48 transition-all duration-200 h-7"
                 />
@@ -153,7 +153,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                   className="bg-white hover:bg-neutral-200 text-black font-extrabold px-3 py-1 rounded-md text-[11px] transition-all duration-150 active:scale-95 duration-100 flex items-center justify-center shrink-0 h-7"
                   style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                 >
-                  {status === 'loading' ? '신청 중...' : '구독하기'}
+                  {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
             )}
