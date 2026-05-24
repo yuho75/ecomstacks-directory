@@ -336,26 +336,22 @@ export default function AdminPanel({
                           
                           {/* Stacked/Double Bar Chart representation */}
                           <div className={`w-full flex justify-center items-end h-full ${barGapClass}`}>
-                            {/* Pageviews Bar */}
+                            {/* Pageviews Bar (Clean Solid Color) */}
                             <div 
-                              className={`${barWidthClass} bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
+                              className={`${barWidthClass} bg-indigo-400 hover:bg-indigo-500 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
                               style={{ height: `${Math.max(viewHeight, 6)}%` }}
-                            >
-                              <div className="absolute inset-x-0 bottom-0 bg-primary/40 h-1 md:h-1.5 rounded-t-sm"></div>
-                            </div>
-                            {/* Unique Visitors Bar */}
+                            />
+                            {/* Unique Visitors Bar (Clean Solid Color) */}
                             <div 
-                              className={`${barWidthClass} bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
+                              className={`${barWidthClass} bg-blue-600 hover:bg-blue-700 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
                               style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
-                            >
-                              <div className="absolute inset-x-0 top-0 bg-yellow-300/30 h-1 rounded-t-sm"></div>
-                            </div>
+                            />
                           </div>
-                          <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none">
+                          <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none h-4 flex items-center justify-center">
                             {timeRange === 30 
-                              ? (idx % 5 === 0 ? stat.date : '') 
+                              ? (idx % 5 === 0 ? stat.date : '\u00a0') 
                               : (timeRange === 90 || timeRange === 180)
-                                ? (idx % 3 === 0 ? stat.date.replace('월 ', '/').replace('일', '') : '')
+                                ? (idx % 3 === 0 ? stat.date.replace('월 ', '/').replace('일', '') : '\u00a0')
                                 : stat.date
                             }
                           </span>
@@ -367,11 +363,11 @@ export default function AdminPanel({
               })()}
               <div className="flex gap-md justify-center mt-sm text-[11px] font-semibold text-neutral-500">
                 <span className="flex items-center gap-xs">
-                  <span className="w-2.5 h-2.5 bg-primary/20 border border-primary/40 rounded-sm"></span>
+                  <span className="w-2.5 h-2.5 bg-indigo-400 rounded-sm"></span>
                   페이지뷰 (Pageviews)
                 </span>
                 <span className="flex items-center gap-xs">
-                  <span className="w-2.5 h-2.5 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-sm"></span>
+                  <span className="w-2.5 h-2.5 bg-blue-600 rounded-sm"></span>
                   고유 방문자 (Uniques)
                 </span>
               </div>
