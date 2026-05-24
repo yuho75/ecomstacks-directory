@@ -46,6 +46,11 @@ export default function AdminPanel({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // Search & Pagination States
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
   const handleApprove = async (id: string) => {
     setProcessingId(id);
     setError(null);
@@ -107,6 +112,24 @@ export default function AdminPanel({
     : activeTab === 'approved' 
       ? approvedItems 
       : rejectedItems;
+
+  const filteredActiveItems = activeItems.filter(item => {
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return true;
+    return (
+      item.title.toLowerCase().includes(term) ||
+      item.url.toLowerCase().includes(term) ||
+      item.email.toLowerCase().includes(term) ||
+      item.category.toLowerCase().includes(term)
+    );
+  });
+
+  const totalItems = filteredActiveItems.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+  const paginatedItems = filteredActiveItems.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="space-y-md">
@@ -274,10 +297,46 @@ export default function AdminPanel({
         </div>
       )}
 
+      {/* Search Bar */}
+      <div className="flex flex-col sm:flex-row gap-sm items-stretch sm:items-center justify-between bg-surface-container-lowest border border-outline-variant rounded-xl p-sm mb-sm shadow-sm">
+        <div className="relative flex-grow">
+          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px] select-none">search</span>
+          <input
+            type="text"
+            placeholder="도구 이름, URL, 카테고리 또는 이메일 검색..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-9 py-sm font-body-sm text-body-sm text-on-surface placeholder:text-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+          />
+          {searchTerm && (
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setCurrentPage(1);
+              }}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-black transition-colors"
+              title="검색어 지우기"
+            >
+              <span className="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          )}
+        </div>
+        
+        {searchTerm && (
+          <div className="text-[13px] font-bold text-neutral-500 bg-primary/5 px-md py-sm rounded-lg border border-primary/10 text-center sm:text-right shrink-0 flex items-center justify-center gap-xs">
+            <span className="material-symbols-outlined text-[16px] text-primary">filter_list</span>
+            <span>{totalItems}개의 일치하는 도구 찾음</span>
+          </div>
+        )}
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex border-b border-outline-variant gap-xs mb-md overflow-x-auto pb-1">
         <button
-          onClick={() => setActiveTab('pending')}
+          onClick={() => { setActiveTab('pending'); setCurrentPage(1); setSearchTerm(''); }}
           className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
             activeTab === 'pending'
               ? 'border-primary text-primary font-bold'
@@ -293,7 +352,7 @@ export default function AdminPanel({
           </span>
         </button>
         <button
-          onClick={() => setActiveTab('approved')}
+          onClick={() => { setActiveTab('approved'); setCurrentPage(1); setSearchTerm(''); }}
           className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
             activeTab === 'approved'
               ? 'border-primary text-primary font-bold'
@@ -309,7 +368,7 @@ export default function AdminPanel({
           </span>
         </button>
         <button
-          onClick={() => setActiveTab('rejected')}
+          onClick={() => { setActiveTab('rejected'); setCurrentPage(1); setSearchTerm(''); }}
           className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
             activeTab === 'rejected'
               ? 'border-primary text-primary font-bold'
@@ -342,70 +401,78 @@ export default function AdminPanel({
                 : 'There are no rejected or hidden tools in the database yet.'}
           </p>
         </div>
+      ) : filteredActiveItems.length === 0 ? (
+        <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
+          <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">search_off</span>
+          <h2 className="font-headline-md text-headline-md text-on-surface">일치하는 결과 없음</h2>
+          <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm mx-auto mt-xs">
+            &quot;{searchTerm}&quot;에 매칭되는 도구를 찾을 수 없습니다. 철자를 확인하거나 다른 검색어를 입력해 보세요.
+          </p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 gap-md animate-in fade-in duration-300">
-          {activeItems.map(item => {
+        <>
+          <div className="grid grid-cols-1 gap-base animate-in fade-in duration-300">
+          {paginatedItems.map(item => {
             const isProcessing = processingId === item.id;
             return (
               <div 
                 key={item.id} 
-                className={`bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex flex-col md:flex-row gap-md items-start tool-card-shadow transition-all duration-500 ${
+                className={`bg-surface-container-lowest border border-outline-variant hover:border-primary/20 rounded-xl p-sm md:py-base md:px-md flex flex-col sm:flex-row gap-sm items-center justify-between tool-card-shadow transition-all duration-300 ${
                   isProcessing ? 'opacity-50 scale-98' : ''
                 }`}
               >
-                {/* Visual Thumbnail */}
-                <div className="w-full md:w-48 aspect-video bg-surface-container-low border border-outline-variant rounded-lg overflow-hidden shrink-0">
-                  <img 
-                    src={getOptimizedCloudinaryUrl(item.image_url)} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover"
-                  />
+                {/* Left Side: Thumbnail + Info */}
+                <div className="flex flex-col sm:flex-row items-center gap-sm flex-1 min-w-0 w-full">
+                  {/* Visual Thumbnail */}
+                  <div className="w-14 h-14 md:w-20 md:h-12 aspect-video bg-surface-container-low border border-outline-variant rounded overflow-hidden shrink-0">
+                    <img 
+                      src={getOptimizedCloudinaryUrl(item.image_url)} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Details */}
+                  <div className="flex-1 min-w-0 w-full text-center sm:text-left">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-xs">
+                      <h3 className="font-bold text-[16px] text-on-surface truncate">
+                        {item.title}
+                      </h3>
+                      <span className="bg-surface-container-high text-on-surface-variant px-xs py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider font-semibold">
+                        {item.category}
+                      </span>
+                    </div>
+                    <p className="font-body-sm text-[13px] text-on-surface-variant truncate font-semibold italic mt-0.5">
+                      &quot;{item.description}&quot;
+                    </p>
+                    
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-md gap-y-1 text-[12px] text-neutral-500 mt-1">
+                      <div className="flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-[14px] text-primary">link</span>
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-primary truncate max-w-[150px] md:max-w-[200px]">
+                          {item.url.replace(/^https?:\/\//, '')}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-[14px] text-primary">mail</span>
+                        <span className="truncate max-w-[150px]">{item.email}</span>
+                      </div>
+                      <div className="flex items-center gap-0.5">
+                        <span className="material-symbols-outlined text-[14px] text-primary">calendar_today</span>
+                        <span>{formatDate(item.created_at)}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-sm mb-xs">
-                    <h3 className="font-headline-md text-[20px] text-on-surface font-bold truncate">
-                      {item.title}
-                    </h3>
-                    <span className="bg-surface-container-high text-on-surface-variant px-sm py-xs rounded font-label-sm text-[11px] uppercase tracking-wider">
-                      {item.category}
-                    </span>
-                  </div>
-                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-md font-semibold italic">
-                    &quot;{item.description}&quot;
-                  </p>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-xs text-[13px] text-on-surface-variant border-t border-outline-variant/60 pt-sm">
-                    <div className="flex items-center gap-xs">
-                      <span className="material-symbols-outlined text-[16px] text-primary">link</span>
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-primary truncate">
-                        {item.url}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-xs">
-                      <span className="material-symbols-outlined text-[16px] text-primary">mail</span>
-                      <span className="truncate">{item.email}</span>
-                    </div>
-                    <div className="flex items-center gap-xs">
-                      <span className="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
-                      <span>Submitted: {formatDate(item.created_at)}</span>
-                    </div>
-                    <div className="flex items-center gap-xs">
-                      <span className="material-symbols-outlined text-[16px] text-primary">fingerprint</span>
-                      <span className="font-mono text-[11px] truncate">ID: {item.id}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Control Action Buttons */}
-                <div className="flex sm:flex-row md:flex-col gap-base w-full md:w-auto self-stretch justify-end shrink-0 pt-md md:pt-0 md:border-l md:border-outline-variant md:pl-md min-w-[180px]">
+                {/* Right Side: Control Action Buttons */}
+                <div className="flex gap-base w-full sm:w-auto shrink-0 justify-center sm:justify-end pt-sm sm:pt-0 sm:pl-sm">
                   {activeTab === 'pending' ? (
                     <>
                       <button
                         disabled={isProcessing}
                         onClick={() => handleApprove(item.id)}
-                        className="flex-1 bg-green-600 text-white px-md py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer"
+                        className="bg-green-600 text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
                       >
                         {isProcessing ? (
                           <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -414,7 +481,7 @@ export default function AdminPanel({
                           </svg>
                         ) : (
                           <>
-                            <span className="material-symbols-outlined text-[16px]">published_with_changes</span>
+                            <span className="material-symbols-outlined text-[15px]">published_with_changes</span>
                             Approve
                           </>
                         )}
@@ -422,7 +489,7 @@ export default function AdminPanel({
                       <button
                         disabled={isProcessing}
                         onClick={() => handleReject(item.id)}
-                        className="flex-1 bg-error text-white px-md py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer"
+                        className="bg-error text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
                       >
                         {isProcessing ? (
                           <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -431,7 +498,7 @@ export default function AdminPanel({
                           </svg>
                         ) : (
                           <>
-                            <span className="material-symbols-outlined text-[16px]">block</span>
+                            <span className="material-symbols-outlined text-[15px]">block</span>
                             Reject
                           </>
                         )}
@@ -441,7 +508,7 @@ export default function AdminPanel({
                     <button
                       disabled={isProcessing}
                       onClick={() => handleReject(item.id)}
-                      className="w-full bg-error/10 hover:bg-error border border-error/20 hover:border-transparent text-error hover:text-on-error px-md py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm duration-300 cursor-pointer"
+                      className="bg-error/10 hover:bg-error border border-error/20 hover:border-transparent text-error hover:text-on-error rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm duration-300 cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
                     >
                       {isProcessing ? (
                         <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -450,7 +517,7 @@ export default function AdminPanel({
                         </svg>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-[18px]">unpublished</span>
+                          <span className="material-symbols-outlined text-[16px]">unpublished</span>
                           Unpublish & Reject
                         </>
                       )}
@@ -459,7 +526,7 @@ export default function AdminPanel({
                     <button
                       disabled={isProcessing}
                       onClick={() => handleApprove(item.id)}
-                      className="w-full bg-green-600 text-white px-md py-sm rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer"
+                      className="bg-green-600 text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
                     >
                       {isProcessing ? (
                         <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
@@ -468,7 +535,7 @@ export default function AdminPanel({
                         </svg>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-[18px]">publish</span>
+                          <span className="material-symbols-outlined text-[16px]">publish</span>
                           Re-approve & Publish
                         </>
                       )}
@@ -479,6 +546,64 @@ export default function AdminPanel({
             );
           })}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex flex-wrap justify-between items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-sm mt-md gap-sm shadow-sm">
+            <span className="text-[13px] font-bold text-neutral-500 flex items-center gap-xs">
+              <span className="material-symbols-outlined text-[16px] text-primary">analytics</span>
+              <span>총 {totalItems}개 중 {(currentPage - 1) * itemsPerPage + 1}~{Math.min(currentPage * itemsPerPage, totalItems)}개 표시</span>
+            </span>
+            
+            <div className="flex items-center gap-xs">
+              {/* First Page */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(1)}
+                className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                title="첫 페이지"
+              >
+                <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+              </button>
+              
+              {/* Prev Page */}
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                title="이전 페이지"
+              >
+                <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+              </button>
+
+              {/* Page Indicator */}
+              <span className="text-[13px] font-bold text-on-surface px-md select-none">
+                {currentPage} / {totalPages}
+              </span>
+
+              {/* Next Page */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                title="다음 페이지"
+              >
+                <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+              </button>
+
+              {/* Last Page */}
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(totalPages)}
+                className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                title="마지막 페이지"
+              >
+                <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </>
       )}
     </div>
   );
