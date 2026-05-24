@@ -35,10 +35,10 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
   const [activeCategory, setActiveCategory] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(12);
 
   useEffect(() => {
-    setVisibleCount(8);
+    setVisibleCount(12);
   }, [activeCategory]);
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
             {standardTools.length > visibleCount && (
               <div className="flex justify-center pt-md">
                 <button
-                  onClick={() => setVisibleCount(prev => prev + 8)}
+                  onClick={() => setVisibleCount(prev => prev + 12)}
                   className="group flex items-center justify-center gap-xs bg-surface-container-lowest hover:bg-primary hover:text-on-primary text-primary px-lg py-md rounded-xl font-label-md text-label-md transition-all duration-300 active:scale-95 shadow-sm hover:shadow-lg border border-primary hover:border-transparent relative overflow-hidden"
                 >
                   <span>Load More Tools</span>
