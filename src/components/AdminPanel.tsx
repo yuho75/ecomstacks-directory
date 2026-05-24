@@ -403,69 +403,80 @@ export default function AdminPanel({
               <div>
                 <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
                   <span className="material-symbols-outlined text-primary text-[20px]">explore</span>
-                  인기 페이지 순위
+                  인기 도구 순위
                 </h4>
                 <div className="space-y-sm">
-                  {analytics.topPages.map((page, index) => {
-                    const maxHits = analytics.topPages[0]?.count || 1;
-                    const fillPercent = (page.count / maxHits) * 100;
+                  {(() => {
+                    // 내부 관리 페이지는 제외하고 의미 있는 페이지만 표시
+                    const internalPaths = ['/admin', '/pricing', '/api'];
+                    const filtered = analytics.topPages.filter(p =>
+                      !internalPaths.some(ip => p.path === ip || p.path.startsWith(ip + '/'))
+                    );
+                    const maxHits = filtered[0]?.count || 1;
 
-                    // Human-readable label mapping
-                    let label = page.path;
-                    let badgeColor = 'bg-neutral-100 text-neutral-600';
-
-                    if (page.path === '/') {
-                      label = '🏠 메인 홈 (디렉토리 전체)';
-                      badgeColor = 'bg-indigo-50 text-indigo-700';
-                    } else if (page.path === '/pricing') {
-                      label = '💳 요금 안내 페이지';
-                      badgeColor = 'bg-amber-50 text-amber-700';
-                    } else if (page.path === '/admin') {
-                      label = '🔐 관리자 페이지';
-                      badgeColor = 'bg-red-50 text-red-700';
-                    } else if (page.path.startsWith('도구:')) {
-                      // Already converted to "도구: ToolName" in admin/page.tsx
-                      label = `🔧 ${page.path}`;
-                      badgeColor = 'bg-emerald-50 text-emerald-700';
-                    } else if (page.path.startsWith('/items/')) {
-                      // Fallback: raw UUID path not yet converted
-                      label = `🔧 도구 상세 페이지`;
-                      badgeColor = 'bg-emerald-50 text-emerald-700';
-                    } else {
-                      label = page.path;
+                    if (filtered.length === 0) {
+                      return (
+                        <p className="text-[12px] text-neutral-400 text-center py-md">
+                          아직 방문 데이터가 없습니다.
+                        </p>
+                      );
                     }
 
-                    const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}위`;
+                    return filtered.map((page, index) => {
+                      const fillPercent = (page.count / maxHits) * 100;
+                      const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}위`;
 
-                    return (
-                      <div key={index} className="space-y-1">
-                        <div className="flex justify-between items-center text-[12px]">
-                          <div className="flex items-center gap-xs min-w-0">
-                            <span className="text-[13px] shrink-0 font-bold text-neutral-400">{rankEmoji}</span>
-                            <span className={`px-xs py-0.5 rounded-md text-[11px] font-bold truncate max-w-[160px] ${badgeColor}`}>
-                              {label}
+                      let label: string;
+                      let badgeColor: string;
+
+                      if (page.path === '/') {
+                        label = '메인 홈';
+                        badgeColor = 'bg-indigo-50 text-indigo-700';
+                      } else if (page.path.startsWith('도구:')) {
+                        // "도구: Pebblely" → "Pebblely"
+                        label = page.path.replace('도구:', '').trim();
+                        badgeColor = 'bg-emerald-50 text-emerald-700';
+                      } else if (page.path.startsWith('/items/')) {
+                        label = '도구 상세 페이지';
+                        badgeColor = 'bg-emerald-50 text-emerald-700';
+                      } else {
+                        label = page.path;
+                        badgeColor = 'bg-neutral-100 text-neutral-600';
+                      }
+
+                      return (
+                        <div key={index} className="space-y-1">
+                          <div className="flex justify-between items-center text-[12px]">
+                            <div className="flex items-center gap-xs min-w-0">
+                              <span className="text-[13px] shrink-0">{rankEmoji}</span>
+                              <span className={`px-xs py-0.5 rounded-md text-[11px] font-bold truncate max-w-[140px] ${badgeColor}`}>
+                                {label}
+                              </span>
+                            </div>
+                            <span className="font-bold text-on-surface shrink-0 ml-xs text-[12px]">
+                              {page.count.toLocaleString()}회 방문
                             </span>
                           </div>
-                          <span className="font-bold text-on-surface shrink-0 ml-xs">{page.count.toLocaleString()}회</span>
+                          <div className="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
+                              style={{ width: `${fillPercent}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
-                          <div
-                            className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
-                            style={{ width: `${fillPercent}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    });
+                  })()}
                 </div>
               </div>
 
               <div className="border-t border-outline-variant/50 pt-sm mt-md">
                 <p className="text-[11px] text-on-surface-variant leading-relaxed">
-                  방문자들이 가장 많이 본 페이지 순위입니다. 🔧 상세 페이지 조회수가 높은 도구일수록 광고 효과가 높습니다.
+                  상세 페이지를 많이 본 도구일수록 방문자 관심도가 높습니다.
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       )}
