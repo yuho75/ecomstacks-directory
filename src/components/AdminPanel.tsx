@@ -298,14 +298,14 @@ export default function AdminPanel({
                   });
                 }
 
-                // Dynamic dimensions to prevent clutter and overflow
+                // Dynamic dimensions to prevent clutter and overflow (optimized for 1 bar per day)
                 const barWidthClass = (timeRange === 365 || timeRange === 'all')
-                  ? 'w-4 md:w-6'
+                  ? 'w-5 md:w-8'
                   : (timeRange === 90 || timeRange === 180)
-                    ? 'w-2.5 md:w-4'
+                    ? 'w-3.5 md:w-5.5'
                     : timeRange === 30
-                      ? 'w-1 sm:w-1.5 md:w-2'
-                      : 'w-3.5 md:w-5.5';
+                      ? 'w-2 sm:w-2.5 md:w-3.5'
+                      : 'w-6 md:w-9';
 
                 const dayGapClass = timeRange === 30
                   ? 'gap-[1px] md:gap-[2px]'
@@ -313,17 +313,12 @@ export default function AdminPanel({
                     ? 'gap-[2px] md:gap-xs'
                     : 'gap-xs md:gap-sm';
 
-                const barGapClass = timeRange === 30
-                  ? 'gap-[1px]'
-                  : 'gap-xs';
-
                 const maxViews = Math.max(...displayedDailyStats.map(s => s.views), 10);
 
                 return (
                   <div className={`h-52 flex items-end pt-xl border-b border-outline-variant px-xs relative ${dayGapClass}`}>
                     {displayedDailyStats.map((stat, idx) => {
                       const viewHeight = (stat.views / maxViews) * 100;
-                      const uniqueHeight = (stat.uniques / maxViews) * 100;
 
                       return (
                         <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
@@ -334,18 +329,23 @@ export default function AdminPanel({
                             <p>방문자: {stat.uniques}명</p>
                           </div>
                           
-                          {/* Stacked/Double Bar Chart representation */}
-                          <div className={`w-full flex justify-center items-end h-full ${barGapClass}`}>
-                            {/* Pageviews Bar (Clean Solid Color) */}
-                            <div 
-                              className={`${barWidthClass} bg-indigo-400 hover:bg-indigo-500 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
-                              style={{ height: `${Math.max(viewHeight, 6)}%` }}
-                            />
-                            {/* Unique Visitors Bar (Clean Solid Color) */}
-                            <div 
-                              className={`${barWidthClass} bg-blue-600 hover:bg-blue-700 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
-                              style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
-                            />
+                          {/* Stacked Single Bar representation (1 Bar Per Day) */}
+                          <div className="w-full flex justify-center items-end h-full">
+                            {stat.views > 0 ? (
+                              <div 
+                                className={`${barWidthClass} bg-indigo-400 hover:bg-indigo-500 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105 overflow-hidden`}
+                                style={{ height: `${Math.max(viewHeight, 6)}%` }}
+                              >
+                                {/* Unique Visitors stacked at the bottom of the Pageviews bar */}
+                                <div 
+                                  className="absolute bottom-0 inset-x-0 bg-blue-600 transition-all duration-300"
+                                  style={{ height: `${(stat.uniques / Math.max(stat.views, 1)) * 100}%` }}
+                                />
+                              </div>
+                            ) : (
+                              // Micro placeholder for 0-views columns to maintain proper spacing
+                              <div className="w-2 h-1 bg-transparent" />
+                            )}
                           </div>
                           <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none h-4 flex items-center justify-center">
                             {timeRange === 30 
