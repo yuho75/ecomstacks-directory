@@ -150,13 +150,31 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               });
             }
 
+            // Build a map of item ID -> item Title to translate cryptic UUID paths to human-readable titles
+            const allItemsMap: Record<string, string> = {};
+            pendingItems.forEach(item => { if (item.id && item.title) allItemsMap[item.id] = item.title; });
+            approvedItems.forEach(item => { if (item.id && item.title) allItemsMap[item.id] = item.title; });
+            rejectedItems.forEach(item => { if (item.id && item.title) allItemsMap[item.id] = item.title; });
+
             // Top pages breakdown
             const pageCounts: Record<string, number> = {};
             allViews.forEach(v => {
               pageCounts[v.pathname] = (pageCounts[v.pathname] || 0) + 1;
             });
             const topPages = Object.entries(pageCounts)
-              .map(([path, count]) => ({ path, count }))
+              .map(([path, count]) => {
+                // If path matches /items/<uuid>
+                const match = path.match(/^\/items\/([a-fA-F0-9-]{36})(?:\/|$)/);
+                let displayPath = path;
+                if (match) {
+                  const uuid = match[1];
+                  const itemTitle = allItemsMap[uuid];
+                  if (itemTitle) {
+                    displayPath = `도구: ${itemTitle}`;
+                  }
+                }
+                return { path: displayPath, count };
+              })
               .sort((a, b) => b.count - a.count)
               .slice(0, 5);
 
