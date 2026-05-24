@@ -36,10 +36,9 @@ export default function ToolCard({ item }: ToolCardProps) {
         <img 
           src={optimizedImageSrc} 
           alt={`${item.title} Screenshot`} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+          className="w-full h-full object-cover brightness-90 group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
           loading="lazy"
         />
-
       </Link>
 
       {/* Info Area */}
