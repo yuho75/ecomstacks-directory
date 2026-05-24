@@ -26,7 +26,7 @@ interface AdminPanelProps {
     totalUniques: number;
     todayViews: number;
     todayUniques: number;
-    dailyStats: { date: string; views: number; uniques: number }[];
+    dailyStats: { date: string; rawDate?: number; views: number; uniques: number }[];
     topPages: { path: string; count: number }[];
   } | null;
 }
@@ -51,8 +51,8 @@ export default function AdminPanel({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Time range selector state for analytics chart (7 days, 14 days, or 30 days)
-  const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7);
+  // Time range selector state for analytics chart (7d, 14d, 30d, 90d, 180d, 365d, all)
+  const [timeRange, setTimeRange] = useState<7 | 14 | 30 | 90 | 180 | 365 | 'all'>(7);
 
   const handleApprove = async (id: string) => {
     setProcessingId(id);
@@ -210,80 +210,152 @@ export default function AdminPanel({
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-md pb-xs border-b border-outline-variant/30">
                 <h4 className="font-bold text-on-surface text-label-md flex items-center gap-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   <span className="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
-                  일별 트래픽 추이 (최근 {timeRange}일)
+                  트래픽 추이 ({
+                    timeRange === 7 || timeRange === 14 || timeRange === 30 ? `최근 ${timeRange}일` :
+                    timeRange === 90 ? '최근 3개월' :
+                    timeRange === 180 ? '최근 6개월' :
+                    timeRange === 365 ? '최근 1년' : '전체 보기'
+                  })
                 </h4>
                 
-                {/* Time range selector tabs */}
-                <div className="flex bg-surface-container-low border border-outline-variant p-0.5 rounded-lg shrink-0">
-                  {([7, 14, 30] as const).map((range) => (
+                {/* Time range selector tabs (capsule buttons) */}
+                <div className="flex bg-surface-container-low border border-outline-variant p-0.5 rounded-lg shrink-0 overflow-x-auto max-w-full whitespace-nowrap select-none scrollbar-none gap-[1px]">
+                  {([
+                    { label: '7일', val: 7 },
+                    { label: '14일', val: 14 },
+                    { label: '30일', val: 30 },
+                    { label: '3개월', val: 90 },
+                    { label: '6개월', val: 180 },
+                    { label: '1년', val: 365 },
+                    { label: '전체', val: 'all' }
+                  ] as const).map(({ label, val }) => (
                     <button
-                      key={range}
-                      onClick={() => setTimeRange(range)}
-                      className={`px-sm py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer select-none ${
-                        timeRange === range
+                      key={label}
+                      onClick={() => setTimeRange(val)}
+                      className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer ${
+                        timeRange === val
                           ? 'bg-primary text-white shadow-sm'
                           : 'text-on-surface-variant hover:text-primary bg-transparent'
                       }`}
                     >
-                      {range}일
+                      {label}
                     </button>
                   ))}
                 </div>
               </div>
               
-              <div className="h-48 flex items-end gap-xs md:gap-sm pt-sm border-b border-outline-variant px-xs relative overflow-x-auto">
-                {analytics.dailyStats.slice(-timeRange).map((stat, idx) => {
-                  // Find the maximum views in the active stats to scale the bars properly
-                  const activeStats = analytics.dailyStats.slice(-timeRange);
-                  const maxViews = Math.max(...activeStats.map(s => s.views), 10);
-                  const viewHeight = (stat.views / maxViews) * 100;
-                  const uniqueHeight = (stat.uniques / maxViews) * 100;
+              {/* Prepare and aggregate data based on active range */}
+              {(() => {
+                const rawStats = analytics.dailyStats || [];
+                let displayedDailyStats: { date: string; views: number; uniques: number }[] = [];
 
-                  // Define dynamic bar width based on active timeRange to prevent overflow
-                  const barWidthClass = timeRange === 30
-                    ? 'w-1 sm:w-1.5 md:w-2'
-                    : timeRange === 14
-                      ? 'w-1.5 sm:w-2.5 md:w-3.5'
-                      : 'w-3 md:w-5';
+                if (timeRange === 7 || timeRange === 14 || timeRange === 30) {
+                  displayedDailyStats = rawStats.slice(-timeRange);
+                } else if (timeRange === 90 || timeRange === 180) {
+                  const itemsToGroup = timeRange === 180 ? rawStats.slice(-180) : rawStats.slice(-90);
+                  const weeklyStats: { date: string; views: number; uniques: number }[] = [];
+                  for (let i = 0; i < itemsToGroup.length; i += 7) {
+                    const chunk = itemsToGroup.slice(i, i + 7);
+                    if (chunk.length === 0) continue;
+                    const views = chunk.reduce((sum, item) => sum + item.views, 0);
+                    const maxUniques = Math.max(...chunk.map(item => item.uniques), 0);
+                    const uniquesSum = chunk.reduce((sum, item) => sum + item.uniques, 0);
+                    const weeklyUniques = Math.max(Math.round(uniquesSum * 0.75), maxUniques);
+                    const startDate = chunk[0].date;
+                    const endDate = chunk[chunk.length - 1].date;
+                    const endLabel = endDate.includes('일') ? endDate.split(' ').pop() || '' : endDate;
+                    weeklyStats.push({
+                      date: `${startDate}~${endLabel}`,
+                      views,
+                      uniques: Math.min(weeklyUniques, views)
+                    });
+                  }
+                  displayedDailyStats = weeklyStats;
+                } else {
+                  const itemsToGroup = timeRange === 365 ? rawStats.slice(-365) : rawStats;
+                  const monthlyStatsMap: Record<string, { views: number; uniquesSum: number; maxUniques: number }> = {};
+                  const monthOrder: string[] = [];
 
-                  return (
-                    <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
-                      {/* Tooltip on Hover */}
-                      <div className="absolute bottom-full mb-xs bg-inverse-surface text-inverse-on-surface text-[11px] rounded px-xs py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none whitespace-nowrap text-center">
-                        <p className="font-bold text-primary-fixed">{stat.date}</p>
-                        <p>뷰: {stat.views}회</p>
-                        <p>방문자: {stat.uniques}명</p>
-                      </div>
-                      
-                      {/* Stacked/Double Bar Chart representation */}
-                      <div className="w-full flex justify-center gap-xs items-end h-full">
-                        {/* Pageviews Bar */}
-                        <div 
-                          className={`${barWidthClass} bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
-                          style={{ height: `${Math.max(viewHeight, 6)}%` }}
-                        >
-                          <div className="absolute inset-x-0 bottom-0 bg-primary/40 h-1 md:h-1.5 rounded-t-sm"></div>
+                  itemsToGroup.forEach(item => {
+                    const d = item.rawDate ? new Date(item.rawDate) : new Date();
+                    const monthLabel = `${d.getMonth() + 1}월`;
+                    if (!monthlyStatsMap[monthLabel]) {
+                      monthlyStatsMap[monthLabel] = { views: 0, uniquesSum: 0, maxUniques: 0 };
+                      monthOrder.push(monthLabel);
+                    }
+                    monthlyStatsMap[monthLabel].views += item.views;
+                    monthlyStatsMap[monthLabel].uniquesSum += item.uniques;
+                    monthlyStatsMap[monthLabel].maxUniques = Math.max(monthlyStatsMap[monthLabel].maxUniques, item.uniques);
+                  });
+
+                  displayedDailyStats = monthOrder.map(month => {
+                    const data = monthlyStatsMap[month];
+                    const monthlyUniques = Math.max(Math.round(data.uniquesSum * 0.65), data.maxUniques);
+                    return {
+                      date: month,
+                      views: data.views,
+                      uniques: Math.min(monthlyUniques, data.views)
+                    };
+                  });
+                }
+
+                // Dynamic dimensions to prevent clutter
+                const barWidthClass = (timeRange === 365 || timeRange === 'all')
+                  ? 'w-4 md:w-6'
+                  : (timeRange === 90 || timeRange === 180)
+                    ? 'w-2.5 md:w-4'
+                    : timeRange === 30
+                      ? 'w-1.5 md:w-2.5'
+                      : 'w-3.5 md:w-5.5';
+
+                const maxViews = Math.max(...displayedDailyStats.map(s => s.views), 10);
+
+                return (
+                  <div className="h-52 flex items-end gap-xs md:gap-sm pt-xl border-b border-outline-variant px-xs relative">
+                    {displayedDailyStats.map((stat, idx) => {
+                      const viewHeight = (stat.views / maxViews) * 100;
+                      const uniqueHeight = (stat.uniques / maxViews) * 100;
+
+                      return (
+                        <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
+                          {/* Tooltip on Hover - Absolutely positioned high z-index tooltip */}
+                          <div className="absolute bottom-full mb-xs bg-inverse-surface text-inverse-on-surface text-[11px] rounded px-xs py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50 pointer-events-none whitespace-nowrap text-center">
+                            <p className="font-bold text-primary-fixed">{stat.date}</p>
+                            <p>뷰: {stat.views}회</p>
+                            <p>방문자: {stat.uniques}명</p>
+                          </div>
+                          
+                          {/* Stacked/Double Bar Chart representation */}
+                          <div className="w-full flex justify-center gap-xs items-end h-full">
+                            {/* Pageviews Bar */}
+                            <div 
+                              className={`${barWidthClass} bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
+                              style={{ height: `${Math.max(viewHeight, 6)}%` }}
+                            >
+                              <div className="absolute inset-x-0 bottom-0 bg-primary/40 h-1 md:h-1.5 rounded-t-sm"></div>
+                            </div>
+                            {/* Unique Visitors Bar */}
+                            <div 
+                              className={`${barWidthClass} bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
+                              style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
+                            >
+                              <div className="absolute inset-x-0 top-0 bg-yellow-300/30 h-1 rounded-t-sm"></div>
+                            </div>
+                          </div>
+                          <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none">
+                            {timeRange === 30 
+                              ? (idx % 5 === 0 ? stat.date : '') 
+                              : (timeRange === 90 || timeRange === 180)
+                                ? (idx % 3 === 0 ? stat.date.replace('월 ', '/').replace('일', '') : '')
+                                : stat.date
+                            }
+                          </span>
                         </div>
-                        {/* Unique Visitors Bar */}
-                        <div 
-                          className={`${barWidthClass} bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
-                          style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
-                        >
-                          <div className="absolute inset-x-0 top-0 bg-yellow-300/30 h-1 rounded-t-sm"></div>
-                        </div>
-                      </div>
-                      <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none">
-                        {timeRange === 30 
-                          ? (idx % 5 === 0 ? stat.date : '') 
-                          : timeRange === 14 
-                            ? (idx % 2 === 0 ? stat.date : '') 
-                            : stat.date
-                        }
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
               <div className="flex gap-md justify-center mt-sm text-[11px] font-semibold text-neutral-500">
                 <span className="flex items-center gap-xs">
                   <span className="w-2.5 h-2.5 bg-primary/20 border border-primary/40 rounded-sm"></span>
