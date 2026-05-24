@@ -409,14 +409,47 @@ export default function AdminPanel({
                   {analytics.topPages.map((page, index) => {
                     const maxHits = analytics.topPages[0]?.count || 1;
                     const fillPercent = (page.count / maxHits) * 100;
+
+                    // Human-readable label mapping
+                    let label = page.path;
+                    let badgeColor = 'bg-neutral-100 text-neutral-600';
+
+                    if (page.path === '/') {
+                      label = '🏠 메인 홈 (디렉토리 전체)';
+                      badgeColor = 'bg-indigo-50 text-indigo-700';
+                    } else if (page.path === '/pricing') {
+                      label = '💳 요금 안내 페이지';
+                      badgeColor = 'bg-amber-50 text-amber-700';
+                    } else if (page.path === '/admin') {
+                      label = '🔐 관리자 페이지';
+                      badgeColor = 'bg-red-50 text-red-700';
+                    } else if (page.path.startsWith('도구:')) {
+                      // Already converted to "도구: ToolName" in admin/page.tsx
+                      label = `🔧 ${page.path}`;
+                      badgeColor = 'bg-emerald-50 text-emerald-700';
+                    } else if (page.path.startsWith('/items/')) {
+                      // Fallback: raw UUID path not yet converted
+                      label = `🔧 도구 상세 페이지`;
+                      badgeColor = 'bg-emerald-50 text-emerald-700';
+                    } else {
+                      label = page.path;
+                    }
+
+                    const rankEmoji = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}위`;
+
                     return (
                       <div key={index} className="space-y-1">
-                        <div className="flex justify-between text-[12px] font-bold text-on-surface-variant">
-                          <span className="truncate font-mono text-neutral-600 max-w-[70%]">{page.path}</span>
-                          <span>{page.count} views</span>
+                        <div className="flex justify-between items-center text-[12px]">
+                          <div className="flex items-center gap-xs min-w-0">
+                            <span className="text-[13px] shrink-0 font-bold text-neutral-400">{rankEmoji}</span>
+                            <span className={`px-xs py-0.5 rounded-md text-[11px] font-bold truncate max-w-[160px] ${badgeColor}`}>
+                              {label}
+                            </span>
+                          </div>
+                          <span className="font-bold text-on-surface shrink-0 ml-xs">{page.count.toLocaleString()}회</span>
                         </div>
-                        <div className="w-full bg-surface-container-low h-2 rounded-full overflow-hidden">
-                          <div 
+                        <div className="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+                          <div
                             className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
                             style={{ width: `${fillPercent}%` }}
                           />
@@ -426,10 +459,10 @@ export default function AdminPanel({
                   })}
                 </div>
               </div>
-              
+
               <div className="border-t border-outline-variant/50 pt-sm mt-md">
                 <p className="text-[11px] text-on-surface-variant leading-relaxed">
-                  💡 **팁**: `/`는 메인 디렉토리, `/pricing`은 요금제 안내 페이지입니다. 유입량에 맞추어 도구 노출 순서와 광고 요금을 최적화할 수 있습니다!
+                  방문자들이 가장 많이 본 페이지 순위입니다. 🔧 상세 페이지 조회수가 높은 도구일수록 광고 효과가 높습니다.
                 </p>
               </div>
             </div>
