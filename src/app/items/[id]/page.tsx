@@ -6,6 +6,7 @@ import { SEED_ITEMS } from '@/lib/seeds';
 import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
 import type { Metadata } from 'next';
 import EditToolButton from '@/components/EditToolButton';
+import ItemViewTracker from '@/components/ItemViewTracker';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -127,6 +128,9 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <>
+      {/* Silent click & view tracker - fires card_view on mount */}
+      <ItemViewTracker itemId={item.id} />
+
       {/* TopNavBar */}
       <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
         <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
@@ -228,6 +232,13 @@ export default async function Page({ params }: PageProps) {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="bg-primary text-on-primary px-md py-sm rounded-lg font-semibold text-[15px] flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto text-center whitespace-nowrap shadow-sm"
+                onClick={() => {
+                  fetch('/api/track-click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ itemId: item.id, type: 'website_click' }),
+                  }).catch(() => {});
+                }}
               >
                 Visit Website 
                 <span className="material-symbols-outlined text-[18px]">north_east</span>

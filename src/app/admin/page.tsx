@@ -31,6 +31,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   let rejectedItems: any[] = [];
   let analyticsData: any = null;
   let subscriberList: any[] = [];
+  let itemClickStats: Record<string, { cardViews: number; websiteClicks: number }> = {};
 
   if (isAuthenticated) {
     try {
@@ -205,6 +206,25 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         } catch (eSub) {
           console.warn("Subscribers table may not exist yet in Supabase.");
         }
+
+        // 6. Fetch per-item click stats from item_clicks table
+        try {
+          const { data: clickData, error: clickError } = await supabaseAdmin
+            .from('item_clicks')
+            .select('item_id, type');
+
+          if (!clickError && clickData) {
+            const stats: Record<string, { cardViews: number; websiteClicks: number }> = {};
+            for (const row of clickData) {
+              if (!stats[row.item_id]) stats[row.item_id] = { cardViews: 0, websiteClicks: 0 };
+              if (row.type === 'card_view') stats[row.item_id].cardViews++;
+              if (row.type === 'website_click') stats[row.item_id].websiteClicks++;
+            }
+            itemClickStats = stats;
+          }
+        } catch (eClicks) {
+          console.warn('item_clicks table may not exist yet:', eClicks);
+        }
       } else {
         const { getMockItems } = await import('@/lib/mockDb');
         pendingItems = await getMockItems('pending');
@@ -285,6 +305,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               secretKey={secretKey}
               analytics={analyticsData}
               subscribers={subscriberList}
+              itemClickStats={itemClickStats}
             />
           </>
         )}

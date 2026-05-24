@@ -37,6 +37,7 @@ interface AdminPanelProps {
     topPages: { path: string; count: number }[];
   } | null;
   subscribers?: Subscriber[];
+  itemClickStats?: Record<string, { cardViews: number; websiteClicks: number }>;
 }
 
 export default function AdminPanel({ 
@@ -45,7 +46,8 @@ export default function AdminPanel({
   initialRejected, 
   secretKey = null,
   analytics = null,
-  subscribers = []
+  subscribers = [],
+  itemClickStats = {}
 }: AdminPanelProps) {
   const [pendingItems, setPendingItems] = useState<Item[]>(initialPending);
   const [approvedItems, setApprovedItems] = useState<Item[]>(initialApproved);
@@ -743,6 +745,25 @@ export default function AdminPanel({
                         <span className="material-symbols-outlined text-[14px] text-primary">calendar_today</span>
                         <span>{formatDate(item.created_at)}</span>
                       </div>
+                      {/* Per-item click analytics badges */}
+                      {itemClickStats[item.id] && (
+                        <>
+                          <div className="flex items-center gap-0.5 bg-indigo-50 border border-indigo-200 rounded-full px-xs py-0.5">
+                            <span className="material-symbols-outlined text-[12px] text-indigo-500">visibility</span>
+                            <span className="font-bold text-indigo-600 text-[11px]">{itemClickStats[item.id].cardViews.toLocaleString()} 카드조회</span>
+                          </div>
+                          <div className="flex items-center gap-0.5 bg-emerald-50 border border-emerald-200 rounded-full px-xs py-0.5">
+                            <span className="material-symbols-outlined text-[12px] text-emerald-500">north_east</span>
+                            <span className="font-bold text-emerald-600 text-[11px]">{itemClickStats[item.id].websiteClicks.toLocaleString()} 사이트방문</span>
+                          </div>
+                        </>
+                      )}
+                      {!itemClickStats[item.id] && (
+                        <div className="flex items-center gap-0.5 text-neutral-400">
+                          <span className="material-symbols-outlined text-[12px]">bar_chart</span>
+                          <span className="text-[11px]">클릭 데이터 없음</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
