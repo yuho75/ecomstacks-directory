@@ -567,8 +567,8 @@ export default function AdminPanel({
                 <table className="w-full border-collapse text-left">
                   <thead>
                     <tr className="bg-surface-container-low border-b border-outline-variant text-[13px] font-bold text-neutral-600">
-                      <th className="py-base px-md">Subscriber Email</th>
-                      <th className="py-base px-md">Subscription Date</th>
+                      <th className="py-base px-md">구독자 이메일</th>
+                      <th className="py-base px-md">구독 신청일</th>
                       <th className="py-base px-md text-center">MailerLite 연동</th>
                       <th className="py-base px-md text-center">Last Sent (최근 발송)</th>
                     </tr>

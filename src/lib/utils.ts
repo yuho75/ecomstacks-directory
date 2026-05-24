@@ -11,18 +11,14 @@ export function getOptimizedCloudinaryUrl(url: string | null | undefined): strin
   return url;
 }
 
-/**
- * Formats PostgreSQL timestamptz date strings to a readable format
- */
 export function formatDate(dateString: string | null | undefined): string {
   if (!dateString) return "";
   try {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
   } catch (e) {
     return "";
   }
