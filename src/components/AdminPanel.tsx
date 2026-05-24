@@ -20,6 +20,7 @@ interface Subscriber {
   id: string;
   email: string;
   created_at: string;
+  last_newsletter_month?: string | null;
 }
 
 interface AdminPanelProps {
@@ -569,25 +570,45 @@ export default function AdminPanel({
                       <th className="py-base px-md">Subscriber Email</th>
                       <th className="py-base px-md">Subscription Date</th>
                       <th className="py-base px-md text-center">Sync Status</th>
+                      <th className="py-base px-md text-center">Last Sent (최근 발송)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-outline-variant/50">
-                    {paginatedSubscribers.map(sub => (
-                      <tr key={sub.id} className="hover:bg-primary/5 transition-colors">
-                        <td className="py-sm px-md font-bold text-on-surface text-[14px]">
-                          {sub.email}
-                        </td>
-                        <td className="py-sm px-md text-neutral-500 text-[13px] font-medium">
-                          {formatDate(sub.created_at)}
-                        </td>
-                        <td className="py-sm px-md text-center">
-                          <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                            Synced / Active
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {paginatedSubscribers.map(sub => {
+                      const now = new Date();
+                      const currentMonthLabel = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                      const isSentThisMonth = sub.last_newsletter_month === currentMonthLabel;
+
+                      return (
+                        <tr key={sub.id} className="hover:bg-primary/5 transition-colors">
+                          <td className="py-sm px-md font-bold text-on-surface text-[14px]">
+                            {sub.email}
+                          </td>
+                          <td className="py-sm px-md text-neutral-500 text-[13px] font-medium">
+                            {formatDate(sub.created_at)}
+                          </td>
+                          <td className="py-sm px-md text-center">
+                            <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                              Synced / Active
+                            </span>
+                          </td>
+                          <td className="py-sm px-md text-center">
+                            {isSentThisMonth ? (
+                              <span className="inline-flex items-center gap-1 bg-indigo-500/10 text-indigo-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-indigo-500/20">
+                                <span className="material-symbols-outlined text-[14px]">mark_email_read</span>
+                                발송 완료 ({sub.last_newsletter_month?.split('-')[1]}월)
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 bg-neutral-500/10 text-neutral-500 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-neutral-500/20">
+                                <span className="material-symbols-outlined text-[14px]">schedule</span>
+                                발송 대기 (Pending)
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
