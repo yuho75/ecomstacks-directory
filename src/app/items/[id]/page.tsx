@@ -7,6 +7,7 @@ import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
 import type { Metadata } from 'next';
 import EditToolButton from '@/components/EditToolButton';
 import ItemViewTracker from '@/components/ItemViewTracker';
+import VisitWebsiteButton from '@/components/VisitWebsiteButton';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -227,22 +228,7 @@ export default async function Page({ params }: PageProps) {
               </span>
             </div>
             <div className="flex flex-col sm:flex-row gap-md items-stretch sm:items-center">
-              <a 
-                href={item.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="bg-primary text-on-primary px-md py-sm rounded-lg font-semibold text-[15px] flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all w-full sm:w-auto text-center whitespace-nowrap shadow-sm"
-                onClick={() => {
-                  fetch('/api/track-click', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ itemId: item.id, type: 'website_click' }),
-                  }).catch(() => {});
-                }}
-              >
-                Visit Website 
-                <span className="material-symbols-outlined text-[18px]">north_east</span>
-              </a>
+              <VisitWebsiteButton itemId={item.id} url={item.url} />
               <EditToolButton itemId={item.id} itemTitle={item.title} />
               <div className="flex items-center gap-xs text-on-surface-variant font-label-md whitespace-nowrap self-center">
                 <span className="material-symbols-outlined text-primary text-[18px]">verified</span>
