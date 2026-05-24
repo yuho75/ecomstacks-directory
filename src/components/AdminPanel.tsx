@@ -51,6 +51,9 @@ export default function AdminPanel({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  // Time range selector state for analytics chart (7 days, 14 days, or 30 days)
+  const [timeRange, setTimeRange] = useState<7 | 14 | 30>(7);
+
   const handleApprove = async (id: string) => {
     setProcessingId(id);
     setError(null);
@@ -204,16 +207,44 @@ export default function AdminPanel({
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-md">
             {/* Visual Analytics Chart */}
             <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
-              <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
-                <span className="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
-                일별 트래픽 추이 (최근 7일)
-              </h4>
-              <div className="h-48 flex items-end gap-sm md:gap-md pt-sm border-b border-outline-variant px-sm relative">
-                {analytics.dailyStats.map((stat, idx) => {
-                  // Find the maximum views in the stats to scale the bars properly
-                  const maxViews = Math.max(...analytics.dailyStats.map(s => s.views), 10);
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-sm mb-md pb-xs border-b border-outline-variant/30">
+                <h4 className="font-bold text-on-surface text-label-md flex items-center gap-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  <span className="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
+                  일별 트래픽 추이 (최근 {timeRange}일)
+                </h4>
+                
+                {/* Time range selector tabs */}
+                <div className="flex bg-surface-container-low border border-outline-variant p-0.5 rounded-lg shrink-0">
+                  {([7, 14, 30] as const).map((range) => (
+                    <button
+                      key={range}
+                      onClick={() => setTimeRange(range)}
+                      className={`px-sm py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer select-none ${
+                        timeRange === range
+                          ? 'bg-primary text-white shadow-sm'
+                          : 'text-on-surface-variant hover:text-primary bg-transparent'
+                      }`}
+                    >
+                      {range}일
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="h-48 flex items-end gap-xs md:gap-sm pt-sm border-b border-outline-variant px-xs relative overflow-x-auto">
+                {analytics.dailyStats.slice(-timeRange).map((stat, idx) => {
+                  // Find the maximum views in the active stats to scale the bars properly
+                  const activeStats = analytics.dailyStats.slice(-timeRange);
+                  const maxViews = Math.max(...activeStats.map(s => s.views), 10);
                   const viewHeight = (stat.views / maxViews) * 100;
                   const uniqueHeight = (stat.uniques / maxViews) * 100;
+
+                  // Define dynamic bar width based on active timeRange to prevent overflow
+                  const barWidthClass = timeRange === 30
+                    ? 'w-1 sm:w-1.5 md:w-2'
+                    : timeRange === 14
+                      ? 'w-1.5 sm:w-2.5 md:w-3.5'
+                      : 'w-3 md:w-5';
 
                   return (
                     <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
@@ -228,20 +259,27 @@ export default function AdminPanel({
                       <div className="w-full flex justify-center gap-xs items-end h-full">
                         {/* Pageviews Bar */}
                         <div 
-                          className="w-3 md:w-5 bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105"
+                          className={`${barWidthClass} bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
                           style={{ height: `${Math.max(viewHeight, 6)}%` }}
                         >
                           <div className="absolute inset-x-0 bottom-0 bg-primary/40 h-1 md:h-1.5 rounded-t-sm"></div>
                         </div>
                         {/* Unique Visitors Bar */}
                         <div 
-                          className="w-3 md:w-5 bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105"
+                          className={`${barWidthClass} bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
                           style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
                         >
                           <div className="absolute inset-x-0 top-0 bg-yellow-300/30 h-1 rounded-t-sm"></div>
                         </div>
                       </div>
-                      <span className="text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold">{stat.date}</span>
+                      <span className="text-[9px] sm:text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold select-none">
+                        {timeRange === 30 
+                          ? (idx % 5 === 0 ? stat.date : '') 
+                          : timeRange === 14 
+                            ? (idx % 2 === 0 ? stat.date : '') 
+                            : stat.date
+                        }
+                      </span>
                     </div>
                   );
                 })}

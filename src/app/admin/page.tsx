@@ -36,9 +36,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
       const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
       
-      // Pre-populate standard mock analytics in case Supabase is in bypass or page_views table is missing
+      // Pre-populate standard mock analytics (30 days of history)
       const mockDailyStats = [];
-      for (let i = 6; i >= 0; i--) {
+      for (let i = 29; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
         const dateStr = d.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
@@ -102,15 +102,15 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             .from('page_views')
             .select('*', { count: 'exact', head: true });
 
-          // Fetch last 7 days pageviews
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-          sevenDaysAgo.setHours(0,0,0,0);
+          // Fetch last 30 days pageviews to allow dynamic toggle (7d, 14d, 30d) in UI
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+          thirtyDaysAgo.setHours(0,0,0,0);
 
           const { data: recentViews, error: errRecent } = await supabaseAdmin
             .from('page_views')
             .select('session_id, created_at, pathname')
-            .gte('created_at', sevenDaysAgo.toISOString());
+            .gte('created_at', thirtyDaysAgo.toISOString());
 
           if (!errTotal && !errRecent && recentViews) {
             const allViews = recentViews;
@@ -125,9 +125,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             const todayViewsList = allViews.filter(v => new Date(v.created_at) >= todayStart);
             const todayUniquesSet = new Set(todayViewsList.map(v => v.session_id));
 
-            // Breakdown for last 7 days
+            // Breakdown for last 30 days
             const dailyStats = [];
-            for (let i = 6; i >= 0; i--) {
+            for (let i = 29; i >= 0; i--) {
               const dateObj = new Date();
               dateObj.setDate(dateObj.getDate() - i);
               
