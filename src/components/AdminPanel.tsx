@@ -16,6 +16,12 @@ interface Item {
   created_at: string;
 }
 
+interface Subscriber {
+  id: string;
+  email: string;
+  created_at: string;
+}
+
 interface AdminPanelProps {
   initialPending: Item[];
   initialApproved: Item[];
@@ -29,6 +35,7 @@ interface AdminPanelProps {
     dailyStats: { date: string; rawDate?: number; views: number; uniques: number }[];
     topPages: { path: string; count: number }[];
   } | null;
+  subscribers?: Subscriber[];
 }
 
 export default function AdminPanel({ 
@@ -36,12 +43,13 @@ export default function AdminPanel({
   initialApproved, 
   initialRejected, 
   secretKey = null,
-  analytics = null
+  analytics = null,
+  subscribers = []
 }: AdminPanelProps) {
   const [pendingItems, setPendingItems] = useState<Item[]>(initialPending);
   const [approvedItems, setApprovedItems] = useState<Item[]>(initialApproved);
   const [rejectedItems, setRejectedItems] = useState<Item[]>(initialRejected);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'subscribers'>('pending');
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -53,6 +61,20 @@ export default function AdminPanel({
 
   // Time range selector state for analytics chart (7d, 30d, 90d, 180d, 365d, all)
   const [timeRange, setTimeRange] = useState<7 | 30 | 90 | 180 | 365 | 'all'>(7);
+
+  // Subscriber-specific filtering & pagination
+  const filteredSubscribers = (subscribers || []).filter(sub => {
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return true;
+    return sub.email.toLowerCase().includes(term);
+  });
+
+  const totalSubscribers = filteredSubscribers.length;
+  const totalSubscribersPages = Math.ceil(totalSubscribers / itemsPerPage) || 1;
+  const paginatedSubscribers = filteredSubscribers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleApprove = async (id: string) => {
     setProcessingId(id);
@@ -418,7 +440,7 @@ export default function AdminPanel({
           <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[20px] select-none">search</span>
           <input
             type="text"
-            placeholder="도구 이름, URL, 카테고리 또는 이메일 검색..."
+            placeholder={activeTab === 'subscribers' ? "구독자 이메일 검색..." : "도구 이름, URL, 카테고리 또는 이메일 검색..."}
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -443,7 +465,11 @@ export default function AdminPanel({
         {searchTerm && (
           <div className="text-[13px] font-bold text-neutral-500 bg-primary/5 px-md py-sm rounded-lg border border-primary/10 text-center sm:text-right shrink-0 flex items-center justify-center gap-xs">
             <span className="material-symbols-outlined text-[16px] text-primary">filter_list</span>
-            <span>{totalItems}개의 일치하는 도구 찾음</span>
+            <span>
+              {activeTab === 'subscribers' 
+                ? `${totalSubscribers}명의 일치하는 구독자 찾음`
+                : `${totalItems}개의 일치하는 도구 찾음`}
+            </span>
           </div>
         )}
       </div>
@@ -498,9 +524,129 @@ export default function AdminPanel({
             {rejectedItems.length}
           </span>
         </button>
+        <button
+          onClick={() => { setActiveTab('subscribers'); setCurrentPage(1); setSearchTerm(''); }}
+          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+            activeTab === 'subscribers'
+              ? 'border-primary text-primary font-bold'
+              : 'border-transparent text-on-surface-variant hover:text-primary'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[20px]">mail</span>
+          <span>Subscribers (구독자 명단)</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
+            activeTab === 'subscribers' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          }`}>
+            {subscribers.length}
+          </span>
+        </button>
       </div>
 
-      {activeItems.length === 0 ? (
+      {activeTab === 'subscribers' ? (
+        subscribers.length === 0 ? (
+          <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
+            <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">mail</span>
+            <h2 className="font-headline-md text-headline-md text-on-surface">No Subscribers Yet</h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm mx-auto mt-xs">
+              No users have subscribed to the newsletter yet. Subscriptions via the header announcement bar or footer will appear here!
+            </p>
+          </div>
+        ) : filteredSubscribers.length === 0 ? (
+          <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
+            <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">search_off</span>
+            <h2 className="font-headline-md text-headline-md text-on-surface">일치하는 결과 없음</h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm mx-auto mt-xs">
+              &quot;{searchTerm}&quot;에 매칭되는 구독자를 찾을 수 없습니다. 철자를 확인하거나 다른 검색어를 입력해 보세요.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm animate-in fade-in duration-300">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr className="bg-surface-container-low border-b border-outline-variant text-[13px] font-bold text-neutral-600">
+                      <th className="py-base px-md">Subscriber Email</th>
+                      <th className="py-base px-md">Subscription Date</th>
+                      <th className="py-base px-md text-center">Sync Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/50">
+                    {paginatedSubscribers.map(sub => (
+                      <tr key={sub.id} className="hover:bg-primary/5 transition-colors">
+                        <td className="py-sm px-md font-bold text-on-surface text-[14px]">
+                          {sub.email}
+                        </td>
+                        <td className="py-sm px-md text-neutral-500 text-[13px] font-medium">
+                          {formatDate(sub.created_at)}
+                        </td>
+                        <td className="py-sm px-md text-center">
+                          <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                            Synced / Active
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalSubscribersPages > 1 && (
+              <div className="flex flex-wrap justify-between items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-sm mt-md gap-sm shadow-sm">
+                <span className="text-[13px] font-bold text-neutral-500 flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-[16px] text-primary">analytics</span>
+                  <span>총 {totalSubscribers}명 중 {(currentPage - 1) * itemsPerPage + 1}~{Math.min(currentPage * itemsPerPage, totalSubscribers)}명 표시</span>
+                </span>
+                
+                <div className="flex items-center gap-xs">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(1)}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="첫 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+                  </button>
+                  
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="이전 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  </button>
+
+                  <span className="text-[13px] font-bold text-on-surface px-md select-none">
+                    {currentPage} / {totalSubscribersPages}
+                  </span>
+
+                  <button
+                    disabled={currentPage === totalSubscribersPages}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalSubscribersPages))}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="다음 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                  </button>
+
+                  <button
+                    disabled={currentPage === totalSubscribersPages}
+                    onClick={() => setCurrentPage(totalSubscribersPages)}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="마지막 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )
+      ) : activeItems.length === 0 ? (
         <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
           <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">
             {activeTab === 'pending' ? 'verified_user' : activeTab === 'approved' ? 'grid_view' : 'delete_sweep'}

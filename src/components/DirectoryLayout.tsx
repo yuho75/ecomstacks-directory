@@ -209,7 +209,7 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
 
           {/* Newsletter Subscription */}
           <div className="flex flex-col items-center md:items-end text-center md:text-right gap-sm">
-            <h4 className="text-white font-bold text-lg">Weekly E-Commerce Tools</h4>
+            <h4 className="text-white font-bold text-lg">Monthly E-Commerce Tools</h4>
             <p className="text-neutral-400 text-sm mb-2 max-w-xs">
               Join 1,000+ founders receiving the best new e-commerce growth tools directly in their inbox.
             </p>

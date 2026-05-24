@@ -116,7 +116,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
               NEWSLETTER
             </span>
             <span className="text-[12px] text-neutral-300 font-medium tracking-tight" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              Get high-converting e-commerce growth tools in your inbox weekly!
+              Get high-converting e-commerce growth tools in your inbox monthly!
             </span>
           </div>
           

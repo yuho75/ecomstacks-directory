@@ -30,6 +30,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   let approvedItems: any[] = [];
   let rejectedItems: any[] = [];
   let analyticsData: any = null;
+  let subscriberList: any[] = [];
 
   if (isAuthenticated) {
     try {
@@ -187,14 +188,32 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               topPages
             };
           }
-        } catch (eAn) {
-          console.warn("Analytics tables may not exist yet in Supabase. Using mock dashboard stats.");
+        } catch (eAnalytics) {
+          console.warn("Analytics fetch warning:", eAnalytics);
+        }
+
+        // 5. Fetch subscribers list
+        try {
+          const { data: sData, error: sError } = await supabaseAdmin
+            .from('subscribers')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (!sError && sData) {
+            subscriberList = sData;
+          }
+        } catch (eSub) {
+          console.warn("Subscribers table may not exist yet in Supabase.");
         }
       } else {
         const { getMockItems } = await import('@/lib/mockDb');
         pendingItems = await getMockItems('pending');
         approvedItems = await getMockItems('approved');
         rejectedItems = await getMockItems('rejected');
+        subscriberList = [
+          { id: 'mock-sub-1', email: 'test_founder@example.com', created_at: new Date().toISOString() },
+          { id: 'mock-sub-2', email: 'growth_hacker@domain.com', created_at: new Date(Date.now() - 86400000).toISOString() }
+        ];
         console.log('Loaded mock items for admin workspace:', pendingItems.length, approvedItems.length, rejectedItems.length);
       }
 
@@ -265,6 +284,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               initialRejected={rejectedItems}
               secretKey={secretKey}
               analytics={analyticsData}
+              subscribers={subscriberList}
             />
           </>
         )}
