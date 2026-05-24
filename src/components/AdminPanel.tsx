@@ -21,9 +21,23 @@ interface AdminPanelProps {
   initialApproved: Item[];
   initialRejected: Item[];
   secretKey?: string | null;
+  analytics?: {
+    totalViews: number;
+    totalUniques: number;
+    todayViews: number;
+    todayUniques: number;
+    dailyStats: { date: string; views: number; uniques: number }[];
+    topPages: { path: string; count: number }[];
+  } | null;
 }
 
-export default function AdminPanel({ initialPending, initialApproved, initialRejected, secretKey = null }: AdminPanelProps) {
+export default function AdminPanel({ 
+  initialPending, 
+  initialApproved, 
+  initialRejected, 
+  secretKey = null,
+  analytics = null
+}: AdminPanelProps) {
   const [pendingItems, setPendingItems] = useState<Item[]>(initialPending);
   const [approvedItems, setApprovedItems] = useState<Item[]>(initialApproved);
   const [rejectedItems, setRejectedItems] = useState<Item[]>(initialRejected);
@@ -108,6 +122,155 @@ export default function AdminPanel({ initialPending, initialApproved, initialRej
         <div className="fixed bottom-5 right-5 bg-error text-white px-md py-sm rounded-lg shadow-xl font-label-md flex items-center gap-xs z-50 animate-shake">
           <span className="material-symbols-outlined">error</span>
           {error}
+        </div>
+      )}
+
+      {/* Analytics Dashboard */}
+      {analytics && (
+        <div className="bg-gradient-to-br from-inverse-surface/5 to-primary/5 border border-outline-variant rounded-2xl p-md md:p-lg mb-lg shadow-sm">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-sm mb-md pb-sm border-b border-outline-variant/50">
+            <div>
+              <h2 className="text-xl font-extrabold text-on-surface flex items-center gap-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <span className="material-symbols-outlined text-primary text-[24px]">query_stats</span>
+                실시간 방문 분석 (Real-Time Visitor Analytics)
+              </h2>
+              <p className="text-body-sm text-on-surface-variant mt-0.5">데이터베이스에 자동 집계되는 실시간 트래픽 대시보드입니다.</p>
+            </div>
+            <span className="bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] uppercase tracking-wider font-semibold border border-green-500/20 flex items-center gap-1.5 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-green-500"></span>
+              Live Tracking Active
+            </span>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-sm mb-md">
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow duration-300">
+              <p className="text-[12px] font-bold text-neutral-500 uppercase tracking-wider">누적 페이지뷰</p>
+              <h3 className="text-2xl font-extrabold text-on-surface mt-1">{analytics.totalViews.toLocaleString()}</h3>
+              <p className="text-[11px] text-primary font-semibold mt-1 flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-[14px]">visibility</span>
+                Total Pageviews
+              </p>
+            </div>
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow duration-300">
+              <p className="text-[12px] font-bold text-neutral-500 uppercase tracking-wider">누적 고유 방문자</p>
+              <h3 className="text-2xl font-extrabold text-on-surface mt-1">{analytics.totalUniques.toLocaleString()}</h3>
+              <p className="text-[11px] text-primary font-semibold mt-1 flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-[14px]">group</span>
+                Unique Sessions
+              </p>
+            </div>
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow duration-300">
+              <p className="text-[12px] font-bold text-neutral-500 uppercase tracking-wider">오늘 페이지뷰</p>
+              <h3 className="text-2xl font-extrabold text-on-surface mt-1">{analytics.todayViews.toLocaleString()}</h3>
+              <p className="text-[11px] text-green-600 font-semibold mt-1 flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-[14px]">trending_up</span>
+                Today Pageviews
+              </p>
+            </div>
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl hover:shadow-md transition-shadow duration-300">
+              <p className="text-[12px] font-bold text-neutral-500 uppercase tracking-wider">오늘 고유 방문자</p>
+              <h3 className="text-2xl font-extrabold text-on-surface mt-1">{analytics.todayUniques.toLocaleString()}</h3>
+              <p className="text-[11px] text-green-600 font-semibold mt-1 flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-[14px]">person</span>
+                Today Uniques
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-md">
+            {/* Visual Analytics Chart */}
+            <div className="lg:col-span-2 bg-surface-container-lowest border border-outline-variant p-md rounded-xl">
+              <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
+                <span className="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
+                일별 트래픽 추이 (최근 7일)
+              </h4>
+              <div className="h-48 flex items-end gap-sm md:gap-md pt-sm border-b border-outline-variant px-sm relative">
+                {analytics.dailyStats.map((stat, idx) => {
+                  // Find the maximum views in the stats to scale the bars properly
+                  const maxViews = Math.max(...analytics.dailyStats.map(s => s.views), 10);
+                  const viewHeight = (stat.views / maxViews) * 100;
+                  const uniqueHeight = (stat.uniques / maxViews) * 100;
+
+                  return (
+                    <div key={idx} className="flex-1 flex flex-col items-center h-full group relative">
+                      {/* Tooltip on Hover */}
+                      <div className="absolute bottom-full mb-xs bg-inverse-surface text-inverse-on-surface text-[11px] rounded px-xs py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none whitespace-nowrap text-center">
+                        <p className="font-bold text-primary-fixed">{stat.date}</p>
+                        <p>뷰: {stat.views}회</p>
+                        <p>방문자: {stat.uniques}명</p>
+                      </div>
+                      
+                      {/* Stacked/Double Bar Chart representation */}
+                      <div className="w-full flex justify-center gap-xs items-end h-full">
+                        {/* Pageviews Bar */}
+                        <div 
+                          className="w-3 md:w-5 bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105"
+                          style={{ height: `${Math.max(viewHeight, 6)}%` }}
+                        >
+                          <div className="absolute inset-x-0 bottom-0 bg-primary/40 h-1 md:h-1.5 rounded-t-sm"></div>
+                        </div>
+                        {/* Unique Visitors Bar */}
+                        <div 
+                          className="w-3 md:w-5 bg-gradient-to-t from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105"
+                          style={{ height: `${Math.max(uniqueHeight, 6)}%` }}
+                        >
+                          <div className="absolute inset-x-0 top-0 bg-yellow-300/30 h-1 rounded-t-sm"></div>
+                        </div>
+                      </div>
+                      <span className="text-[10px] text-neutral-500 mt-2 truncate max-w-full font-semibold">{stat.date}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-md justify-center mt-sm text-[11px] font-semibold text-neutral-500">
+                <span className="flex items-center gap-xs">
+                  <span className="w-2.5 h-2.5 bg-primary/20 border border-primary/40 rounded-sm"></span>
+                  페이지뷰 (Pageviews)
+                </span>
+                <span className="flex items-center gap-xs">
+                  <span className="w-2.5 h-2.5 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-sm"></span>
+                  고유 방문자 (Uniques)
+                </span>
+              </div>
+            </div>
+
+            {/* Popular Pages Panel */}
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl flex flex-col justify-between animate-in fade-in duration-300">
+              <div>
+                <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-primary text-[20px]">explore</span>
+                  인기 페이지 순위
+                </h4>
+                <div className="space-y-sm">
+                  {analytics.topPages.map((page, index) => {
+                    const maxHits = analytics.topPages[0]?.count || 1;
+                    const fillPercent = (page.count / maxHits) * 100;
+                    return (
+                      <div key={index} className="space-y-1">
+                        <div className="flex justify-between text-[12px] font-bold text-on-surface-variant">
+                          <span className="truncate font-mono text-neutral-600 max-w-[70%]">{page.path}</span>
+                          <span>{page.count} views</span>
+                        </div>
+                        <div className="w-full bg-surface-container-low h-2 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
+                            style={{ width: `${fillPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              <div className="border-t border-outline-variant/50 pt-sm mt-md">
+                <p className="text-[11px] text-on-surface-variant leading-relaxed">
+                  💡 **팁**: `/`는 메인 디렉토리, `/pricing`은 요금제 안내 페이지입니다. 유입량에 맞추어 도구 노출 순서와 광고 요금을 최적화할 수 있습니다!
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

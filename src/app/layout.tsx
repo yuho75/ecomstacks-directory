@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
 
 export const metadata: Metadata = {
   title: 'EcomStacks Directory | Top Micro-Tools for E-commerce & Solo Brands',
@@ -45,6 +46,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-background text-on-background min-h-screen flex flex-col justify-between">
+        <AnalyticsTracker />
         {children}
       </body>
     </html>
