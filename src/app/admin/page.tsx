@@ -218,14 +218,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </span>
           </div>
           <div className="flex items-center gap-md">
-            <form action={logoutAndRedirectToHome} className="inline flex items-center">
-              <button 
-                type="submit"
-                className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 cursor-pointer"
-              >
-                View Live Directory
-              </button>
-            </form>
             {isAuthenticated && (
               <form action={logoutAdmin}>
                 <button 
@@ -247,15 +239,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <AdminLoginForm />
         ) : (
           <>
-            <div className="mb-lg">
-              <h1 className="font-display-lg text-[32px] text-on-surface mb-xs tracking-tight font-extrabold flex items-center gap-xs">
-                <span className="material-symbols-outlined text-[36px] text-primary">admin_panel_settings</span>
-                Directory Control Panel
-              </h1>
-              <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl">
-                Review pending submissions or manage already published sites in the live directory with real-time edge cache revalidation.
-              </p>
-            </div>
 
             {/* Dynamic reactive approval flow */}
             <AdminPanel 
