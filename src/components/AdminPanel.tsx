@@ -51,8 +51,8 @@ export default function AdminPanel({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Time range selector state for analytics chart (7d, 14d, 30d, 90d, 180d, 365d, all)
-  const [timeRange, setTimeRange] = useState<7 | 14 | 30 | 90 | 180 | 365 | 'all'>(7);
+  // Time range selector state for analytics chart (7d, 30d, 90d, 180d, 365d, all)
+  const [timeRange, setTimeRange] = useState<7 | 30 | 90 | 180 | 365 | 'all'>(7);
 
   const handleApprove = async (id: string) => {
     setProcessingId(id);
@@ -211,7 +211,7 @@ export default function AdminPanel({
                 <h4 className="font-bold text-on-surface text-label-md flex items-center gap-xs" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   <span className="material-symbols-outlined text-primary text-[20px]">leaderboard</span>
                   트래픽 추이 ({
-                    timeRange === 7 || timeRange === 14 || timeRange === 30 ? `최근 ${timeRange}일` :
+                    timeRange === 7 || timeRange === 30 ? `최근 ${timeRange}일` :
                     timeRange === 90 ? '최근 3개월' :
                     timeRange === 180 ? '최근 6개월' :
                     timeRange === 365 ? '최근 1년' : '전체 보기'
@@ -222,7 +222,6 @@ export default function AdminPanel({
                 <div className="flex bg-surface-container-low border border-outline-variant p-0.5 rounded-lg shrink-0 overflow-x-auto max-w-full whitespace-nowrap select-none scrollbar-none gap-[1px]">
                   {([
                     { label: '7일', val: 7 },
-                    { label: '14일', val: 14 },
                     { label: '30일', val: 30 },
                     { label: '3개월', val: 90 },
                     { label: '6개월', val: 180 },
@@ -249,7 +248,7 @@ export default function AdminPanel({
                 const rawStats = analytics.dailyStats || [];
                 let displayedDailyStats: { date: string; views: number; uniques: number }[] = [];
 
-                if (timeRange === 7 || timeRange === 14 || timeRange === 30) {
+                if (timeRange === 7 || timeRange === 30) {
                   displayedDailyStats = rawStats.slice(-timeRange);
                 } else if (timeRange === 90 || timeRange === 180) {
                   const itemsToGroup = timeRange === 180 ? rawStats.slice(-180) : rawStats.slice(-90);
@@ -299,19 +298,29 @@ export default function AdminPanel({
                   });
                 }
 
-                // Dynamic dimensions to prevent clutter
+                // Dynamic dimensions to prevent clutter and overflow
                 const barWidthClass = (timeRange === 365 || timeRange === 'all')
                   ? 'w-4 md:w-6'
                   : (timeRange === 90 || timeRange === 180)
                     ? 'w-2.5 md:w-4'
                     : timeRange === 30
-                      ? 'w-1.5 md:w-2.5'
+                      ? 'w-1 sm:w-1.5 md:w-2'
                       : 'w-3.5 md:w-5.5';
+
+                const dayGapClass = timeRange === 30
+                  ? 'gap-[1px] md:gap-[2px]'
+                  : (timeRange === 90 || timeRange === 180)
+                    ? 'gap-[2px] md:gap-xs'
+                    : 'gap-xs md:gap-sm';
+
+                const barGapClass = timeRange === 30
+                  ? 'gap-[1px]'
+                  : 'gap-xs';
 
                 const maxViews = Math.max(...displayedDailyStats.map(s => s.views), 10);
 
                 return (
-                  <div className="h-52 flex items-end gap-xs md:gap-sm pt-xl border-b border-outline-variant px-xs relative">
+                  <div className={`h-52 flex items-end pt-xl border-b border-outline-variant px-xs relative ${dayGapClass}`}>
                     {displayedDailyStats.map((stat, idx) => {
                       const viewHeight = (stat.views / maxViews) * 100;
                       const uniqueHeight = (stat.uniques / maxViews) * 100;
@@ -326,7 +335,7 @@ export default function AdminPanel({
                           </div>
                           
                           {/* Stacked/Double Bar Chart representation */}
-                          <div className="w-full flex justify-center gap-xs items-end h-full">
+                          <div className={`w-full flex justify-center items-end h-full ${barGapClass}`}>
                             {/* Pageviews Bar */}
                             <div 
                               className={`${barWidthClass} bg-primary/20 hover:bg-primary/40 rounded-t-sm transition-all duration-300 shadow-sm relative group-hover:scale-y-105`}
