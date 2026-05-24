@@ -100,18 +100,12 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
           <p className="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mb-md">
             Double your revenue with a curated directory of high-converting micro-tools built specifically for 1-person brands, Shopify builders, and e-commerce growth.
           </p>
-          <div className="flex flex-col sm:flex-row gap-base">
+          <div className="flex justify-center">
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="bg-primary-container text-on-primary hover:bg-primary px-lg py-md rounded-lg font-label-md text-label-md shadow-lg transition-all active:scale-95 duration-100"
+              className="bg-primary-container text-on-primary hover:bg-primary px-xl py-md rounded-lg font-label-md text-label-md shadow-lg transition-all active:scale-95 duration-100"
             >
               Submit Your Tool (Free)
-            </button>
-            <button 
-              onClick={() => document.getElementById('directory-anchor')?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-surface-container-lowest border border-outline-variant text-on-surface hover:bg-surface-container-low px-lg py-md rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100"
-            >
-              Explore Directory
             </button>
           </div>
         </section>
