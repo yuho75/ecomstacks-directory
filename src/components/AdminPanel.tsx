@@ -569,7 +569,7 @@ export default function AdminPanel({
                     <tr className="bg-surface-container-low border-b border-outline-variant text-[13px] font-bold text-neutral-600">
                       <th className="py-base px-md">Subscriber Email</th>
                       <th className="py-base px-md">Subscription Date</th>
-                      <th className="py-base px-md text-center">Sync Status</th>
+                      <th className="py-base px-md text-center">MailerLite 연동</th>
                       <th className="py-base px-md text-center">Last Sent (최근 발송)</th>
                     </tr>
                   </thead>
@@ -590,7 +590,7 @@ export default function AdminPanel({
                           <td className="py-sm px-md text-center">
                             <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
                               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                              Synced / Active
+                              메일러라이트 연동됨
                             </span>
                           </td>
                           <td className="py-sm px-md text-center">
