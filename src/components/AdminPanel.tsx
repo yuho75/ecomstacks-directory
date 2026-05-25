@@ -403,7 +403,7 @@ export default function AdminPanel({
               <div>
                 <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
                   <span className="material-symbols-outlined text-primary text-[20px]">explore</span>
-                  인기 도구 순위
+                  인기 도구 순위 (상위 5개)
                 </h4>
                 <div className="space-y-sm">
                   {(() => {
@@ -433,22 +433,38 @@ export default function AdminPanel({
                         ? page.path.replace('도구:', '').trim()
                         : '도구 상세';
 
+                      // Find actual tool item to match website click stats from database
+                      const matchedItem = approvedItems.find(item => item.title.trim() === label);
+                      const websiteClicks = matchedItem && itemClickStats[matchedItem.id] 
+                        ? itemClickStats[matchedItem.id].websiteClicks 
+                        : 0;
+
                       return (
-                        <div key={index} className="space-y-1">
-                          <div className="flex justify-between items-center text-[12px]">
+                        <div key={index} className="space-y-1 bg-surface-container-low/30 p-xs sm:p-sm rounded-lg border border-outline-variant/30 hover:border-primary/20 transition-all">
+                          <div className="flex flex-col gap-xs sm:flex-row sm:justify-between sm:items-center text-[12px]">
+                            {/* Left: Rank + Tool Name */}
                             <div className="flex items-center gap-xs min-w-0">
                               <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-extrabold flex items-center justify-center shrink-0">
                                 {rank}
                               </span>
-                              <span className="font-bold text-on-surface truncate max-w-[140px]">
+                              <span className="font-bold text-on-surface truncate max-w-[130px]" title={label}>
                                 {label}
                               </span>
                             </div>
-                            <span className="font-bold text-on-surface shrink-0 ml-xs text-[12px]">
-                              {page.count.toLocaleString()}회 방문
-                            </span>
+                            
+                            {/* Right: Detailed Split Badges (Detail Views & Web Clicks) */}
+                            <div className="flex flex-wrap items-center gap-xs shrink-0 sm:ml-xs">
+                              <span className="bg-indigo-50 border border-indigo-200/60 rounded px-1.5 py-0.5 font-bold text-indigo-600 text-[10px] flex items-center gap-[2px]">
+                                <span className="material-symbols-outlined text-[11px]">visibility</span>
+                                <span>조회 {page.count.toLocaleString()}회</span>
+                              </span>
+                              <span className="bg-emerald-50 border border-emerald-200/60 rounded px-1.5 py-0.5 font-bold text-emerald-600 text-[10px] flex items-center gap-[2px]">
+                                <span className="material-symbols-outlined text-[11px]">north_east</span>
+                                <span>방문 {websiteClicks.toLocaleString()}회</span>
+                              </span>
+                            </div>
                           </div>
-                          <div className="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden">
+                          <div className="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
                             <div
                               className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
                               style={{ width: `${fillPercent}%` }}
@@ -462,8 +478,12 @@ export default function AdminPanel({
               </div>
 
               <div className="border-t border-outline-variant/50 pt-sm mt-md">
-                <p className="text-[11px] text-on-surface-variant leading-relaxed">
-                  상세 페이지를 많이 본 도구일수록 방문자 관심도가 높습니다.
+                <p className="text-[11px] text-on-surface-variant leading-relaxed flex items-center gap-[3px]">
+                  <span className="material-symbols-outlined text-[12px] text-indigo-500">visibility</span>
+                  <span>상세조회: EcomStacks 안의 상세뷰</span>
+                  <span className="text-neutral-300 mx-0.5">|</span>
+                  <span className="material-symbols-outlined text-[12px] text-emerald-500">north_east</span>
+                  <span>방문: 아웃링크 클릭수</span>
                 </p>
               </div>
             </div>
