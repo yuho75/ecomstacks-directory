@@ -553,7 +553,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                       <strong className="text-primary">${TIER_PRICES[tier]}</strong>{' '}
                       {tier === 'featured' ? '/month' : 'one-time'} via PayPal.
                     </p>
-                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD' }}>
+                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US' }}>
                       <PayPalButtons
                         style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
                         disabled={submitting}
@@ -642,7 +642,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                       You will be charged{' '}
                       <strong className="text-primary">${TIER_PRICES[tier]}</strong> one-time via PayPal.
                     </p>
-                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD' }}>
+                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US' }}>
                       <PayPalButtons
                         style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
                         disabled={submitting}
