@@ -30,16 +30,27 @@ export default function ToolCard({ item }: ToolCardProps) {
   // Format category text to display cleanly
   const displayCategory = item.category || 'Visual & Design';
 
+  const isPremiumOrFeatured = item.tier === 'premium' || item.tier === 'featured';
+
   return (
-    <div className={`bg-surface-container-lowest rounded-xl overflow-hidden tool-card-shadow transition-all duration-300 group flex flex-col h-full ${
-      item.tier === 'premium'
-        ? 'border-2 border-amber-500/40 shadow-md hover:border-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] col-span-1 sm:col-span-2 md:col-span-2'
-        : item.tier === 'featured'
-          ? 'border-2 border-primary/40 shadow-md hover:border-primary hover:shadow-[0_0_20px_rgba(59,130,246,0.25)] col-span-1 sm:col-span-2 md:col-span-2'
-          : 'border border-outline-variant tool-card-hover col-span-1'
+    <div className={`bg-surface-container-lowest rounded-xl overflow-hidden tool-card-shadow transition-all duration-300 group flex h-full ${
+      isPremiumOrFeatured
+        ? `flex-col sm:flex-row col-span-1 sm:col-span-2 md:col-span-2 ${
+            item.tier === 'premium'
+              ? 'border-2 border-amber-500/40 shadow-md hover:border-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)]'
+              : 'border-2 border-primary/40 shadow-md hover:border-primary hover:shadow-[0_0_20px_rgba(59,130,246,0.25)]'
+          }`
+        : 'flex-col col-span-1 border border-outline-variant tool-card-hover'
     }`}>
       {/* Thumbnail Area */}
-      <Link href={`/items/${item.id}`} className="aspect-video relative overflow-hidden bg-surface-container-high block shrink-0">
+      <Link 
+        href={`/items/${item.id}`} 
+        className={`${
+          isPremiumOrFeatured
+            ? 'w-full sm:w-[45%] h-auto sm:h-full aspect-video sm:aspect-auto'
+            : 'w-full aspect-video'
+        } relative overflow-hidden bg-surface-container-high block shrink-0`}
+      >
         <img 
           src={optimizedImageSrc} 
           alt={`${item.title} Screenshot`} 
@@ -49,7 +60,9 @@ export default function ToolCard({ item }: ToolCardProps) {
       </Link>
 
       {/* Info Area */}
-      <div className="p-md flex flex-col justify-between flex-grow">
+      <div className={`p-md flex flex-col justify-between flex-grow ${
+        isPremiumOrFeatured ? 'w-full sm:w-[55%]' : 'w-full'
+      }`}>
         <div>
           <div className="flex flex-col gap-1 mb-2">
             <div className="flex flex-wrap items-center gap-xs">
