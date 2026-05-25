@@ -152,6 +152,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
   };
 
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-md">
@@ -327,7 +328,10 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
                 
                 <div className="flex flex-col gap-sm">
                   {/* Standard Option */}
-                  <label className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${tier === 'standard' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-outline'}`}>
+                  <div 
+                    onClick={() => setTier('standard')}
+                    className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${tier === 'standard' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-outline'}`}
+                  >
                     <div className="flex items-center gap-sm">
                       <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${tier === 'standard' ? 'border-primary' : 'border-outline-variant'}`}>
                         {tier === 'standard' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
@@ -338,22 +342,41 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
                       </div>
                     </div>
                     <span className="font-label-lg text-primary text-[16px]">Free</span>
-                  </label>
+                  </div>
 
-                  {/* Featured Option (Coming Soon) */}
-                  <label className="relative flex items-center justify-between p-md border border-outline-variant rounded-xl opacity-60 cursor-not-allowed bg-surface-container-lowest">
-                    <div className="flex items-center gap-sm">
-                      <div className="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center"></div>
-                      <div>
-                        <div className="flex items-center gap-xs">
-                          <p className="font-label-md text-on-surface text-[15px]">Featured Placement</p>
-                          <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Coming Soon</span>
+                  {/* Featured Option */}
+                  {isPaypalEnabled ? (
+                    <div 
+                      onClick={() => setTier('featured')}
+                      className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${tier === 'featured' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'border-outline-variant hover:border-outline'}`}
+                    >
+                      <div className="flex items-center gap-sm">
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${tier === 'featured' ? 'border-primary' : 'border-outline-variant'}`}>
+                          {tier === 'featured' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                         </div>
-                        <p className="font-body-sm text-on-surface-variant">Pinned to top for 30 days.</p>
+                        <div>
+                          <p className="font-label-md text-on-surface text-[15px]">Featured Placement</p>
+                          <p className="font-body-sm text-on-surface-variant">Pinned to top for 30 days.</p>
+                        </div>
                       </div>
+                      <span className="font-label-lg text-primary text-[16px]">$49.00</span>
                     </div>
-                    <span className="font-label-lg text-on-surface-variant text-[16px] line-through">$49.00</span>
-                  </label>
+                  ) : (
+                    /* Featured Option (Coming Soon) */
+                    <div className="relative flex items-center justify-between p-md border border-outline-variant rounded-xl opacity-60 cursor-not-allowed bg-surface-container-lowest select-none">
+                      <div className="flex items-center gap-sm">
+                        <div className="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center"></div>
+                        <div>
+                          <div className="flex items-center gap-xs">
+                            <p className="font-label-md text-on-surface text-[15px]">Featured Placement</p>
+                            <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Coming Soon</span>
+                          </div>
+                          <p className="font-body-sm text-on-surface-variant">Pinned to top for 30 days.</p>
+                        </div>
+                      </div>
+                      <span className="font-label-lg text-on-surface-variant text-[16px] line-through">$49.00</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -365,12 +388,73 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess }: Submissi
                       Please fill out all fields above to submit your tool.
                     </p>
                   </div>
+                ) : (tier === 'featured' && isPaypalEnabled) ? (
+                  /* PayPal Live Payment Button */
+                  <div className="relative z-10">
+                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD' }}>
+                      <PayPalButtons 
+                        style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
+                        disabled={submitting}
+                        createOrder={async () => {
+                          setSubmitting(true);
+                          setError(null);
+                          try {
+                            const res = await fetch('/api/paypal/create-order', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ 
+                                title, 
+                                url, 
+                                description, 
+                                category, 
+                                email, 
+                                image_url: imageUrl, 
+                                tier: 'featured' 
+                              })
+                            });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order.');
+                            return data.id;
+                          } catch (err: any) {
+                            setError(err.message || 'PayPal order initialization failed.');
+                            setSubmitting(false);
+                            throw err;
+                          }
+                        }}
+                        onApprove={async (data, actions) => {
+                          try {
+                            if (actions.order) {
+                              const capture = await actions.order.capture();
+                              console.log('PayPal Capture succeeded:', capture);
+                              setSubmitSuccess(true);
+                              setTimeout(() => {
+                                onSuccess();
+                                onClose();
+                                resetForm();
+                              }, 3000);
+                            }
+                          } catch (err: any) {
+                            console.error('PayPal capture exception:', err);
+                            setError('Payment was captured but database sync failed. Please contact support.');
+                          } finally {
+                            setSubmitting(false);
+                          }
+                        }}
+                        onError={(err) => {
+                          console.error('PayPal checkout error:', err);
+                          setError('PayPal checkout encountered an error. Please try again.');
+                          setSubmitting(false);
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </div>
                 ) : (
+                  /* Standard Free Submission Button */
                   <button 
                     type="button"
                     onClick={handleBypassSubmit}
                     disabled={submitting}
-                    className="bg-primary text-white w-full py-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-md"
+                    className="bg-primary text-white w-full py-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-md cursor-pointer"
                   >
                     {submitting ? (
                       <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">

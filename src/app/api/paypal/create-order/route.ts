@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    const isBypass = true; // Force bypass for Phase 1 (Free submissions)
+    const isBypass = process.env.NEXT_PUBLIC_PAYPAL_ENABLED !== 'true';
     const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
 
     let item: any;
