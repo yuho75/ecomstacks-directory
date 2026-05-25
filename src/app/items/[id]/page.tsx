@@ -270,17 +270,23 @@ export default async function Page({ params }: PageProps) {
                   <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
                     <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>image</span>
                     <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[0]}</h4>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Elevate product and marketing visuals into stunning premium-grade graphics with simple inputs.</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">
+                      {item.key_features_descriptions?.[0] || "Elevate product and marketing visuals into stunning premium-grade graphics with simple inputs."}
+                    </p>
                   </div>
                   <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
                     <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>trending_up</span>
                     <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[1]}</h4>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Tuned specifically around retail psychology to capture traffic and maximize checkout actions.</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">
+                      {item.key_features_descriptions?.[1] || "Tuned specifically around retail psychology to capture traffic and maximize checkout actions."}
+                    </p>
                   </div>
                   <div className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow">
                     <span className="material-symbols-outlined text-primary mb-base" style={{ fontVariationSettings: "'FILL' 1" }}>integration_instructions</span>
                     <h4 className="font-headline-md text-[18px] text-on-surface mb-xs font-semibold">{item.key_features[2]}</h4>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant">Zero complex integrations required. Deploy, embed, or integrate into storefront configurations instantly.</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant">
+                      {item.key_features_descriptions?.[2] || "Zero complex integrations required. Deploy, embed, or integrate into storefront configurations instantly."}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -310,8 +316,8 @@ export default async function Page({ params }: PageProps) {
                 <h2 className="font-headline-md text-headline-md text-on-surface">Customer Reviews</h2>
                 <div className="flex gap-xs items-center">
                   <span className="material-symbols-outlined text-tertiary-container" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                  <span className="font-bold">4.9</span>
-                  <span className="text-on-surface-variant text-body-sm">(124 verified reviews)</span>
+                  <span className="font-bold">{item.rating || "4.9"}</span>
+                  <span className="text-on-surface-variant text-body-sm">({item.rating_count || "124"} verified reviews)</span>
                 </div>
               </div>
               <div className="flex gap-md overflow-x-auto pb-md custom-scrollbar">
@@ -334,9 +340,13 @@ export default async function Page({ params }: PageProps) {
                       <span key={s} className="material-symbols-outlined text-tertiary-container text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                     ))}
                   </div>
-                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">&quot;Allows us to display stunning, verified high-converting assets without expensive photography rigs.&quot;</p>
+                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">
+                    &quot;{item.customer_review_2 || "Allows us to display stunning, verified high-converting assets without expensive photography rigs."}&quot;
+                  </p>
                   <div className="flex items-center gap-sm">
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">Michael L. - Brand Owner</span>
+                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">
+                      {item.customer_review_2_author || "Michael L. - Brand Owner"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -347,14 +357,24 @@ export default async function Page({ params }: PageProps) {
               <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Integration Guide &amp; Docs</h2>
               <ul className="space-y-sm">
                 <li>
-                  <a className="flex items-center gap-sm text-primary hover:underline group" href="#">
+                  <a 
+                    className="flex items-center gap-sm text-primary hover:underline group" 
+                    href={item.integration_guide_1_url || "#"}
+                    target={item.integration_guide_1_url ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                  >
                     <span className="material-symbols-outlined text-[20px]">description</span>
                     <span className="font-body-md">{item.integration_guide_1_label || `${item.title} Setup Guide for E-commerce`}</span>
                     <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
                   </a>
                 </li>
                 <li>
-                  <a className="flex items-center gap-sm text-primary hover:underline group" href="#">
+                  <a 
+                    className="flex items-center gap-sm text-primary hover:underline group" 
+                    href={item.integration_guide_2_url || "#"}
+                    target={item.integration_guide_2_url ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                  >
                     <span className="material-symbols-outlined text-[20px]">code</span>
                     <span className="font-body-md">{item.integration_guide_2_label || "SaaS Integration Endpoints"}</span>
                     <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>

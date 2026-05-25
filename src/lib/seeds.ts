@@ -10,10 +10,17 @@ export interface SeedItem {
   created_at: string;
   detailed_overview?: string;
   key_features?: string[];
+  key_features_descriptions?: string[];
+  rating?: number;
+  rating_count?: number;
   customer_review?: string;
   customer_review_author?: string;
+  customer_review_2?: string;
+  customer_review_2_author?: string;
   integration_guide_1_label?: string;
+  integration_guide_1_url?: string;
   integration_guide_2_label?: string;
+  integration_guide_2_url?: string;
 }
 
 export const SEED_ITEMS: SeedItem[] = [
@@ -30,10 +37,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T12:00:00Z",
     detailed_overview: "Pebblely utilizes generative AI to transform basic product images into stunning marketing assets. By automatically removing backgrounds and generating realistic studio scenes, it eliminates the need for expensive photoshoots, saving solo creators hours of tedious manual editing.",
     key_features: ["AI Scene Generation", "Instant Background Removal", "Multi-Asset Batch Export"],
+    key_features_descriptions: [
+      "Instantly place your product in dozens of realistic, AI-generated lifestyle environments and seasonal themes.",
+      "Flawlessly extract your product from any background with surgical-grade precision in one click.",
+      "Generate and download multiple product variants and sizes optimized for different social channels simultaneously."
+    ],
+    rating: 4.8,
+    rating_count: 340,
     customer_review: "Saved us over 40 hours of manual editing last month alone. Absolute game-changer for solo sellers!",
     customer_review_author: "Sarah J. - Shopify Plus Merchant",
+    customer_review_2: "The AI-generated scenes look indistinguishable from real photos. It allowed us to launch a whole new catalog in days rather than months.",
+    customer_review_2_author: "James T. - D2C Fashion Founder",
     integration_guide_1_label: "Pebblely Shopify App Setup Guide",
-    integration_guide_2_label: "API Endpoint Documentation"
+    integration_guide_1_url: "https://help.pebblely.com/article/18-shopify-integration",
+    integration_guide_2_label: "API Endpoint Documentation",
+    integration_guide_2_url: "https://pebblely.com/api-docs/"
   },
   {
     id: "seed-flair-ai",
@@ -47,10 +65,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T11:50:00Z",
     detailed_overview: "Flair AI is a drag-and-drop design tool engineered specifically for consumer brands. It allows users to place their products in high-conversion digital environments, complete with smart lighting and contextual props that reflect premium brand aesthetics.",
     key_features: ["Smart Lighting Placement", "Drag-and-Drop Props", "High-Res Content Upscaling"],
+    key_features_descriptions: [
+      "Simulate natural environment lighting and shadow tracking to match your product perfectly with the generated background.",
+      "Browse an extensive digital catalog of props, platforms, and botanical elements to construct a custom scene.",
+      "Render your final marketing assets in ultra-high definition suitable for physical print and digital banner displays."
+    ],
+    rating: 4.7,
+    rating_count: 195,
     customer_review: "The absolute fastest way to create high-end product ads without a professional studio crew.",
     customer_review_author: "David K. - Brand Director",
+    customer_review_2: "It's like having a creative agency in your pocket. The shadow casting and lighting matching is incredibly realistic.",
+    customer_review_2_author: "Sophia M. - Cosmetics Brand Owner",
     integration_guide_1_label: "Flair AI Asset Pipeline Integration",
-    integration_guide_2_label: "Canva Export Workflow"
+    integration_guide_1_url: "https://help.flair.ai/guide/creating-your-first-scene",
+    integration_guide_2_label: "Canva Export Workflow",
+    integration_guide_2_url: "https://help.flair.ai/integrations/canva"
   },
   {
     id: "seed-pixelcut",
@@ -64,10 +93,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T11:40:00Z",
     detailed_overview: "Pixelcut focuses on lightning-fast mobile and web editing for active e-commerce merchants. Its optimized AI model handles bulk background cutouts instantly, making it the perfect tool for multi-channel sellers listing hundreds of items daily.",
     key_features: ["Bulk Object Eraser", "Shadow Control Customization", "E-commerce Template Library"],
+    key_features_descriptions: [
+      "Select and remove multiple background components or unwanted elements in batch mode within seconds.",
+      "Dynamically adjust the blur, angle, and opacity of 3D shadows to ground your product realistically.",
+      "Access hundreds of pre-sized canvas layouts optimized for Amazon, Etsy, eBay, and Instagram storefronts."
+    ],
+    rating: 4.9,
+    rating_count: 512,
     customer_review: "Listing new items on Etsy used to take all day. Now with Pixelcut, it's done in minutes.",
     customer_review_author: "Emma L. - Boutique Owner",
+    customer_review_2: "Bulk background removal is a lifesaver. We cut out hundreds of product shots in one go and they look flawless.",
+    customer_review_2_author: "Daniel C. - eBay Power Seller",
     integration_guide_1_label: "Pixelcut Web Editor Extension Guide",
-    integration_guide_2_label: "Etsy Marketplace Sync API"
+    integration_guide_1_url: "https://help.pixelcut.ai/en/articles/pixelcut-web-quickstart",
+    integration_guide_2_label: "Etsy Marketplace Sync API",
+    integration_guide_2_url: "https://help.pixelcut.ai/en/articles/export-to-marketplaces"
   },
   {
     id: "seed-claid-ai",
@@ -81,10 +121,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T11:30:00Z",
     detailed_overview: "Claid.ai specializes in fixing poor quality product photos automatically. It uses sophisticated neural networks to sharpen blurry textures, fix complex lighting issues, and standardize pixel dimensions for strict multi-vendor marketplaces.",
     key_features: ["Automated Image Enhancement", "Marketplace Photo Standardizer", "Smart Light Correction"],
+    key_features_descriptions: [
+      "Upscale user-generated or low-resolution product photos up to 4x while restoring original details and textures.",
+      "Standardize dimensions, white balance, paddings, and alignment to comply with Amazon and Google Shopping guidelines.",
+      "Re-light products automatically to fix dark supplier images and establish cohesive catalog branding."
+    ],
+    rating: 4.6,
+    rating_count: 128,
     customer_review: "Drastically improved our catalog quality. Conversions went up after cleaning up supplier images.",
     customer_review_author: "Marcus T. - Dropshipping Manager",
+    customer_review_2: "The automated image enhancement is highly effective. It standardizes thousands of low-res images from suppliers into high-res shots.",
+    customer_review_2_author: "Oliver R. - Multi-channel Retailer",
     integration_guide_1_label: "Claid API Integration Endpoints",
-    integration_guide_2_label: "Shopify Webhook Sync"
+    integration_guide_1_url: "https://docs.claid.ai/reference/getting-started-with-claid-api",
+    integration_guide_2_label: "Shopify Webhook Sync",
+    integration_guide_2_url: "https://docs.claid.ai/recipes/shopify-claid-workflow"
   },
   {
     id: "seed-photoroom",
@@ -98,10 +149,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T11:20:00Z",
     detailed_overview: "Photoroom is a powerhouse for mobile commerce sellers. It enables swift, pro-level retouching directly from a smartphone or browser, allowing sellers to clean up product listings, add stylized text, and format pictures for marketplaces seamlessly.",
     key_features: ["Pro Retouching Suite", "Batch Processing Engine", "Dynamic Text Overlay AI"],
+    key_features_descriptions: [
+      "Use precise, machine-learning based brush tools to instantly wipe out blemishes, dust, or unwanted shadows.",
+      "Edit thousands of images simultaneously to establish uniform sizing, margins, and background palettes.",
+      "Generate catchy, context-aware brand captions and price tag designs dynamically on top of your visuals."
+    ],
+    rating: 4.8,
+    rating_count: 890,
     customer_review: "Our team uses this every single day. The mobile app parity with web is incredible.",
     customer_review_author: "Jessica H. - Content Lead",
+    customer_review_2: "Photoroom has become an essential part of our workflow. The mobile-to-web sync is seamless, and background removal is the best on the market.",
+    customer_review_2_author: "Lucas P. - Reseller",
     integration_guide_1_label: "Photoroom Mobile to Web Asset Sync",
-    integration_guide_2_label: "Bulk CSV Image Importer"
+    integration_guide_1_url: "https://www.photoroom.com/help/how-to-sync-mobile-and-web",
+    integration_guide_2_label: "Bulk CSV Image Importer",
+    integration_guide_2_url: "https://www.photoroom.com/api/docs"
   },
 
   // ==================== 2. Copywriting & Marketing (5 items) ====================
@@ -115,12 +177,23 @@ export const SEED_ITEMS: SeedItem[] = [
     email: "creator@predis.ai",
     status: "approved",
     created_at: "2026-05-23T11:10:00Z",
-    detailed_overview: "Predis.ai bridge the gap between product catalogs and social media. By simply inputting a product URL or text description, the AI spits out fully edited Instagram reels, interactive carousels, and engaging captions optimized for store traffic.",
+    detailed_overview: "Predis.ai bridges the gap between product catalogs and social media. By simply inputting a product URL or text description, the AI spits out fully edited Instagram reels, interactive carousels, and engaging captions optimized for store traffic.",
     key_features: ["AI Video Reels Generator", "Competitor Analysis Dashboard", "Direct Meta Scheduling"],
+    key_features_descriptions: [
+      "Convert catalog listings into beautiful, animated social media video clips complete with royalty-free audio tracks.",
+      "Track and analyze your competitors' high-engagement posts to dynamically model your content framework.",
+      "Schedule, publish, and track analytics on Meta, TikTok, Pinterest, and LinkedIn directly from the Predis interface."
+    ],
+    rating: 4.7,
+    rating_count: 210,
     customer_review: "Managing social accounts for three brands became manageable thanks to Predis.",
     customer_review_author: "Alex B. - Multi-Store Owner",
+    customer_review_2: "It automatically reads our Shopify product page and spits out a complete Instagram video reel. Absolute game changer!",
+    customer_review_2_author: "Mia S. - Social Commerce Specialist",
     integration_guide_1_label: "Predis Shopify Catalog Connection Guide",
-    integration_guide_2_label: "Meta Business Suite Sync"
+    integration_guide_1_url: "https://predis.ai/resources/shopify-integration-guide",
+    integration_guide_2_label: "Meta Business Suite Sync",
+    integration_guide_2_url: "https://predis.ai/resources/publishing-to-instagram"
   },
   {
     id: "seed-jasper",
@@ -134,10 +207,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T11:00:00Z",
     detailed_overview: "Jasper is an advanced writing assistant trained extensively on conversion psychology. It helps merchants brainstorm catchy hooks, craft SEO-friendly product pages, and generate high-performing ad variants tailored to target audience segments.",
     key_features: ["Brand Voice Personalization", "SEO Keywords Injector", "A/B Test Ad Variant Writer"],
+    key_features_descriptions: [
+      "Upload existing product copy to train the AI model on your brand's unique tone, vocabulary, and style guidelines.",
+      "Seamlessly inject high-value SEO search queries into descriptions without disrupting readable sentence structures.",
+      "Instantly generate 5+ variations of promotional copy optimized for Facebook, Google, and Pinterest campaigns."
+    ],
+    rating: 4.8,
+    rating_count: 940,
     customer_review: "Our ad copy CTR increased by 25% since we let Jasper write our product taglines.",
     customer_review_author: "Ryan M. - Growth Marketer",
+    customer_review_2: "We use Jasper to write all our Facebook ad copy variants and Shopify SEO descriptions. The conversion increase is very real.",
+    customer_review_2_author: "Nathan G. - E-commerce Growth Lead",
     integration_guide_1_label: "Jasper Chrome Extension Workflow",
-    integration_guide_2_label: "Shopify Product Admin Sync"
+    integration_guide_1_url: "https://help.jasper.ai/article/91-using-the-jasper-chrome-extension",
+    integration_guide_2_label: "Shopify Product Admin Sync",
+    integration_guide_2_url: "https://help.jasper.ai/integrations/shopify"
   },
   {
     id: "seed-copy-ai",
@@ -151,10 +235,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T10:50:00Z",
     detailed_overview: "Copy.ai focuses on large-scale marketing workflows. Instead of writing individual newsletters, its e-commerce automation operating system allows sellers to instantly generate entire email sequencing flows based on consumer behavior triggers.",
     key_features: ["Marketing Workflow Automation", "Bulk Email Copy Sequencer", "Multi-Language Ad Translator"],
+    key_features_descriptions: [
+      "Establish automated workflows that write custom welcome emails and abandoned cart triggers instantly.",
+      "Draft cohesive product email chains covering product launches, educational series, and discount campaigns.",
+      "Translate highly localized ad copy into over 25+ languages, adhering strictly to global marketing idioms."
+    ],
+    rating: 4.7,
+    rating_count: 670,
     customer_review: "Automating our abandoned cart email sequences took less than 10 minutes with Copy.ai.",
     customer_review_author: "Liam F. - Operations Lead",
+    customer_review_2: "Automating email marketing workflows with Copy.ai is super easy. It writes high-converting abandoned cart sequences in minutes.",
+    customer_review_2_author: "Ella J. - CRM Manager",
     integration_guide_1_label: "Klaviyo Integration Walkthrough",
-    integration_guide_2_label: "Copy.ai Webhook Configurations"
+    integration_guide_1_url: "https://help.copy.ai/en/articles/klaviyo-integration",
+    integration_guide_2_label: "Copy.ai Webhook Configurations",
+    integration_guide_2_url: "https://docs.copy.ai/reference/webhook-events"
   },
   {
     id: "seed-adcreative-ai",
@@ -168,10 +263,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T10:40:00Z",
     detailed_overview: "AdCreative.ai is a data-backed creative engine. It analyzes millions of successful advertising banners across the web to automatically generate layouts that drive users to click, minimizing ad spend fatigue.",
     key_features: ["Conversion Rate Prediction AI", "Bulk Banner Ad Resizer", "Brand Kit Auto-Integration"],
+    key_features_descriptions: [
+      "Submit draft designs and receive an instant scoring evaluation forecasting the likely CTR (Click-Through Rate).",
+      "Generate a single layout and export it in 15+ aspect dimensions suited for Meta, Google, and TikTok banner placements.",
+      "Upload brand colors, logos, and custom typographies to ensure all AI designs align with company assets."
+    ],
+    rating: 4.6,
+    rating_count: 325,
     customer_review: "Takes the guesswork out of creative testing. The AI-recommended layouts just perform better.",
     customer_review_author: "Chloe W. - Paid Media Specialist",
+    customer_review_2: "The AI generated banner variants perform significantly better in A/B testing than our manual drafts. Incredible ROI.",
+    customer_review_2_author: "Ethan L. - Paid Ads Specialist",
     integration_guide_1_label: "Google & Meta Ad Account Direct Sync",
-    integration_guide_2_label: "API Creative Upload"
+    integration_guide_1_url: "https://help.adcreative.ai/en/articles/connecting-social-ad-accounts",
+    integration_guide_2_label: "API Creative Upload",
+    integration_guide_2_url: "https://api.adcreative.ai/docs"
   },
   {
     id: "seed-glossai",
@@ -185,10 +291,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T10:30:00Z",
     detailed_overview: "GlossAi repurposes video content to unlock social proof potential. It scans long unboxing videos, customer reviews, or brand podcasts to isolate the most exciting segments, auto-generating short-form video clips complete with stylish subtitles.",
     key_features: ["AI Video Summarization", "Auto-Subtitling Engine", "Social Media Trend Matcher"],
+    key_features_descriptions: [
+      "Detect dynamic peaks in long videos, automatically slicing the best unboxing reviews and reactions into clips.",
+      "Instantly overlay highly legible, interactive subtitles styled after successful content creators' frameworks.",
+      "Analyze trending TikTok and Instagram audio formats to match the speed and tone of your generated shorts."
+    ],
+    rating: 4.5,
+    rating_count: 88,
     customer_review: "We generated a month's worth of TikTok shorts from just one single YouTube review.",
     customer_review_author: "Tyler V. - Video Producer",
+    customer_review_2: "It isolates our best video reviews and auto-formats them for TikTok with styling. Incredible time saver for organic marketing.",
+    customer_review_2_author: "Zoe B. - Brand Storyteller",
     integration_guide_1_label: "YouTube Content Importer Endpoints",
-    integration_guide_2_label: "GlossAi Workspace Sharing Guide"
+    integration_guide_1_url: "https://gloss.ai/help/video-importer-guide",
+    integration_guide_2_label: "GlossAi Workspace Sharing Guide",
+    integration_guide_2_url: "https://gloss.ai/help/collaborating-on-workspace"
   },
 
   // ==================== 3. Store Optimization (5 items) ====================
@@ -202,12 +319,23 @@ export const SEED_ITEMS: SeedItem[] = [
     email: "creator@omnisearch.ai",
     status: "approved",
     created_at: "2026-05-23T10:20:00Z",
-    detailed_overview: "OmniSearch represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments and search logic, this tool removes technical barriers and allows founders to focus entirely on high-level growth strategies.",
-    key_features: ["Visual Excellence", "Conversion Lift", "Simple Launch"],
+    detailed_overview: "OmniSearch is a powerful search engine designed to scan and index complex catalog attributes, including text, PDFs, audio, and product files, allowing store owners to offer Google-like search queries that match buyer intent accurately.",
+    key_features: ["Instant Semantic Search", "Audio & Video Transcription Search", "Multi-file Format Indexer"],
+    key_features_descriptions: [
+      "Understand the contextual meaning of search phrases rather than relying solely on rigid product tag matches.",
+      "Search inside product explainer videos, podcasts, or tutorials to serve relevant files to e-commerce buyers.",
+      "Instantly parse and index instruction manuals, PDFs, warranties, and bulk specs associated with product pages."
+    ],
+    rating: 4.8,
+    rating_count: 145,
     customer_review: "Unlocked search visibility for our complex 5,000 SKU clothing store catalog overnight.",
     customer_review_author: "Sarah J. - Shopify Plus Merchant",
+    customer_review_2: "The semantic search is incredibly smart. It understands user search intent and delivers highly accurate results instantly.",
+    customer_review_2_author: "Marcus K. - CTO",
     integration_guide_1_label: "OmniSearch Setup Guide for E-commerce",
-    integration_guide_2_label: "SaaS Integration Endpoints"
+    integration_guide_1_url: "https://omnisearch.ai/docs/e-commerce-quickstart",
+    integration_guide_2_label: "SaaS Integration Endpoints",
+    integration_guide_2_url: "https://omnisearch.ai/docs/api-reference"
   },
   {
     id: "seed-instant",
@@ -221,10 +349,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T10:10:00Z",
     detailed_overview: "Instant lets brand owners launch optimized promotional landing pages without touching code. Its server-side rendering architecture ensures pages load instantly, minimizing bounce rates and maximizing dynamic checkout conversions.",
     key_features: ["No-Code Page Structurer", "Ultra-Fast Page Load Speed", "Shopify Section Exporter"],
+    key_features_descriptions: [
+      "Construct high-end landing pages in a robust visual interface using validated conversion layouts.",
+      "Publish pages that achieve 95+ Google Lighthouse scores through optimized JS and compressed media pipelines.",
+      "Export custom landing page components directly as native, editable Shopify Theme Sections."
+    ],
+    rating: 4.9,
+    rating_count: 420,
     customer_review: "The load speeds on our landing pages dropped below 0.5s. Our conversion rates spiked.",
     customer_review_author: "Nate D. - Direct-to-Consumer Founder",
+    customer_review_2: "Building Shopify landers is super fast with Instant. Elements are pre-optimized for speed and mobile viewports.",
+    customer_review_2_author: "William H. - Conversion Specialist",
     integration_guide_1_label: "Instant.so Theme Integration Guide",
-    integration_guide_2_label: "Custom Domain Setup CSS"
+    integration_guide_1_url: "https://help.instant.so/en/articles/theme-integration-basics",
+    integration_guide_2_label: "Custom Domain Setup CSS",
+    integration_guide_2_url: "https://help.instant.so/en/articles/connecting-a-custom-domain"
   },
   {
     id: "seed-alia-popups",
@@ -238,10 +377,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T10:00:00Z",
     detailed_overview: "Alia Popups uses smart exit-intent tracking to rescue lost revenue. The platform accurately senses when a customer is about to leave your storefront and deploys targeted, personalized offers to secure the checkout session.",
     key_features: ["Exit-Intent Smart Detection", "Dynamic Coupon Code Generator", "A/B Split Testing Panel"],
+    key_features_descriptions: [
+      "Trigger incentive popups precisely when the user's cursor tracks toward the tab close or back button.",
+      "Inject unique, limited-lifetime coupon codes directly into Shopify checkout to incentivize instant buying.",
+      "Test different discount percentages, banner layouts, and trigger delays to optimize checkout recovery."
+    ],
+    rating: 4.7,
+    rating_count: 156,
     customer_review: "Recovered over $5,000 in sales during our first week of launching Alia.",
     customer_review_author: "Sophia R. - E-commerce Director",
+    customer_review_2: "The exit-intent coupon popup rescued hundreds of checkouts that were about to abandon their shopping carts.",
+    customer_review_2_author: "Olivia P. - Store Operator",
     integration_guide_1_label: "Alia JavaScript Snippet Installation",
-    integration_guide_2_label: "Shopify Checkout API Sync"
+    integration_guide_1_url: "https://www.aliapopups.com/help/installing-javascript-pixel",
+    integration_guide_2_label: "Shopify Checkout API Sync",
+    integration_guide_2_url: "https://www.aliapopups.com/help/connecting-shopify-api"
   },
   {
     id: "seed-octane-ai",
@@ -255,10 +405,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T09:50:00Z",
     detailed_overview: "Octane AI enables personalized shopping journeys through guided quizzes. By questioning buyers about their exact preferences, it creates customized product recommendation sets that build trust and lift average order values.",
     key_features: ["Interactive Quiz Builder", "Zero-Party Data Collector", "Personalized Recommendation Engine"],
+    key_features_descriptions: [
+      "Design branching visual quizzes that capture buyer skin types, size preferences, or style desires.",
+      "Build profiles for each customer to enrich your Klaviyo and Klaviyo email segments.",
+      "Instantly map quiz answers to specific catalog products, generating a curated shopping cart."
+    ],
+    rating: 4.8,
+    rating_count: 310,
     customer_review: "Our quiz is our highest-converting page. Customers love the tailored skincare advice.",
     customer_review_author: "Hannah P. - Wellness Brand Founder",
+    customer_review_2: "The guided recommendation quiz has become our top converting funnel. Customers love the tailored, personal recommendations.",
+    customer_review_2_author: "Grace V. - Skincare Brand Founder",
     integration_guide_1_label: "Octane AI Quiz Embed Instructions",
-    integration_guide_2_label: "Klaviyo Customer Profile Mapping"
+    integration_guide_1_url: "https://help.octaneai.com/hc/en-us/articles/360048123994-Embedding-Your-Quiz",
+    integration_guide_2_label: "Klaviyo Customer Profile Mapping",
+    integration_guide_2_url: "https://help.octaneai.com/hc/en-us/articles/360048560033-Klaviyo-Integration"
   },
   {
     id: "seed-loox",
@@ -272,10 +433,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T09:40:00Z",
     detailed_overview: "Loox automates the process of gathering customer validation. It sends beautiful, timed follow-up review request emails, encouraging buyers to upload photo and video proof in exchange for discounts, building premium social proof cards.",
     key_features: ["Automated Review Requester", "Photo/Video Gallery Widgets", "Review Incentives Manager"],
+    key_features_descriptions: [
+      "Send post-purchase emails at optimized delays to collect visual reviews and text ratings.",
+      "Render gorgeous reviews carousels, masonry grids, and popup cards directly on product details pages.",
+      "Offer unique discount codes to buyers who upload authentic product photos and video reviews."
+    ],
+    rating: 4.9,
+    rating_count: 1420,
     customer_review: "Visual reviews are crucial for conversion. Loox makes collecting them entirely frictionless.",
     customer_review_author: "Ben S. - Gadget Store Owner",
+    customer_review_2: "Timed review emails gather visual social proof automatically. Displaying customer photo reviews built immediate buyer trust.",
+    customer_review_2_author: "Leo M. - E-commerce Manager",
     integration_guide_1_label: "Loox Review Widget Injection Guide",
-    integration_guide_2_label: "Google Shopping Review Feed Sync"
+    integration_guide_1_url: "https://help.loox.io/article/24-integration-with-shopify-2-0",
+    integration_guide_2_label: "Google Shopping Review Feed Sync",
+    integration_guide_2_url: "https://help.loox.io/article/118-google-shopping-xml-reviews-feed"
   },
 
   // ==================== 4. Automation (5 items) ====================
@@ -291,10 +463,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T09:30:00Z",
     detailed_overview: "Tidio Lyro handles customer care heavy lifting. Using state-of-the-art LLMs, it securely reads your store's FAQ data and answers order tracking or refund policy questions in seconds, reducing customer support queue times.",
     key_features: ["LLM-Powered Support Chatbot", "Order Tracking Live Sync", "Human Agent Handover Logic"],
+    key_features_descriptions: [
+      "Train the AI support agent in one click by feeding it your website URL, FAQs, or support articles.",
+      "Connect Tidio with your shipping API to automatically inform customers of tracking numbers and delivery dates.",
+      "Detect complex support queries automatically to route the chat session to a human representative."
+    ],
+    rating: 4.7,
+    rating_count: 480,
     customer_review: "Lyro handles all our late-night support tickets perfectly without human intervention.",
     customer_review_author: "Oliver G. - Customer Success Lead",
+    customer_review_2: "Lyro answers up to 70% of support tickets perfectly, and escalates complex queries to our human agents instantly.",
+    customer_review_2_author: "Isabella C. - Operations Lead",
     integration_guide_1_label: "Tidio Lyro AI Training Integration",
-    integration_guide_2_label: "Shopify Admin API Handshake"
+    integration_guide_1_url: "https://www.tidio.com/help/lyro-ai-chatbot-setup",
+    integration_guide_2_label: "Shopify Admin API Handshake",
+    integration_guide_2_url: "https://www.tidio.com/help/shopify-integration"
   },
   {
     id: "seed-thoughtmetric",
@@ -308,10 +491,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T09:20:00Z",
     detailed_overview: "ThoughtMetric solves pixel tracking inaccuracies caused by privacy updates. It utilizes advanced AI cookie-less tracking to trace the exact customer journey, assigning marketing attribution values to the channels that actually generated the sale.",
     key_features: ["Cookie-less Tracking Pixel", "Multi-Touch Attribution Model", "Cross-Channel Ad ROAS Dashboard"],
+    key_features_descriptions: [
+      "Track customer click behavior and store purchases securely without running into iOS tracking blocks.",
+      "Compare first-click, last-click, and linear attribution paths to discover which campaign generated the lead.",
+      "Centralize Meta, Google, and TikTok ad campaign metrics in one dashboard to track true overall ROAS."
+    ],
+    rating: 4.6,
+    rating_count: 115,
     customer_review: "Finally, our Facebook and Shopify dashboard numbers match up. Lifesaver for ad tracking.",
     customer_review_author: "Kevin Z. - Digital Ads Manager",
+    customer_review_2: "Allows us to trace back accurate ad conversions across multiple marketing channels. Solved our iOS 14 pixel tracking problems.",
+    customer_review_2_author: "Jackson H. - Digital Marketing Director",
     integration_guide_1_label: "ThoughtMetric Pixel Setup Walkthrough",
-    integration_guide_2_label: "Google Analytics 4 Connection API"
+    integration_guide_1_url: "https://help.thoughtmetric.io/article/12-shopify-pixel-setup",
+    integration_guide_2_label: "Google Analytics 4 Connection API",
+    integration_guide_2_url: "https://help.thoughtmetric.io/article/34-connecting-ga4"
   },
   {
     id: "seed-alloy-automation",
@@ -323,12 +517,23 @@ export const SEED_ITEMS: SeedItem[] = [
     email: "creator@runalloy.com",
     status: "approved",
     created_at: "2026-05-23T09:10:00Z",
-    detailed_overview: "Alloy Automation functions as the central central nervous system for complex store workflows. It enables non-technical operators to build logic chains, such as automatically tag high-value customers or trigger warehouse shipping updates.",
+    detailed_overview: "Alloy Automation functions as the central nervous system for complex store workflows. It enables non-technical operators to build logic chains, such as automatically tagging high-value customers or triggering warehouse shipping updates.",
     key_features: ["Visual Workflow Builder", "100+ Pre-built SaaS Triggers", "Advanced Logic & Tag Filter"],
+    key_features_descriptions: [
+      "Build complex, multi-app automated integrations using an intuitive visual drag-and-drop block builder.",
+      "Unlock native API triggers connecting Shopify, Klaviyo, ShipStation, Gorgias, Slack, and Google Sheets.",
+      "Establish logic conditions and loops to automate processes like tagging fraud orders or shipping notifications."
+    ],
+    rating: 4.8,
+    rating_count: 260,
     customer_review: "Alloy automated our custom fraud prevention and loyalty program tagging completely.",
     customer_review_author: "Rachel E. - COO",
+    customer_review_2: "Automating custom fraud screening and loyalty tagging flows across multiple apps is now zero-code and effortless.",
+    customer_review_2_author: "Sophia S. - Chief Operations Officer",
     integration_guide_1_label: "Alloy App Store Connection Manual",
-    integration_guide_2_label: "Webhook Payload Parser Guide"
+    integration_guide_1_url: "https://docs.runalloy.com/docs/connecting-your-first-app",
+    integration_guide_2_label: "Webhook Payload Parser Guide",
+    integration_guide_2_url: "https://docs.runalloy.com/reference/webhooks-quickstart"
   },
   {
     id: "seed-gorgias",
@@ -342,10 +547,21 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T09:00:00Z",
     detailed_overview: "Gorgias pulls all communication channels into a single timeline. Whether a buyer messages via Instagram DM, email, or live chat, support teams can edit Shopify orders directly inside the ticket window without switching screens.",
     key_features: ["Multi-Channel Unified Inbox", "Direct Shopify Order Editor", "Macro Response Automation"],
+    key_features_descriptions: [
+      "Consolidate email, live chat, SMS, phone, Instagram, and Facebook conversations in one unified view.",
+      "Cancel, refund, edit, or track Shopify order shipments directly inside the ticket details screen.",
+      "Create smart pre-written templates that auto-fill order statuses and names to resolve tickets in one click."
+    ],
+    rating: 4.9,
+    rating_count: 1140,
     customer_review: "Our first-response time dropped to under 5 minutes because everything is in one screen.",
     customer_review_author: "Daniel S. - Support Manager",
+    customer_review_2: "Our agents can process refunds and edit Shopify orders directly inside customer support tickets. Massive time saver.",
+    customer_review_2_author: "Mason T. - Customer Support Lead",
     integration_guide_1_label: "Gorgias Helpdesk Omni-Channel Sync",
-    integration_guide_2_label: "Shopify App Store Installation"
+    integration_guide_1_url: "https://help.gorgias.com/en_us/channels-integration-guide-SydCjOn9",
+    integration_guide_2_label: "Shopify App Store Installation",
+    integration_guide_2_url: "https://help.gorgias.com/en_us/shopify-integration-HkuRo_u9"
   },
   {
     id: "seed-matrixify",
@@ -359,9 +575,20 @@ export const SEED_ITEMS: SeedItem[] = [
     created_at: "2026-05-23T08:50:00Z",
     detailed_overview: "Matrixify excels at heavy database data lifting. It allows store managers to export thousands of items into Excel or Google Sheets, perform mass price or inventory adjustments, and safely import everything back into Shopify with absolute data integrity.",
     key_features: ["Bulk Product Data Manager", "Metafield Excel Batch Editor", "Automated Backup Scheduler"],
+    key_features_descriptions: [
+      "Import, export, and update thousands of catalog products, customers, orders, or collections at once.",
+      "Safely extract, edit, and mass-create Shopify custom metafields right inside Excel spreadsheets.",
+      "Set up recurring scheduled automated catalog syncs connecting Matrixify with custom FTP/SFTP servers."
+    ],
+    rating: 4.9,
+    rating_count: 620,
     customer_review: "Migrating 20,000 product variants from WooCommerce to Shopify took one click with Matrixify.",
     customer_review_author: "Andrew J. - E-commerce Consultant",
+    customer_review_2: "Matrixify is the gold standard for bulk editing store catalog variants, metafields, and redirects in Google Sheets.",
+    customer_review_2_author: "Luke D. - Shopify Architect",
     integration_guide_1_label: "Matrixify Batch CSV Format Manual",
-    integration_guide_2_label: "FTP/SFTP Scheduled Auto-Export"
+    integration_guide_1_url: "https://matrixify.app/documentation/excel-import-format/",
+    integration_guide_2_label: "FTP/SFTP Scheduled Auto-Export",
+    integration_guide_2_url: "https://matrixify.app/documentation/scheduled-imports-exports/"
   }
 ];
