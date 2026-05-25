@@ -17,44 +17,89 @@ interface PageProps {
   };
 }
 
-// Fetch helper that merges database and seed items
 async function getToolById(id: string) {
-  // Check seeds first
-  const seed = SEED_ITEMS.find((s) => s.id === id);
-  if (seed) return seed;
+  let dbItem: any = null;
 
   const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
   const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
   
+  // 1. Try to fetch from database/mock first
   if (isPlaceholder || isBypass) {
     try {
       const { getMockItemById } = await import('@/lib/mockDb');
       const mockItem = await getMockItemById(id);
       if (mockItem) {
-        if (mockItem.status === 'deleted') return null;
-        return mockItem;
+        dbItem = mockItem;
       }
     } catch (e) {
       console.error('Error fetching item from Mock DB:', e);
     }
-    return null;
-  }
+  } else {
+    try {
+      const { data, error } = await supabase
+        .from('items')
+        .select('*')
+        .eq('id', id)
+        .single();
 
-  // Otherwise, fetch from Supabase
-  try {
-    const { data, error } = await supabase
-      .from('items')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (!error && data) {
-      if (data.status === 'deleted') return null;
-      return data;
+      if (!error && data) {
+        dbItem = data;
+      }
+    } catch (e) {
+      console.error('Error fetching item by ID from Supabase:', e);
     }
-  } catch (e) {
-    console.error('Error fetching item by ID:', e);
   }
+
+  // Helper to normalize URLs for matching (removes protocol, www, trailing slashes)
+  const normalizeUrl = (url: string) => {
+    if (!url) return '';
+    return url
+      .toLowerCase()
+      .trim()
+      .replace(/^https?:\/\//, '')
+      .replace(/^www\./, '')
+      .replace(/\/$/, '');
+  };
+
+  // 2. If item is found in database, check if it matches a seed tool by URL or Title
+  // and merge our rich code-based seed metadata to show 100% authentic pages!
+  if (dbItem) {
+    const seed = SEED_ITEMS.find((s) => {
+      if (s.id === id) return true;
+      if (normalizeUrl(s.url) === normalizeUrl(dbItem.url)) return true;
+      if (s.title.toLowerCase().trim() === dbItem.title.toLowerCase().trim()) return true;
+      return false;
+    });
+
+    if (seed) {
+      const merged = {
+        ...dbItem,
+        detailed_overview: dbItem.detailed_overview || seed.detailed_overview,
+        key_features: dbItem.key_features || seed.key_features,
+        key_features_descriptions: dbItem.key_features_descriptions || seed.key_features_descriptions,
+        rating: dbItem.rating || seed.rating,
+        rating_count: dbItem.rating_count || seed.rating_count,
+        customer_review: dbItem.customer_review || seed.customer_review,
+        customer_review_author: dbItem.customer_review_author || seed.customer_review_author,
+        customer_review_2: dbItem.customer_review_2 || seed.customer_review_2,
+        customer_review_2_author: dbItem.customer_review_2_author || seed.customer_review_2_author,
+        integration_guide_1_label: dbItem.integration_guide_1_label || seed.integration_guide_1_label,
+        integration_guide_1_url: dbItem.integration_guide_1_url || seed.integration_guide_1_url,
+        integration_guide_2_label: dbItem.integration_guide_2_label || seed.integration_guide_2_label,
+        integration_guide_2_url: dbItem.integration_guide_2_url || seed.integration_guide_2_url,
+      };
+      if (merged.status === 'deleted') return null;
+      return merged;
+    }
+
+    if (dbItem.status === 'deleted') return null;
+    return dbItem;
+  }
+
+  // 3. Failover: Check seeds directly by raw ID if no database row matches
+  const seed = SEED_ITEMS.find((s) => s.id === id);
+  if (seed) return seed;
+
   return null;
 }
 
