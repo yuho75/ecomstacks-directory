@@ -102,6 +102,17 @@ export async function POST(request: Request) {
     const accessToken = authData.access_token;
 
     // 3. Create PayPal checkout order with custom_id linked to the Supabase item id
+    let price = '9.99';
+    let tierDescription = `EcomStacks Platform Standard lifetime listing: ${title}`;
+
+    if (tier === 'featured') {
+      price = '49.00';
+      tierDescription = `EcomStacks Platform Featured listing (30 days): ${title}`;
+    } else if (tier === 'premium' || tier === 'premium_launch') {
+      price = '199.00';
+      tierDescription = `EcomStacks Platform Premium Launch package: ${title}`;
+    }
+
     const orderRes = await fetch(`${apiUrl}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
@@ -114,10 +125,10 @@ export async function POST(request: Request) {
           {
             amount: {
               currency_code: 'USD',
-              value: '9.99'
+              value: price
             },
             custom_id: item.id, // Links Supabase row UUID
-            description: `EcomStacks Platform lifetime listing: ${title}`
+            description: tierDescription
           }
         ]
       })

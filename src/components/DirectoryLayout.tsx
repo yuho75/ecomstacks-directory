@@ -7,6 +7,8 @@ import SubmissionModal from '@/components/SubmissionModal';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+type Tier = 'standard' | 'featured' | 'premium';
+
 interface Item {
   id: string;
   title: string;
@@ -35,8 +37,11 @@ const CATEGORIES = [
 export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [defaultTier, setDefaultTier] = useState<Tier>('standard');
   const [itemsList, setItemsList] = useState<Item[]>(initialItems);
   const [visibleCount, setVisibleCount] = useState(12);
+
+  const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
 
   useEffect(() => {
     setVisibleCount(12);
@@ -49,6 +54,11 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
     // Handle auto-opening of submission modal via query parameters (e.g. from Pricing page)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('submit') === 'true') {
+      // Optionally pre-select a tier if ?tier=featured etc.
+      const tierParam = urlParams.get('tier') as Tier | null;
+      if (tierParam && ['standard', 'featured', 'premium'].includes(tierParam)) {
+        setDefaultTier(tierParam);
+      }
       setIsModalOpen(true);
       // Remove query param from URL without page reload
       const newUrl = window.location.pathname;
@@ -83,17 +93,22 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
     }
   };
 
+  const handleOpenModal = (tier: Tier = 'standard') => {
+    setDefaultTier(tier);
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       {/* TopNavBar */}
-      <Header onSubmitClick={() => setIsModalOpen(true)} />
+      <Header onSubmitClick={() => handleOpenModal('standard')} />
 
       {/* Main Container */}
       <main className="max-w-container-max w-full mx-auto px-gutter pb-xl flex-grow">
         {/* Hero Section */}
         <section className="pt-md pb-sm md:pt-lg md:pb-md text-center flex flex-col items-center max-w-4xl mx-auto">
-          <h1 
-            className="font-extrabold text-[44px] md:text-[56px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-sm select-none" 
+          <h1
+            className="font-extrabold text-[44px] md:text-[56px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-sm select-none"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
             Ecom<span className="text-on-surface-variant">Stacks</span>
@@ -102,11 +117,11 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
             Double your revenue with a curated directory of high-converting micro-tools built specifically for 1-person brands, Shopify builders, and e-commerce growth.
           </p>
           <div className="flex justify-center">
-            <button 
-              onClick={() => setIsModalOpen(true)}
+            <button
+              onClick={() => handleOpenModal('standard')}
               className="bg-primary-container text-on-primary hover:bg-primary px-xl py-md rounded-lg font-label-md text-label-md shadow-lg transition-all active:scale-95 duration-100"
             >
-              Submit Your Tool (Free)
+              {isPaypalEnabled ? 'Submit Your Tool' : 'Submit Your Tool (Free)'}
             </button>
           </div>
         </section>
@@ -117,11 +132,11 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
         {/* Filtering Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-sm mb-md border-b border-outline-variant pb-sm">
           {CATEGORIES.map(category => (
-            <button 
+            <button
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`px-md py-base rounded-full font-label-sm text-label-sm transition-all duration-200 select-none ${
-                activeCategory === category 
+                activeCategory === category
                   ? 'bg-primary text-on-primary shadow-sm'
                   : 'bg-surface-container hover:bg-surface-container-high text-on-surface-variant'
               }`}
@@ -184,10 +199,11 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
       <Footer />
 
       {/* Submission Modal Wrapper */}
-      <SubmissionModal 
+      <SubmissionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={handleRefreshData}
+        defaultTier={defaultTier}
       />
     </>
   );

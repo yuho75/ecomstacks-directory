@@ -9,6 +9,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onSubmitClick }: HeaderProps) {
+  const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
   const router = useRouter();
   const pathname = usePathname();
   const [logoClicks, setLogoClicks] = useState(0);
@@ -218,7 +219,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
               onClick={handleSubmitClick}
               className="hidden sm:inline-block bg-primary-container text-on-primary hover:bg-primary px-md py-sm rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm"
             >
-              Submit Your Tool (Free)
+              {isPaypalEnabled ? 'Submit Your Tool' : 'Submit Your Tool (Free)'}
             </button>
 
             {/* Hamburger Menu Button */}
@@ -272,7 +273,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                 onClick={handleSubmitClick}
                 className="mt-2 w-full bg-primary-container text-on-primary hover:bg-primary py-md rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm text-center"
               >
-                Submit Your Tool (Free)
+                {isPaypalEnabled ? 'Submit Your Tool' : 'Submit Your Tool (Free)'}
               </button>
             </nav>
           </div>
