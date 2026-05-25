@@ -63,6 +63,7 @@ export default function PricingPage() {
               <div className="mb-6 flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold text-on-surface">Free</span>
                 <span className="text-on-surface-variant line-through text-base">$9.99</span>
+                <span className="text-on-surface-variant text-sm font-medium ml-1">one-time value</span>
               </div>
             )}
 

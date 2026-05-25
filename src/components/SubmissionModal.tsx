@@ -424,9 +424,12 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.standard}</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-xs">
-                        <span className="font-label-lg text-primary text-[16px]">Free</span>
-                        <span className="text-[11px] text-on-surface-variant line-through">${TIER_PRICES.standard}</span>
+                      <div className="text-right">
+                        <div className="flex items-center gap-xs justify-end">
+                          <span className="font-label-lg text-primary text-[16px]">Free</span>
+                          <span className="text-[11px] text-on-surface-variant line-through">${TIER_PRICES.standard}</span>
+                        </div>
+                        <p className="text-[10px] text-on-surface-variant font-medium">one-time value</p>
                       </div>
                     </div>
                   )}
@@ -484,9 +487,12 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.featured}</p>
                         </div>
                       </div>
-                      <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
-                        ${TIER_PRICES.featured}
-                      </span>
+                      <div className="text-right">
+                        <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
+                          ${TIER_PRICES.featured}
+                        </span>
+                        <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
+                      </div>
                     </div>
                   )}
 
@@ -538,9 +544,12 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.premium}</p>
                         </div>
                       </div>
-                      <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
-                        ${TIER_PRICES.premium}
-                      </span>
+                      <div className="text-right">
+                        <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
+                          ${TIER_PRICES.premium}
+                        </span>
+                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                      </div>
                     </div>
                   )}
                 </div>
