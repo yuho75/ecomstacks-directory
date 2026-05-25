@@ -275,7 +275,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </span>
             <span className="bg-on-surface/5 text-on-surface-variant px-sm py-xs rounded-full font-label-sm text-[11px] uppercase tracking-wider font-semibold border border-outline-variant/30 flex items-center gap-1 select-none">
               <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/60"></span>
-              Since 2026-05-23
+              Since 2026-05-25
             </span>
           </div>
           <div className="flex items-center gap-md">
