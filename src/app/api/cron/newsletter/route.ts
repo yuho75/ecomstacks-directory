@@ -56,6 +56,16 @@ export async function GET(request: Request) {
           created_at: new Date().toISOString()
         },
         {
+          id: 'mock-id-3',
+          title: 'Pebblely AI',
+          url: 'https://example.com/pebblely',
+          description: 'Create AI product photos that help you sell more. No Photoshop skills required.',
+          image_url: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500',
+          category: 'Design Tools',
+          tier: 'featured',
+          created_at: new Date().toISOString()
+        },
+        {
           id: 'mock-id-2',
           title: 'Storefront Booster',
           url: 'https://example.com/booster',
@@ -67,36 +77,54 @@ export async function GET(request: Request) {
         }
       ];
     } else {
-      // Query items approved during the previous calendar month
-      const { data: monthItems, error: itemsErr } = await supabaseAdmin
+      // 1. Always fetch ALL approved FEATURED & PREMIUM sponsors (so they are never excluded by limit)
+      const { data: sponsors, error: sponsorsErr } = await supabaseAdmin
         .from('items')
         .select('*')
         .eq('status', 'approved')
+        .in('tier', ['featured', 'premium'])
+        .order('created_at', { ascending: false });
+
+      if (sponsorsErr) throw sponsorsErr;
+
+      // 2. Fetch standard tools from the previous month
+      const { data: monthStandardItems, error: standardErr } = await supabaseAdmin
+        .from('items')
+        .select('*')
+        .eq('status', 'approved')
+        .eq('tier', 'standard')
         .gte('created_at', prevMonthStart.toISOString())
         .lte('created_at', prevMonthEnd.toISOString())
         .order('created_at', { ascending: false });
 
-      if (!itemsErr && monthItems && monthItems.length >= 3) {
-        approvedItems = monthItems;
-      } else {
-        // Fallback: If previous month's new additions are too sparse (< 3), fetch latest 6 approved tools overall
-        const { data: latestItems, error: fallbackErr } = await supabaseAdmin
+      let standardItems = monthStandardItems || [];
+
+      // Fallback: If previous month's new additions are too sparse (< 3), fetch latest 6 approved standard tools overall
+      if (standardErr || standardItems.length < 3) {
+        const { data: latestStandardItems, error: fallbackErr } = await supabaseAdmin
           .from('items')
           .select('*')
           .eq('status', 'approved')
+          .eq('tier', 'standard')
           .order('created_at', { ascending: false })
           .limit(6);
           
         if (fallbackErr) throw fallbackErr;
-        approvedItems = latestItems || [];
+        standardItems = latestStandardItems || [];
       }
+
+      // Merge and ensure absolutely no duplicate items
+      const sponsorIds = new Set((sponsors || []).map(s => s.id));
+      const uniqueStandardItems = standardItems.filter(item => !sponsorIds.has(item.id));
+
+      approvedItems = [...(sponsors || []), ...uniqueStandardItems];
     }
 
     if (approvedItems.length === 0) {
       return NextResponse.json({ success: true, message: 'No approved tools available to construct the newsletter.' });
     }
 
-    // Sort items to prioritize Featured & Premium (sponsors) at the absolute top
+    // Sort items to prioritize Featured & Premium (sponsors) at the absolute top (redundancy check)
     const sortedItems = [...approvedItems].sort((a, b) => {
       const aFeatured = a.tier === 'featured' || a.tier === 'premium';
       const bFeatured = b.tier === 'featured' || b.tier === 'premium';
@@ -142,11 +170,18 @@ export async function GET(request: Request) {
         const isSponsor = tool.tier === 'featured' || tool.tier === 'premium';
         const itemUrl = `https://ecomstacksdirectory.com/items/${tool.id}`;
         
+        // Premium Sponsor Styling vs Clean Standard Styling
+        const cardBgColor = isSponsor ? '#faf9ff' : '#ffffff';
+        const cardBorder = isSponsor ? '2px solid #6366f1' : '1px solid #e4e4e7';
+        const cardShadow = isSponsor 
+          ? '0 10px 20px -3px rgba(99, 102, 241, 0.12), 0 4px 6px -2px rgba(99, 102, 241, 0.06)' 
+          : '0 4px 6px -1px rgba(0, 0, 0, 0.05)';
+        
         toolsHtml += `
-          <div style="margin-bottom: 24px; background-color: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); text-align: left;">
+          <div style="margin-bottom: 24px; background-color: ${cardBgColor}; border: ${cardBorder}; border-radius: 12px; overflow: hidden; box-shadow: ${cardShadow}; text-align: left;">
             ${isSponsor ? `
-              <div style="background-color: #eff6ff; color: #1e40af; font-size: 11px; font-weight: bold; padding: 10px 16px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #dbeafe;">
-                ✨ Official Featured Sponsor Tool
+              <div style="background-color: #6366f1; color: #ffffff; font-size: 11px; font-weight: bold; padding: 12px 20px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #4f46e5;">
+                ⚡ OFFICIAL FEATURED SPONSOR
               </div>
             ` : ''}
             <div style="padding: 20px;">
@@ -158,8 +193,8 @@ export async function GET(request: Request) {
                 </tr>
                 <tr>
                   <td valign="top">
-                    <h3 style="margin: 0 0 6px 0; color: #09090b; font-size: 18px; font-weight: bold;">
-                      ${tool.title} ${isSponsor ? '⭐' : ''}
+                    <h3 style="margin: 0 0 6px 0; color: #09090b; font-size: ${isSponsor ? '20px' : '18px'}; font-weight: bold;">
+                      ${tool.title} ${isSponsor ? '🌟' : ''}
                     </h3>
                     <p style="margin: 0 0 16px 0; color: #71717a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
                       Category: ${tool.category}
@@ -170,12 +205,12 @@ export async function GET(request: Request) {
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
                         <td>
-                          <span style="background-color: #f3f4f6; color: #374151; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
+                          <span style="background-color: ${isSponsor ? '#e0e7ff' : '#f3f4f6'}; color: ${isSponsor ? '#4338ca' : '#374151'}; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
                             ${tool.category}
                           </span>
                         </td>
                         <td align="right">
-                          <a href="${tool.url}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #3525cd; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold;">
+                          <a href="${tool.url}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #3525cd; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; box-shadow: ${isSponsor ? '0 4px 6px -1px rgba(53, 37, 205, 0.2)' : 'none'};">
                             Visit Website &rarr;
                           </a>
                         </td>
