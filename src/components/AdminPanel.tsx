@@ -401,11 +401,10 @@ export default function AdminPanel({
             {/* Popular Pages Panel */}
             <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl flex flex-col justify-between animate-in fade-in duration-300">
               <div>
-                <h4 className="font-bold text-on-surface mb-md text-label-md flex items-center gap-xs">
-                  <span className="material-symbols-outlined text-primary text-[20px]">explore</span>
+                <h4 className="font-bold text-on-surface mb-md text-[14px]">
                   인기 도구 순위 (상위 5개)
                 </h4>
-                <div className="space-y-sm">
+                <div className="overflow-x-auto">
                   {(() => {
                     // 도구 상세 페이지만 필터링 (메인홈, 내부 페이지 모두 제외)
                     const toolPages = analytics.topPages
@@ -413,8 +412,6 @@ export default function AdminPanel({
                         p.path.startsWith('도구:') || p.path.startsWith('/items/')
                       )
                       .slice(0, 5); // 상위 5개만
-
-                    const maxHits = toolPages[0]?.count || 1;
 
                     if (toolPages.length === 0) {
                       return (
@@ -424,66 +421,47 @@ export default function AdminPanel({
                       );
                     }
 
-                    return toolPages.map((page, index) => {
-                      const fillPercent = (page.count / maxHits) * 100;
-                      const rank = index + 1;
+                    return (
+                      <table className="w-full text-left text-[12px] border-collapse">
+                        <thead>
+                          <tr className="border-b border-outline-variant text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+                            <th className="py-2 pr-2 text-center w-8">순위</th>
+                            <th className="py-2 px-2">도구명</th>
+                            <th className="py-2 px-2 text-right">상세조회</th>
+                            <th className="py-2 pl-2 text-right">사이트방문</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-outline-variant/30">
+                          {toolPages.map((page, index) => {
+                            const rank = index + 1;
+                            const label = page.path.startsWith('도구:')
+                              ? page.path.replace('도구:', '').trim()
+                              : '도구 상세';
 
-                      // "도구: Pebblely" → "Pebblely"
-                      const label = page.path.startsWith('도구:')
-                        ? page.path.replace('도구:', '').trim()
-                        : '도구 상세';
+                            const matchedItem = approvedItems.find(item => item.title.trim() === label);
+                            const websiteClicks = matchedItem && itemClickStats[matchedItem.id] 
+                              ? itemClickStats[matchedItem.id].websiteClicks 
+                              : 0;
 
-                      // Find actual tool item to match website click stats from database
-                      const matchedItem = approvedItems.find(item => item.title.trim() === label);
-                      const websiteClicks = matchedItem && itemClickStats[matchedItem.id] 
-                        ? itemClickStats[matchedItem.id].websiteClicks 
-                        : 0;
-
-                      return (
-                        <div key={index} className="space-y-1 bg-surface-container-low/30 p-xs sm:p-sm rounded-lg border border-outline-variant/30 hover:border-primary/20 transition-all">
-                          <div className="flex flex-col gap-xs sm:flex-row sm:justify-between sm:items-center text-[12px]">
-                            {/* Left: Rank + Tool Name */}
-                            <div className="flex items-center gap-xs min-w-0">
-                              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[11px] font-extrabold flex items-center justify-center shrink-0">
-                                {rank}
-                              </span>
-                              <span className="font-bold text-on-surface truncate max-w-[130px]" title={label}>
-                                {label}
-                              </span>
-                            </div>
-                            
-                            {/* Right: Detailed Split Badges (Detail Views & Web Clicks) */}
-                            <div className="flex flex-wrap items-center gap-xs shrink-0 sm:ml-xs">
-                              <span className="bg-indigo-50 border border-indigo-200/60 rounded px-1.5 py-0.5 font-bold text-indigo-600 text-[10px] flex items-center gap-[2px]">
-                                <span className="material-symbols-outlined text-[11px]">visibility</span>
-                                <span>조회 {page.count.toLocaleString()}회</span>
-                              </span>
-                              <span className="bg-emerald-50 border border-emerald-200/60 rounded px-1.5 py-0.5 font-bold text-emerald-600 text-[10px] flex items-center gap-[2px]">
-                                <span className="material-symbols-outlined text-[11px]">north_east</span>
-                                <span>방문 {websiteClicks.toLocaleString()}회</span>
-                              </span>
-                            </div>
-                          </div>
-                          <div className="w-full bg-surface-container-low h-1 rounded-full overflow-hidden">
-                            <div
-                              className="bg-gradient-to-r from-primary to-blue-500 h-full rounded-full transition-all duration-500"
-                              style={{ width: `${fillPercent}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    });
+                            return (
+                              <tr key={index} className="hover:bg-neutral-50/50">
+                                <td className="py-2.5 pr-2 text-center font-bold text-neutral-400">{rank}</td>
+                                <td className="py-2.5 px-2 font-bold text-on-surface truncate max-w-[120px]" title={label}>{label}</td>
+                                <td className="py-2.5 px-2 text-right font-medium text-neutral-600">{page.count.toLocaleString()}회</td>
+                                <td className="py-2.5 pl-2 text-right font-medium text-neutral-600">{websiteClicks.toLocaleString()}회</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    );
                   })()}
                 </div>
               </div>
 
               <div className="border-t border-outline-variant/50 pt-sm mt-md">
-                <p className="text-[11px] text-on-surface-variant leading-relaxed flex items-center gap-[3px]">
-                  <span className="material-symbols-outlined text-[12px] text-indigo-500">visibility</span>
-                  <span>상세조회: EcomStacks 안의 상세뷰</span>
-                  <span className="text-neutral-300 mx-0.5">|</span>
-                  <span className="material-symbols-outlined text-[12px] text-emerald-500">north_east</span>
-                  <span>방문: 아웃링크 클릭수</span>
+                <p className="text-[11px] text-neutral-400 leading-relaxed">
+                  * 상세조회: 상세페이지 뷰 수 / 사이트방문: 아웃링크 클릭수
                 </p>
               </div>
             </div>

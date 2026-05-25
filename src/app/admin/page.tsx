@@ -178,7 +178,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                 return { path: displayPath, count };
               })
               .sort((a, b) => b.count - a.count)
-              .slice(0, 5);
+              .slice(0, 30);
 
             tempAnalytics = {
               totalViews: totalViews || 0,
