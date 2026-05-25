@@ -85,7 +85,7 @@ export default function PricingPage() {
               href="/?submit=true&tier=standard"
               className="w-full py-3 rounded-xl bg-primary text-white font-bold text-center transition-colors hover:brightness-110 active:scale-95"
             >
-              {isPaypalEnabled ? 'Get Listed — $9.99' : 'Submit for Free'}
+              {isPaypalEnabled ? 'Get Listed — $9.99 (One-time)' : 'Submit for Free'}
             </Link>
           </div>
 
@@ -178,7 +178,7 @@ export default function PricingPage() {
                 href="/?submit=true&tier=premium"
                 className="w-full py-3 rounded-xl bg-on-surface text-surface font-bold text-center transition-colors hover:brightness-90 active:scale-95"
               >
-                Launch Premium — $199
+                Launch Premium — $199 (One-time)
               </Link>
             ) : (
               <button

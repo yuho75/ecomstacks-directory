@@ -826,9 +826,9 @@ export default function AdminPanel({
                        'money_off'}
                     </span>
                     <span>
-                      {item.tier === 'premium' && 'Premium · $199.00'}
-                      {item.tier === 'featured' && 'Featured · $49.00'}
-                      {item.tier === 'standard' && 'Standard · $9.99'}
+                      {item.tier === 'premium' && 'Premium · $199.00 (One-time)'}
+                      {item.tier === 'featured' && 'Featured · $49.00 / month'}
+                      {item.tier === 'standard' && 'Standard · $9.99 (One-time)'}
                       {(!item.tier || item.tier === 'free') && 'Free Submission'}
                     </span>
                   </div>

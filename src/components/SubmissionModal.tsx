@@ -395,7 +395,10 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.standard}</p>
                         </div>
                       </div>
-                      <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.standard}</span>
+                      <div className="text-right">
+                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.standard}</span>
+                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                      </div>
                     </div>
                   ) : (
                     /* FREE MODE — Standard is Free */
@@ -458,7 +461,10 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.featured}</p>
                         </div>
                       </div>
-                      <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.featured}</span>
+                      <div className="text-right">
+                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.featured}</span>
+                        <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
+                      </div>
                     </div>
                   ) : (
                     /* FREE MODE — Featured Coming Soon */
@@ -509,7 +515,10 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.premium}</p>
                         </div>
                       </div>
-                      <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.premium}</span>
+                      <div className="text-right">
+                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.premium}</span>
+                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                      </div>
                     </div>
                   ) : (
                     /* FREE MODE — Premium Coming Soon */
