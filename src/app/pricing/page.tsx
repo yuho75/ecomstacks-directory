@@ -63,7 +63,7 @@ export default function PricingPage() {
               <div className="mb-6 flex items-baseline gap-2">
                 <span className="text-4xl font-extrabold text-on-surface">Free</span>
                 <span className="text-on-surface-variant line-through text-base">$9.99</span>
-                <span className="text-on-surface-variant text-sm font-medium ml-1">one-time value</span>
+                <span className="text-on-surface-variant text-sm font-medium ml-1">one-time</span>
               </div>
             )}
 
@@ -157,19 +157,19 @@ export default function PricingPage() {
             </div>
             <ul className="space-y-4 mb-8 flex-1">
               <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                <span className="material-symbols-outlined text-amber-500 text-[20px]">check_circle</span>
                 <span className="text-sm text-on-surface">Dedicated Newsletter Shoutout</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                <span className="material-symbols-outlined text-amber-500 text-[20px]">check_circle</span>
                 <span className="text-sm text-on-surface">Twitter &amp; LinkedIn Promotion</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                <span className="material-symbols-outlined text-amber-500 text-[20px]">check_circle</span>
                 <span className="text-sm text-on-surface">1 Month Featured Placement</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                <span className="material-symbols-outlined text-amber-500 text-[20px]">check_circle</span>
                 <span className="text-sm text-on-surface">Everything in Featured</span>
               </li>
             </ul>

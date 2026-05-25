@@ -14,8 +14,8 @@ interface SubmissionModalProps {
 
 const TIER_PRICES: Record<Tier, string> = {
   standard: '9.99',
-  featured: '49.00',
-  premium: '199.00',
+  featured: '49',
+  premium: '199',
 };
 
 const TIER_LABELS: Record<Tier, string> = {
@@ -429,7 +429,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           <span className="font-label-lg text-primary text-[16px]">Free</span>
                           <span className="text-[11px] text-on-surface-variant line-through">${TIER_PRICES.standard}</span>
                         </div>
-                        <p className="text-[10px] text-on-surface-variant font-medium">one-time value</p>
+                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
                       </div>
                     </div>
                   )}
