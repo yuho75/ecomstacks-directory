@@ -14,6 +14,7 @@ interface Item {
   category: string;
   email: string;
   status: string;
+  tier?: string;
   created_at: string;
 }
 
@@ -30,7 +31,13 @@ export default function ToolCard({ item }: ToolCardProps) {
   const displayCategory = item.category || 'Visual & Design';
 
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden tool-card-shadow tool-card-hover transition-all group flex flex-col h-full">
+    <div className={`bg-surface-container-lowest rounded-xl overflow-hidden tool-card-shadow transition-all duration-300 group flex flex-col h-full ${
+      item.tier === 'premium'
+        ? 'border-2 border-amber-500/40 shadow-md hover:border-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.25)] col-span-1 sm:col-span-2 md:col-span-2'
+        : item.tier === 'featured'
+          ? 'border-2 border-primary/40 shadow-md hover:border-primary hover:shadow-[0_0_20px_rgba(59,130,246,0.25)] col-span-1 sm:col-span-2 md:col-span-2'
+          : 'border border-outline-variant tool-card-hover col-span-1'
+    }`}>
       {/* Thumbnail Area */}
       <Link href={`/items/${item.id}`} className="aspect-video relative overflow-hidden bg-surface-container-high block shrink-0">
         <img 
@@ -45,10 +52,22 @@ export default function ToolCard({ item }: ToolCardProps) {
       <div className="p-md flex flex-col justify-between flex-grow">
         <div>
           <div className="flex flex-col gap-1 mb-2">
-            <div>
+            <div className="flex flex-wrap items-center gap-xs">
               <span className="bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider whitespace-nowrap border border-outline-variant/30">
                 {displayCategory}
               </span>
+              {item.tier === 'premium' && (
+                <span className="bg-gradient-to-r from-amber-500 to-yellow-500 text-amber-950 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none animate-pulse">
+                  <span className="material-symbols-outlined text-[11px]">diamond</span>
+                  Premium Sponsor
+                </span>
+              )}
+              {item.tier === 'featured' && (
+                <span className="bg-primary text-on-primary px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none">
+                  <span className="material-symbols-outlined text-[11px]">workspace_premium</span>
+                  Featured Sponsor
+                </span>
+              )}
             </div>
             <h3 className="font-headline-md text-[18px] text-on-surface font-bold line-clamp-1 min-w-0">
               <Link href={`/items/${item.id}`} className="hover:text-primary transition-colors">
