@@ -772,10 +772,29 @@ export default function AdminPanel({
                       <span className="bg-surface-container-high text-on-surface-variant px-xs py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider font-semibold">
                         {item.category}
                       </span>
-                      {(item.tier === 'featured' || item.tier === 'premium') && (
-                        <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px]">
+                      {/* Plan / Tier Status Badge */}
+                      {item.tier === 'premium' && (
+                        <span className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-amber-950 border border-amber-500/20 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none">
+                          <span className="material-symbols-outlined text-[12px] animate-pulse">diamond</span>
+                          Premium ($199.00)
+                        </span>
+                      )}
+                      {item.tier === 'featured' && (
+                        <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none">
                           <span className="material-symbols-outlined text-[12px] animate-pulse">workspace_premium</span>
-                          Featured Sponsor
+                          Featured ($49.00)
+                        </span>
+                      )}
+                      {item.tier === 'standard' && (
+                        <span className="bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] select-none">
+                          <span className="material-symbols-outlined text-[12px]">payments</span>
+                          Standard ($9.99)
+                        </span>
+                      )}
+                      {(!item.tier || item.tier === 'free') && (
+                        <span className="bg-neutral-100 text-neutral-500 border border-neutral-200 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] select-none">
+                          <span className="material-symbols-outlined text-[12px]">money_off</span>
+                          Free Submission
                         </span>
                       )}
                     </div>
