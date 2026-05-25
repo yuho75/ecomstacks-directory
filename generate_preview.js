@@ -115,8 +115,6 @@ const buildNewsletterHtml = (tools) => {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="color-scheme" content="light dark">
-      <meta name="supported-color-schemes" content="light dark">
       <title>EcomStacks Monthly Newsletter</title>
       <!--[if mso]>
       <xml>
@@ -127,43 +125,9 @@ const buildNewsletterHtml = (tools) => {
       </xml>
       <![endif]-->
       <style>
-        /* Support for Outlook Dark Mode Inversion and General Fixes */
-        :root {
-          color-scheme: light dark;
-          supported-color-schemes: light dark;
-        }
-        @media (prefers-color-scheme: dark) {
-          body, table, td {
-            background-color: #121212 !important;
-            color: #f3f4f6 !important;
-          }
-          h1, h2, h3, span, a {
-            color: #ffffff !important;
-          }
-          .body-bg {
-            background-color: #0f172a !important;
-          }
-          .content-table {
-            background-color: #1e293b !important;
-            border: 1px solid #334155 !important;
-          }
-          .card-table {
-            background-color: #1e1e1e !important;
-            border: 1px solid #2d2d2d !important;
-          }
-          .sponsor-card-table {
-            background-color: #1d1b3c !important;
-            border: 2px solid #6366f1 !important;
-          }
-          .card-title {
-            color: #ffffff !important;
-          }
-          .card-category {
-            color: #a1a1aa !important;
-          }
-          .card-description {
-            color: #d1d5db !important;
-          }
+        /* Support for Outlook and General Client Layout Fixes */
+        body, table, td {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
       </style>
     </head>
