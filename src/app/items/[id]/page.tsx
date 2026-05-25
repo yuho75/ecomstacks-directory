@@ -18,85 +18,41 @@ interface PageProps {
 }
 
 async function getToolById(id: string) {
-  let dbItem: any = null;
-
   const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
   const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
   
-  // 1. Try to fetch from database/mock first
+  // 1. Fetch from mock DB first if sandbox is active
   if (isPlaceholder || isBypass) {
     try {
       const { getMockItemById } = await import('@/lib/mockDb');
       const mockItem = await getMockItemById(id);
       if (mockItem) {
-        dbItem = mockItem;
+        if (mockItem.status === 'deleted') return null;
+        return mockItem;
       }
     } catch (e) {
       console.error('Error fetching item from Mock DB:', e);
     }
-  } else {
-    try {
-      const { data, error } = await supabase
-        .from('items')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (!error && data) {
-        dbItem = data;
-      }
-    } catch (e) {
-      console.error('Error fetching item by ID from Supabase:', e);
-    }
+    return null;
   }
 
-  // Helper to normalize URLs for matching (removes protocol, www, trailing slashes)
-  const normalizeUrl = (url: string) => {
-    if (!url) return '';
-    return url
-      .toLowerCase()
-      .trim()
-      .replace(/^https?:\/\//, '')
-      .replace(/^www\./, '')
-      .replace(/\/$/, '');
-  };
+  // 2. Fetch directly from live Supabase (now fully populated with rich details!)
+  try {
+    const { data, error } = await supabase
+      .from('items')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-  // 2. If item is found in database, check if it matches a seed tool by URL or Title
-  // and merge our rich code-based seed metadata to show 100% authentic pages!
-  if (dbItem) {
-    const seed = SEED_ITEMS.find((s) => {
-      if (s.id === id) return true;
-      if (normalizeUrl(s.url) === normalizeUrl(dbItem.url)) return true;
-      if (s.title.toLowerCase().trim() === dbItem.title.toLowerCase().trim()) return true;
-      return false;
-    });
-
-    if (seed) {
-      const merged = {
-        ...dbItem,
-        detailed_overview: dbItem.detailed_overview || seed.detailed_overview,
-        key_features: dbItem.key_features || seed.key_features,
-        key_features_descriptions: dbItem.key_features_descriptions || seed.key_features_descriptions,
-        rating: dbItem.rating || seed.rating,
-        rating_count: dbItem.rating_count || seed.rating_count,
-        customer_review: dbItem.customer_review || seed.customer_review,
-        customer_review_author: dbItem.customer_review_author || seed.customer_review_author,
-        customer_review_2: dbItem.customer_review_2 || seed.customer_review_2,
-        customer_review_2_author: dbItem.customer_review_2_author || seed.customer_review_2_author,
-        integration_guide_1_label: dbItem.integration_guide_1_label || seed.integration_guide_1_label,
-        integration_guide_1_url: dbItem.integration_guide_1_url || seed.integration_guide_1_url,
-        integration_guide_2_label: dbItem.integration_guide_2_label || seed.integration_guide_2_label,
-        integration_guide_2_url: dbItem.integration_guide_2_url || seed.integration_guide_2_url,
-      };
-      if (merged.status === 'deleted') return null;
-      return merged;
+    if (!error && data) {
+      if (data.status === 'deleted') return null;
+      return data;
     }
-
-    if (dbItem.status === 'deleted') return null;
-    return dbItem;
+  } catch (e) {
+    console.error('Error fetching item by ID from Supabase:', e);
   }
 
-  // 3. Failover: Check seeds directly by raw ID if no database row matches
+  // 3. Fallback: Check seeds directly by raw ID if database is disconnected
   const seed = SEED_ITEMS.find((s) => s.id === id);
   if (seed) return seed;
 
