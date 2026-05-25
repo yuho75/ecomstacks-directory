@@ -178,65 +178,133 @@ export async function GET(request: Request) {
           : '0 4px 6px -1px rgba(0, 0, 0, 0.05)';
         
         toolsHtml += `
-          <div style="margin-bottom: 24px; background-color: ${cardBgColor}; border: ${cardBorder}; border-radius: 12px; overflow: hidden; box-shadow: ${cardShadow}; text-align: left;">
+          <!-- Tool Card Container Table -->
+          <table border="0" cellpadding="0" cellspacing="0" width="100%" class="${isSponsor ? 'sponsor-card-table' : 'card-table'}" style="margin-bottom: 24px; background-color: ${cardBgColor}; border: ${cardBorder}; border-radius: 12px; border-collapse: separate; overflow: hidden; box-shadow: ${cardShadow}; text-align: left;">
             ${isSponsor ? `
-              <div style="background-color: #6366f1; color: #ffffff; font-size: 11px; font-weight: bold; padding: 12px 20px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #4f46e5;">
-                ⚡ OFFICIAL FEATURED SPONSOR
-              </div>
+              <tr>
+                <td style="background-color: #6366f1; color: #ffffff; font-size: 11px; font-weight: bold; padding: 12px 20px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid #4f46e5; border-top-left-radius: 10px; border-top-right-radius: 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                  ⚡ OFFICIAL FEATURED SPONSOR
+                </td>
+              </tr>
             ` : ''}
-            <div style="padding: 20px;">
-              <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td valign="top" style="padding-bottom: 16px;">
-                    <img src="${tool.image_url}" alt="${tool.title}" style="width: 100%; max-height: 260px; object-fit: cover; border-radius: 8px; border: 1px solid #f4f4f5;" />
-                  </td>
-                </tr>
-                <tr>
-                  <td valign="top">
-                    <h3 style="margin: 0 0 6px 0; color: #09090b; font-size: ${isSponsor ? '20px' : '18px'}; font-weight: bold;">
-                      ${tool.title} ${isSponsor ? '🌟' : ''}
-                    </h3>
-                    <p style="margin: 0 0 16px 0; color: #71717a; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
-                      Category: ${tool.category}
-                    </p>
-                    <p style="margin: 0 0 20px 0; color: #4b5563; font-size: 14px; line-height: 1.6; font-style: italic;">
-                      "${tool.description}"
-                    </p>
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                      <tr>
-                        <td>
-                          <span style="background-color: ${isSponsor ? '#e0e7ff' : '#f3f4f6'}; color: ${isSponsor ? '#4338ca' : '#374151'}; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px;">
-                            ${tool.category}
-                          </span>
-                        </td>
-                        <td align="right">
-                          <a href="${tool.url}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #3525cd; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; box-shadow: ${isSponsor ? '0 4px 6px -1px rgba(53, 37, 205, 0.2)' : 'none'};">
-                            Visit Website &rarr;
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+            <tr>
+              <td style="padding: 20px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td valign="top" style="padding-bottom: 16px;">
+                      <img src="${tool.image_url}" alt="${tool.title}" width="540" style="display: block; width: 100%; max-width: 540px; height: auto; max-height: 260px; object-fit: cover; border-radius: 8px; border: 1px solid #f4f4f5;" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">
+                      <h3 class="card-title" style="margin: 0 0 6px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #09090b; font-size: ${isSponsor ? '20px' : '18px'}; font-weight: bold; line-height: 1.2;">
+                        ${tool.title} ${isSponsor ? '🌟' : ''}
+                      </h3>
+                      <p class="card-category" style="margin: 0 0 16px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #71717a; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">
+                        Category: ${tool.category}
+                      </p>
+                      <p class="card-description" style="margin: 0 0 20px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #4b5563; font-size: 13px; line-height: 1.5; font-style: italic;">
+                        "${tool.description}"
+                      </p>
+                      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                          <td valign="middle">
+                            <!-- Outlook-compatible Category Badge -->
+                            <table border="0" cellspacing="0" cellpadding="0" style="display: inline-block; border-collapse: separate; vertical-align: middle;">
+                              <tr>
+                                <td bgcolor="${isSponsor ? '#e0e7ff' : '#f3f4f6'}" style="border-radius: 6px; background-color: ${isSponsor ? '#e0e7ff' : '#f3f4f6'}; padding: 4px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; font-weight: 600; color: ${isSponsor ? '#4338ca' : '#374151'}; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">
+                                  ${tool.category}
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td align="right" valign="middle">
+                            <!-- Outlook-compatible Bulletproof Button -->
+                            <table border="0" cellspacing="0" cellpadding="0" align="right" style="border-collapse: separate;">
+                              <tr>
+                                <td align="center" valign="middle" bgcolor="${isSponsor ? '#3525cd' : '#3525cd'}" style="border-radius: 8px; background-color: #3525cd; padding: 0;">
+                                  <a href="${tool.url}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; color: #ffffff; text-decoration: none; border-radius: 8px; padding: 10px 20px; border: 1px solid #3525cd; display: inline-block; text-align: center; white-space: nowrap;">
+                                    Visit Website &rarr;
+                                  </a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         `;
       }
       
       return `
         <!DOCTYPE html>
-        <html>
+        <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
         <head>
           <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta name="color-scheme" content="light dark">
+          <meta name="supported-color-schemes" content="light dark">
           <title>EcomStacks Monthly Newsletter</title>
+          <!--[if mso]>
+          <xml>
+            <o:OfficeDocumentSettings>
+              <o:AllowPNG/>
+              <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+          </xml>
+          <![endif]-->
+          <style>
+            /* Support for Outlook Dark Mode Inversion and General Fixes */
+            :root {
+              color-scheme: light dark;
+              supported-color-schemes: light dark;
+            }
+            @media (prefers-color-scheme: dark) {
+              body, table, td {
+                background-color: #121212 !important;
+                color: #f3f4f6 !important;
+              }
+              h1, h2, h3, span, a {
+                color: #ffffff !important;
+              }
+              .body-bg {
+                background-color: #0f172a !important;
+              }
+              .content-table {
+                background-color: #1e293b !important;
+                border: 1px solid #334155 !important;
+              }
+              .card-table {
+                background-color: #1e1e1e !important;
+                border: 1px solid #2d2d2d !important;
+              }
+              .sponsor-card-table {
+                background-color: #1d1b3c !important;
+                border: 2px solid #6366f1 !important;
+              }
+              .card-title {
+                color: #ffffff !important;
+              }
+              .card-category {
+                color: #a1a1aa !important;
+              }
+              .card-description {
+                color: #d1d5db !important;
+              }
+            }
+          </style>
         </head>
-        <body style="background-color: #f8f9ff; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <body class="body-bg" style="background-color: #f8f9ff; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
           <center>
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9ff; padding: 40px 0;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" class="body-bg" style="background-color: #f8f9ff; padding: 40px 0;">
               <tr>
                 <td align="center">
-                  <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);">
+                  <table border="0" cellpadding="0" cellspacing="0" width="600" class="content-table" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);">
                     
                     <!-- Header Accent Bar -->
                     <tr>
