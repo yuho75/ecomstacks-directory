@@ -87,7 +87,7 @@ export async function GET(request: Request) {
 
       if (sponsorsErr) throw sponsorsErr;
 
-      // 2. Fetch standard tools from the previous month
+      // 2. Fetch standard tools from the previous month (capped at 4 to keep emails compact and premium)
       const { data: monthStandardItems, error: standardErr } = await supabaseAdmin
         .from('items')
         .select('*')
@@ -95,11 +95,12 @@ export async function GET(request: Request) {
         .eq('tier', 'standard')
         .gte('created_at', prevMonthStart.toISOString())
         .lte('created_at', prevMonthEnd.toISOString())
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(4);
 
       let standardItems = monthStandardItems || [];
 
-      // Fallback: If previous month's new additions are too sparse (< 3), fetch latest 6 approved standard tools overall
+      // Fallback: If previous month's new additions are too sparse (< 3), fetch latest 4 approved standard tools overall
       if (standardErr || standardItems.length < 3) {
         const { data: latestStandardItems, error: fallbackErr } = await supabaseAdmin
           .from('items')
@@ -107,7 +108,7 @@ export async function GET(request: Request) {
           .eq('status', 'approved')
           .eq('tier', 'standard')
           .order('created_at', { ascending: false })
-          .limit(6);
+          .limit(4);
           
         if (fallbackErr) throw fallbackErr;
         standardItems = latestStandardItems || [];
