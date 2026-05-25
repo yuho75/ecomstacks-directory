@@ -203,14 +203,13 @@ export default function Header({ onSubmitClick }: HeaderProps) {
             >
               Pricing
             </Link>
-            <a 
-              href="/#footer-anchor" 
-              className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black transition-colors py-2"
+            <Link 
+              href="/subscribe" 
+              className={`text-[15px] font-extrabold tracking-[-0.045em] transition-colors py-2 ${pathname === '/subscribe' ? 'text-black' : 'text-neutral-500 hover:text-black'}`}
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              onClick={handleSubscribeClick}
             >
               Subscribe
-            </a>
+            </Link>
           </nav>
 
           {/* Desktop Submit Button & Hamburger for Mobile */}
@@ -261,14 +260,14 @@ export default function Header({ onSubmitClick }: HeaderProps) {
               >
                 Pricing
               </Link>
-              <a 
-                href="/#footer-anchor" 
-                className="text-[16px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-black py-2 border-b border-outline-variant/30"
+              <Link 
+                href="/subscribe" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`text-[16px] font-extrabold tracking-[-0.045em] py-2 border-b border-outline-variant/30 ${pathname === '/subscribe' ? 'text-black' : 'text-neutral-500 hover:text-black'}`}
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-                onClick={handleSubscribeClick}
               >
                 Subscribe
-              </a>
+              </Link>
               <button 
                 onClick={handleSubmitClick}
                 className="mt-2 w-full bg-primary-container text-on-primary hover:bg-primary py-md rounded-lg font-label-md text-label-md transition-all active:scale-95 duration-100 shadow-sm text-center"
