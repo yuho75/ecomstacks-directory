@@ -48,10 +48,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Sarah J. - Shopify Plus Merchant",
     customer_review_2: "The AI-generated scenes look indistinguishable from real photos. It allowed us to launch a whole new catalog in days rather than months.",
     customer_review_2_author: "James T. - D2C Fashion Founder",
-    integration_guide_1_label: "Pebblely Shopify App Setup Guide",
-    integration_guide_1_url: "https://help.pebblely.com/article/18-shopify-integration",
-    integration_guide_2_label: "API Endpoint Documentation",
-    integration_guide_2_url: "https://pebblely.com/api-docs/"
+    integration_guide_1_label: "Pebblely Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/pebblely",
+    integration_guide_2_label: "Official Pebblely Portal",
+    integration_guide_2_url: "https://pebblely.com"
   },
   {
     id: "seed-flair-ai",
@@ -76,10 +76,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "David K. - Brand Director",
     customer_review_2: "It's like having a creative agency in your pocket. The shadow casting and lighting matching is incredibly realistic.",
     customer_review_2_author: "Sophia M. - Cosmetics Brand Owner",
-    integration_guide_1_label: "Flair AI Asset Pipeline Integration",
-    integration_guide_1_url: "https://help.flair.ai/guide/creating-your-first-scene",
-    integration_guide_2_label: "Canva Export Workflow",
-    integration_guide_2_url: "https://help.flair.ai/integrations/canva"
+    integration_guide_1_label: "Official Flair AI Portal",
+    integration_guide_1_url: "https://flair.ai",
+    integration_guide_2_label: "Flair AI Design Workspace",
+    integration_guide_2_url: "https://flair.ai"
   },
   {
     id: "seed-pixelcut",
@@ -104,10 +104,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Emma L. - Boutique Owner",
     customer_review_2: "Bulk background removal is a lifesaver. We cut out hundreds of product shots in one go and they look flawless.",
     customer_review_2_author: "Daniel C. - eBay Power Seller",
-    integration_guide_1_label: "Pixelcut Web Editor Extension Guide",
-    integration_guide_1_url: "https://help.pixelcut.ai/en/articles/pixelcut-web-quickstart",
-    integration_guide_2_label: "Etsy Marketplace Sync API",
-    integration_guide_2_url: "https://help.pixelcut.ai/en/articles/export-to-marketplaces"
+    integration_guide_1_label: "Pixelcut Web Portal",
+    integration_guide_1_url: "https://www.pixelcut.ai",
+    integration_guide_2_label: "Pixelcut Professional Templates",
+    integration_guide_2_url: "https://www.pixelcut.ai/templates"
   },
   {
     id: "seed-claid-ai",
@@ -132,10 +132,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Marcus T. - Dropshipping Manager",
     customer_review_2: "The automated image enhancement is highly effective. It standardizes thousands of low-res images from suppliers into high-res shots.",
     customer_review_2_author: "Oliver R. - Multi-channel Retailer",
-    integration_guide_1_label: "Claid API Integration Endpoints",
-    integration_guide_1_url: "https://docs.claid.ai/reference/getting-started-with-claid-api",
-    integration_guide_2_label: "Shopify Webhook Sync",
-    integration_guide_2_url: "https://docs.claid.ai/recipes/shopify-claid-workflow"
+    integration_guide_1_label: "Claid.ai Developer Documentation",
+    integration_guide_1_url: "https://docs.claid.ai/",
+    integration_guide_2_label: "Claid.ai Official Portal",
+    integration_guide_2_url: "https://claid.ai"
   },
   {
     id: "seed-photoroom",
@@ -160,10 +160,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Jessica H. - Content Lead",
     customer_review_2: "Photoroom has become an essential part of our workflow. The mobile-to-web sync is seamless, and background removal is the best on the market.",
     customer_review_2_author: "Lucas P. - Reseller",
-    integration_guide_1_label: "Photoroom Mobile to Web Asset Sync",
-    integration_guide_1_url: "https://www.photoroom.com/help/how-to-sync-mobile-and-web",
-    integration_guide_2_label: "Bulk CSV Image Importer",
-    integration_guide_2_url: "https://www.photoroom.com/api/docs"
+    integration_guide_1_label: "Photoroom Developer Portal",
+    integration_guide_1_url: "https://www.photoroom.com/api/",
+    integration_guide_2_label: "Photoroom Official Portal",
+    integration_guide_2_url: "https://www.photoroom.com"
   },
 
   // ==================== 2. Copywriting & Marketing (5 items) ====================
@@ -190,10 +190,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Alex B. - Multi-Store Owner",
     customer_review_2: "It automatically reads our Shopify product page and spits out a complete Instagram video reel. Absolute game changer!",
     customer_review_2_author: "Mia S. - Social Commerce Specialist",
-    integration_guide_1_label: "Predis Shopify Catalog Connection Guide",
-    integration_guide_1_url: "https://predis.ai/resources/shopify-integration-guide",
-    integration_guide_2_label: "Meta Business Suite Sync",
-    integration_guide_2_url: "https://predis.ai/resources/publishing-to-instagram"
+    integration_guide_1_label: "Predis.ai Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/predis-ai",
+    integration_guide_2_label: "Official Predis.ai Portal",
+    integration_guide_2_url: "https://predis.ai"
   },
   {
     id: "seed-jasper",
@@ -218,10 +218,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Ryan M. - Growth Marketer",
     customer_review_2: "We use Jasper to write all our Facebook ad copy variants and Shopify SEO descriptions. The conversion increase is very real.",
     customer_review_2_author: "Nathan G. - E-commerce Growth Lead",
-    integration_guide_1_label: "Jasper Chrome Extension Workflow",
-    integration_guide_1_url: "https://help.jasper.ai/article/91-using-the-jasper-chrome-extension",
-    integration_guide_2_label: "Shopify Product Admin Sync",
-    integration_guide_2_url: "https://help.jasper.ai/integrations/shopify"
+    integration_guide_1_label: "Jasper Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/jasper-ai",
+    integration_guide_2_label: "Official Jasper AI Portal",
+    integration_guide_2_url: "https://www.jasper.ai"
   },
   {
     id: "seed-copy-ai",
@@ -246,10 +246,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Liam F. - Operations Lead",
     customer_review_2: "Automating email marketing workflows with Copy.ai is super easy. It writes high-converting abandoned cart sequences in minutes.",
     customer_review_2_author: "Ella J. - CRM Manager",
-    integration_guide_1_label: "Klaviyo Integration Walkthrough",
-    integration_guide_1_url: "https://help.copy.ai/en/articles/klaviyo-integration",
-    integration_guide_2_label: "Copy.ai Webhook Configurations",
-    integration_guide_2_url: "https://docs.copy.ai/reference/webhook-events"
+    integration_guide_1_label: "Copy.ai Official Portal",
+    integration_guide_1_url: "https://www.copy.ai",
+    integration_guide_2_label: "Copy.ai Workspace Login",
+    integration_guide_2_url: "https://www.copy.ai"
   },
   {
     id: "seed-adcreative-ai",
@@ -274,10 +274,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Chloe W. - Paid Media Specialist",
     customer_review_2: "The AI generated banner variants perform significantly better in A/B testing than our manual drafts. Incredible ROI.",
     customer_review_2_author: "Ethan L. - Paid Ads Specialist",
-    integration_guide_1_label: "Google & Meta Ad Account Direct Sync",
-    integration_guide_1_url: "https://help.adcreative.ai/en/articles/connecting-social-ad-accounts",
-    integration_guide_2_label: "API Creative Upload",
-    integration_guide_2_url: "https://api.adcreative.ai/docs"
+    integration_guide_1_label: "AdCreative.ai Official Portal",
+    integration_guide_1_url: "https://www.adcreative.ai",
+    integration_guide_2_label: "AdCreative.ai Quickstart Guide",
+    integration_guide_2_url: "https://www.adcreative.ai"
   },
   {
     id: "seed-glossai",
@@ -302,10 +302,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Tyler V. - Video Producer",
     customer_review_2: "It isolates our best video reviews and auto-formats them for TikTok with styling. Incredible time saver for organic marketing.",
     customer_review_2_author: "Zoe B. - Brand Storyteller",
-    integration_guide_1_label: "YouTube Content Importer Endpoints",
-    integration_guide_1_url: "https://gloss.ai/help/video-importer-guide",
-    integration_guide_2_label: "GlossAi Workspace Sharing Guide",
-    integration_guide_2_url: "https://gloss.ai/help/collaborating-on-workspace"
+    integration_guide_1_label: "GlossAi Official Portal",
+    integration_guide_1_url: "https://gloss.ai",
+    integration_guide_2_label: "GlossAi Workspace Login",
+    integration_guide_2_url: "https://gloss.ai"
   },
 
   // ==================== 3. Store Optimization (5 items) ====================
@@ -332,10 +332,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Sarah J. - Shopify Plus Merchant",
     customer_review_2: "The semantic search is incredibly smart. It understands user search intent and delivers highly accurate results instantly.",
     customer_review_2_author: "Marcus K. - CTO",
-    integration_guide_1_label: "OmniSearch Setup Guide for E-commerce",
-    integration_guide_1_url: "https://omnisearch.ai/docs/e-commerce-quickstart",
-    integration_guide_2_label: "SaaS Integration Endpoints",
-    integration_guide_2_url: "https://omnisearch.ai/docs/api-reference"
+    integration_guide_1_label: "OmniSearch Official Portal",
+    integration_guide_1_url: "https://omnisearch.ai",
+    integration_guide_2_label: "OmniSearch Support Portal",
+    integration_guide_2_url: "https://omnisearch.ai"
   },
   {
     id: "seed-instant",
@@ -360,10 +360,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Nate D. - Direct-to-Consumer Founder",
     customer_review_2: "Building Shopify landers is super fast with Instant. Elements are pre-optimized for speed and mobile viewports.",
     customer_review_2_author: "William H. - Conversion Specialist",
-    integration_guide_1_label: "Instant.so Theme Integration Guide",
-    integration_guide_1_url: "https://help.instant.so/en/articles/theme-integration-basics",
-    integration_guide_2_label: "Custom Domain Setup CSS",
-    integration_guide_2_url: "https://help.instant.so/en/articles/connecting-a-custom-domain"
+    integration_guide_1_label: "Instant Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/instant-brand-page-builder",
+    integration_guide_2_label: "Instant Official Help Center",
+    integration_guide_2_url: "https://help.instant.so/"
   },
   {
     id: "seed-alia-popups",
@@ -388,10 +388,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Sophia R. - E-commerce Director",
     customer_review_2: "The exit-intent coupon popup rescued hundreds of checkouts that were about to abandon their shopping carts.",
     customer_review_2_author: "Olivia P. - Store Operator",
-    integration_guide_1_label: "Alia JavaScript Snippet Installation",
-    integration_guide_1_url: "https://www.aliapopups.com/help/installing-javascript-pixel",
-    integration_guide_2_label: "Shopify Checkout API Sync",
-    integration_guide_2_url: "https://www.aliapopups.com/help/connecting-shopify-api"
+    integration_guide_1_label: "Alia Popups Official Portal",
+    integration_guide_1_url: "https://www.aliapopups.com",
+    integration_guide_2_label: "Alia Quickstart Guide",
+    integration_guide_2_url: "https://www.aliapopups.com"
   },
   {
     id: "seed-octane-ai",
@@ -416,10 +416,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Hannah P. - Wellness Brand Founder",
     customer_review_2: "The guided recommendation quiz has become our top converting funnel. Customers love the tailored, personal recommendations.",
     customer_review_2_author: "Grace V. - Skincare Brand Founder",
-    integration_guide_1_label: "Octane AI Quiz Embed Instructions",
-    integration_guide_1_url: "https://help.octaneai.com/hc/en-us/articles/360048123994-Embedding-Your-Quiz",
-    integration_guide_2_label: "Klaviyo Customer Profile Mapping",
-    integration_guide_2_url: "https://help.octaneai.com/hc/en-us/articles/360048560033-Klaviyo-Integration"
+    integration_guide_1_label: "Octane AI Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/octane-ai-quiz",
+    integration_guide_2_label: "Octane AI Help Center",
+    integration_guide_2_url: "https://help.octaneai.com/hc/en-us"
   },
   {
     id: "seed-loox",
@@ -444,10 +444,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Ben S. - Gadget Store Owner",
     customer_review_2: "Timed review emails gather visual social proof automatically. Displaying customer photo reviews built immediate buyer trust.",
     customer_review_2_author: "Leo M. - E-commerce Manager",
-    integration_guide_1_label: "Loox Review Widget Injection Guide",
-    integration_guide_1_url: "https://help.loox.io/article/24-integration-with-shopify-2-0",
-    integration_guide_2_label: "Google Shopping Review Feed Sync",
-    integration_guide_2_url: "https://help.loox.io/article/118-google-shopping-xml-reviews-feed"
+    integration_guide_1_label: "Loox Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/loox",
+    integration_guide_2_label: "Loox Help Center Portal",
+    integration_guide_2_url: "https://help.loox.io/"
   },
 
   // ==================== 4. Automation (5 items) ====================
@@ -474,10 +474,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Oliver G. - Customer Success Lead",
     customer_review_2: "Lyro answers up to 70% of support tickets perfectly, and escalates complex queries to our human agents instantly.",
     customer_review_2_author: "Isabella C. - Operations Lead",
-    integration_guide_1_label: "Tidio Lyro AI Training Integration",
-    integration_guide_1_url: "https://www.tidio.com/help/lyro-ai-chatbot-setup",
-    integration_guide_2_label: "Shopify Admin API Handshake",
-    integration_guide_2_url: "https://www.tidio.com/help/shopify-integration"
+    integration_guide_1_label: "Tidio Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/tidio-chat",
+    integration_guide_2_label: "Tidio Help Center Portal",
+    integration_guide_2_url: "https://help.tidio.com/"
   },
   {
     id: "seed-thoughtmetric",
@@ -502,10 +502,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Kevin Z. - Digital Ads Manager",
     customer_review_2: "Allows us to trace back accurate ad conversions across multiple marketing channels. Solved our iOS 14 pixel tracking problems.",
     customer_review_2_author: "Jackson H. - Digital Marketing Director",
-    integration_guide_1_label: "ThoughtMetric Pixel Setup Walkthrough",
-    integration_guide_1_url: "https://help.thoughtmetric.io/article/12-shopify-pixel-setup",
-    integration_guide_2_label: "Google Analytics 4 Connection API",
-    integration_guide_2_url: "https://help.thoughtmetric.io/article/34-connecting-ga4"
+    integration_guide_1_label: "ThoughtMetric Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/thoughtmetric",
+    integration_guide_2_label: "ThoughtMetric Official Portal",
+    integration_guide_2_url: "https://thoughtmetric.io"
   },
   {
     id: "seed-alloy-automation",
@@ -530,10 +530,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Rachel E. - COO",
     customer_review_2: "Automating custom fraud screening and loyalty tagging flows across multiple apps is now zero-code and effortless.",
     customer_review_2_author: "Sophia S. - Chief Operations Officer",
-    integration_guide_1_label: "Alloy App Store Connection Manual",
-    integration_guide_1_url: "https://docs.runalloy.com/docs/connecting-your-first-app",
-    integration_guide_2_label: "Webhook Payload Parser Guide",
-    integration_guide_2_url: "https://docs.runalloy.com/reference/webhooks-quickstart"
+    integration_guide_1_label: "Alloy Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/alloy-automation",
+    integration_guide_2_label: "Alloy Official Docs Portal",
+    integration_guide_2_url: "https://docs.runalloy.com/"
   },
   {
     id: "seed-gorgias",
@@ -558,10 +558,10 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Daniel S. - Support Manager",
     customer_review_2: "Our agents can process refunds and edit Shopify orders directly inside customer support tickets. Massive time saver.",
     customer_review_2_author: "Mason T. - Customer Support Lead",
-    integration_guide_1_label: "Gorgias Helpdesk Omni-Channel Sync",
-    integration_guide_1_url: "https://help.gorgias.com/en_us/channels-integration-guide-SydCjOn9",
-    integration_guide_2_label: "Shopify App Store Installation",
-    integration_guide_2_url: "https://help.gorgias.com/en_us/shopify-integration-HkuRo_u9"
+    integration_guide_1_label: "Gorgias Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/gorgias",
+    integration_guide_2_label: "Gorgias Help Center Portal",
+    integration_guide_2_url: "https://help.gorgias.com/"
   },
   {
     id: "seed-matrixify",
@@ -586,9 +586,9 @@ export const SEED_ITEMS: SeedItem[] = [
     customer_review_author: "Andrew J. - E-commerce Consultant",
     customer_review_2: "Matrixify is the gold standard for bulk editing store catalog variants, metafields, and redirects in Google Sheets.",
     customer_review_2_author: "Luke D. - Shopify Architect",
-    integration_guide_1_label: "Matrixify Batch CSV Format Manual",
-    integration_guide_1_url: "https://matrixify.app/documentation/excel-import-format/",
-    integration_guide_2_label: "FTP/SFTP Scheduled Auto-Export",
-    integration_guide_2_url: "https://matrixify.app/documentation/scheduled-imports-exports/"
+    integration_guide_1_label: "Matrixify Shopify App Store",
+    integration_guide_1_url: "https://apps.shopify.com/excel-export-import",
+    integration_guide_2_label: "Matrixify Documentation Center",
+    integration_guide_2_url: "https://matrixify.app/documentation/"
   }
 ];
