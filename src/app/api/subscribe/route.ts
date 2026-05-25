@@ -19,9 +19,15 @@ export async function POST(request: Request) {
     if (isPlaceholder) {
       console.log('Mock Newsletter Subscribe:', email);
     } else {
+      const now = new Date();
+      const currentMonthLabel = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
       const { data, error } = await supabaseAdmin
         .from('subscribers')
-        .insert([{ email }])
+        .insert([{ 
+          email,
+          last_newsletter_month: currentMonthLabel 
+        }])
         .select()
         .single();
 
