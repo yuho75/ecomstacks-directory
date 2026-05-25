@@ -146,7 +146,7 @@ export async function GET(request: Request) {
           <div style="margin-bottom: 24px; background-color: #ffffff; border: 1px solid #e4e4e7; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); text-align: left;">
             ${isSponsor ? `
               <div style="background-color: #eff6ff; color: #1e40af; font-size: 11px; font-weight: bold; padding: 10px 16px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #dbeafe;">
-                ✨ 이달의 공식 추천 스폰서 도구
+                ✨ Official Featured Sponsor Tool
               </div>
             ` : ''}
             <div style="padding: 20px;">
@@ -176,7 +176,7 @@ export async function GET(request: Request) {
                         </td>
                         <td align="right">
                           <a href="${tool.url}" target="_blank" style="display: inline-block; padding: 10px 20px; background-color: #3525cd; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold;">
-                            웹사이트 방문하기 &rarr;
+                            Visit Website &rarr;
                           </a>
                         </td>
                       </tr>
@@ -225,11 +225,11 @@ export async function GET(request: Request) {
                     <tr>
                       <td style="padding: 32px 32px 16px 32px; text-align: left;">
                         <h2 style="margin: 0 0 12px 0; color: #09090b; font-size: 20px; font-weight: 700;">
-                          이달의 이커머스 성장 툴킷이 도착했습니다! 🚀
+                          Your Monthly E-commerce Growth Toolkit is Here! 🚀
                         </h2>
                         <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
-                          안녕하세요! EcomStacks 구독자님, 지난 한 달 동안 이커머스 생태계에서 새롭게 등록되고 뜨겁게 검증된 최고의 개발/성장 템플릿과 솔루션을 엄선해 보내드립니다. 
-                          최상단의 추천 스폰서 도구들을 포함해 비즈니스 고속 성장에 필요한 최적의 스택을 확인해보세요!
+                          Hello EcomStacks subscriber! We are excited to bring you the hand-picked, highly-vetted e-commerce templates, tools, and growth solutions from the past month. 
+                          Check out the curated stack below, including our featured sponsor tools, to accelerate your development and maximize conversion rates!
                         </p>
                       </td>
                     </tr>
@@ -246,11 +246,11 @@ export async function GET(request: Request) {
                       <td align="center" style="background-color: #09090b; padding: 24px; color: #71717a; font-size: 12px; line-height: 1.6; border-top: 1px solid #18181b;">
                         <p style="margin: 0 0 8px 0; color: #a1a1aa; font-weight: 600;">EcomStacks Directory</p>
                         <p style="margin: 0 0 16px 0;">
-                          본 메일은 EcomStacks 뉴스레터를 구독 신청하신 분들께 발송되는 정기 간행물입니다.
+                          You are receiving this email because you subscribed to the EcomStacks monthly newsletter.
                         </p>
                         <p style="margin: 0;">
                           &copy; 2026 EcomStacks. All rights reserved.<br/>
-                          수신거부를 원하실 경우 이메일(hello@ecomstacksdirectory.com)로 회신해 주시기 바랍니다.
+                          If you wish to unsubscribe, please reply to this email (hello@ecomstacksdirectory.com) or contact us.
                         </p>
                       </td>
                     </tr>
@@ -281,7 +281,7 @@ export async function GET(request: Request) {
           const { error: sendErr } = await resend.emails.send({
             from: resendFromEmail,
             to: target.email,
-            subject: `🚀 [EcomStacks] 이달의 이커머스 추천 도구 & 성장 스택 도착!`,
+            subject: `🚀 [EcomStacks] Your Monthly E-commerce Toolkit & Curated Stack is Here!`,
             html: newsletterHtml,
           });
 
