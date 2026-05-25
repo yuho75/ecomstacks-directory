@@ -34,11 +34,36 @@ export async function POST(request: Request) {
       if (error) {
         // 23505 is PostgreSQL unique constraint violation
         if (error.code === '23505') {
-          return NextResponse.json({ error: 'Already subscribed.' }, { status: 409 });
+          // Check if this existing subscriber was previously unsubscribed
+          const { data: existingSub, error: fetchErr } = await supabaseAdmin
+            .from('subscribers')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+          if (!fetchErr && existingSub && existingSub.last_newsletter_month === 'unsubscribed') {
+            // Allow them to resubscribe by updating last_newsletter_month back to active
+            const { data: updatedSub, error: updateErr } = await supabaseAdmin
+              .from('subscribers')
+              .update({ last_newsletter_month: currentMonthLabel })
+              .eq('email', email)
+              .select()
+              .single();
+
+            if (!updateErr && updatedSub) {
+              dbResult = updatedSub;
+            } else {
+              throw updateErr || new Error('Resubscription failed.');
+            }
+          } else {
+            return NextResponse.json({ error: 'Already subscribed.' }, { status: 409 });
+          }
+        } else {
+          throw error;
         }
-        throw error;
+      } else {
+        dbResult = data;
       }
-      dbResult = data;
     }
 
     // 2. Add to MailerLite Active Subscribers List
