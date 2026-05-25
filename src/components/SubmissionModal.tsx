@@ -488,7 +488,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
+                        <span className="font-label-lg text-on-surface-variant text-[16px]">
                           ${TIER_PRICES.featured}
                         </span>
                         <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
@@ -545,7 +545,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="font-label-lg text-on-surface-variant text-[16px] line-through">
+                        <span className="font-label-lg text-on-surface-variant text-[16px]">
                           ${TIER_PRICES.premium}
                         </span>
                         <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
