@@ -14,6 +14,7 @@ interface Item {
   email: string;
   status: string;
   created_at: string;
+  tier?: string;
 }
 
 interface Subscriber {
@@ -612,6 +613,7 @@ export default function AdminPanel({
                     {paginatedSubscribers.map(sub => {
                       const now = new Date();
                       const currentMonthLabel = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                      const isUnsubscribed = sub.last_newsletter_month === 'unsubscribed';
                       const isSentThisMonth = sub.last_newsletter_month === currentMonthLabel;
 
                       return (
@@ -623,13 +625,25 @@ export default function AdminPanel({
                             {formatDate(sub.created_at)}
                           </td>
                           <td className="py-sm px-md text-center">
-                            <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
-                              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                              메일러라이트 연동됨
-                            </span>
+                            {isUnsubscribed ? (
+                              <span className="inline-flex items-center gap-1 bg-neutral-100 text-neutral-500 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-neutral-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+                                연동 중단됨
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-green-500/20">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                메일러라이트 연동됨
+                              </span>
+                            )}
                           </td>
                           <td className="py-sm px-md text-center">
-                            {isSentThisMonth ? (
+                            {isUnsubscribed ? (
+                              <span className="inline-flex items-center gap-1 bg-error/10 text-error px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-error/20">
+                                <span className="material-symbols-outlined text-[14px]">unsubscribe</span>
+                                구독 취소됨 (Unsubscribed)
+                              </span>
+                            ) : isSentThisMonth ? (
                               <span className="inline-flex items-center gap-1 bg-indigo-500/10 text-indigo-600 px-sm py-xs rounded-full font-label-sm text-[11px] font-semibold border border-indigo-500/20">
                                 <span className="material-symbols-outlined text-[14px]">mark_email_read</span>
                                 발송 완료 ({sub.last_newsletter_month?.split('-')[1]}월)
@@ -758,6 +772,12 @@ export default function AdminPanel({
                       <span className="bg-surface-container-high text-on-surface-variant px-xs py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider font-semibold">
                         {item.category}
                       </span>
+                      {(item.tier === 'featured' || item.tier === 'premium') && (
+                        <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px]">
+                          <span className="material-symbols-outlined text-[12px] animate-pulse">workspace_premium</span>
+                          Featured Sponsor
+                        </span>
+                      )}
                     </div>
                     <p className="font-body-sm text-[13px] text-on-surface-variant truncate font-semibold italic mt-0.5">
                       &quot;{item.description}&quot;

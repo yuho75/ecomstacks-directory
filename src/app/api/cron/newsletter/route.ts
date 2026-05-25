@@ -143,6 +143,7 @@ export async function GET(request: Request) {
       const { data: dbSubscribers, error: subsErr } = await supabaseAdmin
         .from('subscribers')
         .select('*')
+        .neq('last_newsletter_month', 'unsubscribed')
         .or(`last_newsletter_month.neq.${currentMonthLabel},last_newsletter_month.is.null`)
         .limit(80);
 
@@ -163,7 +164,7 @@ export async function GET(request: Request) {
     }
 
     // 4. Generate visual newsletter HTML content
-    const buildNewsletterHtml = (tools: any[]) => {
+    const buildNewsletterHtml = (tools: any[], origin: string) => {
       let toolsHtml = '';
       
       for (const tool of tools) {
@@ -316,11 +317,11 @@ export async function GET(request: Request) {
                           You are receiving this email because you subscribed to the EcomStacks monthly newsletter.
                         </p>
                         <p style="margin: 0;">
-                          &copy; 2026 EcomStacks. All rights reserved.<br/>
-                          If you wish to unsubscribe, please reply to this email (hello@ecomstacksdirectory.com) or contact us.
-                        </p>
-                      </td>
-                    </tr>
+                        &copy; 2026 EcomStacks. All rights reserved.<br/>
+                        If you wish to unsubscribe, you can <a href="${origin}/api/unsubscribe?id=SUBSCRIBER_ID_PLACEHOLDER" target="_blank" style="color: #a1a1aa; text-decoration: underline;">unsubscribe automatically</a> at any time.
+                      </p>
+                    </td>
+                  </tr>
                     
                   </table>
                 </td>
@@ -332,7 +333,8 @@ export async function GET(request: Request) {
       `;
     };
 
-    const newsletterHtml = buildNewsletterHtml(sortedItems);
+    const origin = new URL(request.url).origin;
+    const newsletterHtml = buildNewsletterHtml(sortedItems, origin);
     const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'hello@ecomstacksdirectory.com';
 
     const successes: string[] = [];
@@ -345,11 +347,14 @@ export async function GET(request: Request) {
           console.log(`[Sandbox Mock] Sent newsletter batch to ${target.email}`);
           successes.push(target.email);
         } else {
+          // Personalize the unsubscribe link for each target subscriber securely
+          const personalizedHtml = newsletterHtml.replace('SUBSCRIBER_ID_PLACEHOLDER', target.id);
+
           const { error: sendErr } = await resend.emails.send({
             from: resendFromEmail,
             to: target.email,
             subject: `🚀 [EcomStacks] Your Monthly E-commerce Toolkit & Curated Stack is Here!`,
-            html: newsletterHtml,
+            html: personalizedHtml,
           });
 
           if (sendErr) {
