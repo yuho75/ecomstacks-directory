@@ -159,12 +159,18 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
           <div className="space-y-md">
             {/* Featured Section */}
             {featuredTools.length > 0 && (
-              <div className="mb-xl p-md md:p-lg bg-gradient-to-br from-surface-container-lowest to-primary/5 border-[3px] border-primary rounded-2xl relative shadow-[0_0_25px_rgba(59,130,246,0.25)]">
-                <div className="absolute -top-4 left-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[13px] font-extrabold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-primary/40 z-10">
-                  <span className="material-symbols-outlined text-[16px] animate-pulse text-yellow-300">stars</span>
-                  FEATURED SPONSORS
+              <div className="mb-xl">
+                {/* Minimal Elegant Section Header */}
+                <div className="flex items-center gap-xs mb-base select-none">
+                  <span className="material-symbols-outlined text-[20px] text-primary animate-pulse">stars</span>
+                  <h2 className="font-extrabold text-[15px] uppercase tracking-wider text-on-surface" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Featured Sponsors
+                  </h2>
+                  <div className="flex-grow h-[1px] bg-outline-variant/50 ml-sm"></div>
                 </div>
-                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
+                
+                {/* Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-md animate-in fade-in duration-500">
                   {featuredTools.map((tool) => (
                     <ToolCard key={tool.id} item={tool} />
                   ))}
