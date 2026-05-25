@@ -772,31 +772,6 @@ export default function AdminPanel({
                       <span className="bg-surface-container-high text-on-surface-variant px-xs py-0.5 rounded font-label-sm text-[10px] uppercase tracking-wider font-semibold">
                         {item.category}
                       </span>
-                      {/* Plan / Tier Status Badge */}
-                      {item.tier === 'premium' && (
-                        <span className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-amber-950 border border-amber-500/20 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none">
-                          <span className="material-symbols-outlined text-[12px] animate-pulse">diamond</span>
-                          Premium ($199.00)
-                        </span>
-                      )}
-                      {item.tier === 'featured' && (
-                        <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] shadow-sm select-none">
-                          <span className="material-symbols-outlined text-[12px] animate-pulse">workspace_premium</span>
-                          Featured ($49.00)
-                        </span>
-                      )}
-                      {item.tier === 'standard' && (
-                        <span className="bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] select-none">
-                          <span className="material-symbols-outlined text-[12px]">payments</span>
-                          Standard ($9.99)
-                        </span>
-                      )}
-                      {(!item.tier || item.tier === 'free') && (
-                        <span className="bg-neutral-100 text-neutral-500 border border-neutral-200 px-1.5 py-0.5 rounded font-bold text-[9px] uppercase tracking-wider flex items-center gap-[2px] select-none">
-                          <span className="material-symbols-outlined text-[12px]">money_off</span>
-                          Free Submission
-                        </span>
-                      )}
                     </div>
                     <p className="font-body-sm text-[13px] text-on-surface-variant truncate font-semibold italic mt-0.5">
                       &quot;{item.description}&quot;
@@ -840,10 +815,81 @@ export default function AdminPanel({
                   </div>
                 </div>
 
-                {/* Right Side: Control Action Buttons */}
-                <div className="flex gap-base w-full sm:w-auto shrink-0 justify-center sm:justify-end pt-sm sm:pt-0 sm:pl-sm">
-                  {activeTab === 'pending' ? (
-                    <>
+                {/* Right Side: Plan Badge + Control Action Buttons */}
+                <div className="flex flex-col items-center sm:items-end gap-sm w-full sm:w-auto shrink-0 justify-center pt-sm sm:pt-0 sm:pl-sm">
+                  {/* Muted Slate-bordered Plan Tag (Option 1 + 2 + 3 combined) */}
+                  <div className="text-[11.5px] font-bold text-neutral-500 border border-neutral-200/80 rounded bg-neutral-50 px-2 py-0.5 flex items-center gap-1 select-none shrink-0" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    <span className="material-symbols-outlined text-[13px] text-neutral-400">
+                      {item.tier === 'premium' ? 'diamond' :
+                       item.tier === 'featured' ? 'workspace_premium' :
+                       item.tier === 'standard' ? 'payments' :
+                       'money_off'}
+                    </span>
+                    <span>
+                      {item.tier === 'premium' && 'Premium · $199.00'}
+                      {item.tier === 'featured' && 'Featured · $49.00'}
+                      {item.tier === 'standard' && 'Standard · $9.99'}
+                      {(!item.tier || item.tier === 'free') && 'Free Submission'}
+                    </span>
+                  </div>
+
+                  <div className="flex gap-base w-full sm:w-auto shrink-0 justify-center sm:justify-end">
+                    {activeTab === 'pending' ? (
+                      <>
+                        <button
+                          disabled={isProcessing}
+                          onClick={() => handleApprove(item.id)}
+                          className="bg-green-600 text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
+                        >
+                          {isProcessing ? (
+                            <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-[15px]">published_with_changes</span>
+                              Approve
+                            </>
+                          )}
+                        </button>
+                        <button
+                          disabled={isProcessing}
+                          onClick={() => handleReject(item.id)}
+                          className="bg-error text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
+                        >
+                          {isProcessing ? (
+                            <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-[15px]">block</span>
+                              Reject
+                            </>
+                          )}
+                        </button>
+                      </>
+                    ) : activeTab === 'approved' ? (
+                      <button
+                        disabled={isProcessing}
+                        onClick={() => handleReject(item.id)}
+                        className="bg-error/10 hover:bg-error border border-error/20 hover:border-transparent text-error hover:text-on-error rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm duration-300 cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
+                      >
+                        {isProcessing ? (
+                          <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                        ) : (
+                          <>
+                            <span className="material-symbols-outlined text-[16px]">unpublished</span>
+                            Unpublish & Reject
+                          </>
+                        )}
+                      </button>
+                    ) : (
                       <button
                         disabled={isProcessing}
                         onClick={() => handleApprove(item.id)}
@@ -856,66 +902,13 @@ export default function AdminPanel({
                           </svg>
                         ) : (
                           <>
-                            <span className="material-symbols-outlined text-[15px]">published_with_changes</span>
-                            Approve
+                            <span className="material-symbols-outlined text-[16px]">publish</span>
+                            Re-approve & Publish
                           </>
                         )}
                       </button>
-                      <button
-                        disabled={isProcessing}
-                        onClick={() => handleReject(item.id)}
-                        className="bg-error text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:brightness-110 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
-                      >
-                        {isProcessing ? (
-                          <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                        ) : (
-                          <>
-                            <span className="material-symbols-outlined text-[15px]">block</span>
-                            Reject
-                          </>
-                        )}
-                      </button>
-                    </>
-                  ) : activeTab === 'approved' ? (
-                    <button
-                      disabled={isProcessing}
-                      onClick={() => handleReject(item.id)}
-                      className="bg-error/10 hover:bg-error border border-error/20 hover:border-transparent text-error hover:text-on-error rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm duration-300 cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
-                    >
-                      {isProcessing ? (
-                        <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                      ) : (
-                        <>
-                          <span className="material-symbols-outlined text-[16px]">unpublished</span>
-                          Unpublish & Reject
-                        </>
-                      )}
-                    </button>
-                  ) : (
-                    <button
-                      disabled={isProcessing}
-                      onClick={() => handleApprove(item.id)}
-                      className="bg-green-600 text-white rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs hover:bg-green-700 active:scale-95 transition-all shadow-sm cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
-                    >
-                      {isProcessing ? (
-                        <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                      ) : (
-                        <>
-                          <span className="material-symbols-outlined text-[16px]">publish</span>
-                          Re-approve & Publish
-                        </>
-                      )}
-                    </button>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             );
