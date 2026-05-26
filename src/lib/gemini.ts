@@ -11,8 +11,8 @@ export async function generateToolDetailsWithAI(title: string, url: string, desc
     return null;
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+ 
   const prompt = `You are an expert copywriter and e-commerce tech analyst. 
 Your task is to analyze the following e-commerce AI tool and automatically write high-quality detailed content for its directory listing page.
 
@@ -58,7 +58,7 @@ Ensure:
           }
         ],
         generationConfig: {
-          responseMimeType: "application/json"
+          response_mime_type: "application/json"
         }
       })
     });
