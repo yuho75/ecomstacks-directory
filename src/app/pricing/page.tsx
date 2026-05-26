@@ -196,7 +196,7 @@ export default function PricingPage() {
         {!isPaypalEnabled && (
           <div className="mt-16 max-w-2xl text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <p className="text-on-surface-variant text-sm">
-              ⚡ <strong>Early Bird Phase:</strong> We&apos;re in launch mode. Standard listings are completely free while we grow the directory to 10,000+ visitors. Featured &amp; Premium plans are coming soon.
+              ⚡ <strong>Early Bird Phase:</strong> We&apos;re in launch mode. Standard listings are completely free for a limited time while we launch and grow the directory. Featured &amp; Premium plans are coming soon.
             </p>
           </div>
         )}
