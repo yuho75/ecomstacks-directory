@@ -18,7 +18,7 @@ export default function PricingPage() {
 
       {/* Hero */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-md md:px-xl py-24 flex flex-col items-center">
-        <div className="text-center max-w-2xl mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="text-center max-w-4xl mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <h1
             className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
@@ -26,8 +26,7 @@ export default function PricingPage() {
             Get Discovered by E-Commerce Brands & Founders
           </h1>
           <p className="text-lg text-on-surface-variant leading-relaxed">
-            Get your tool in front of the right audience. Choose a plan that fits your growth stage.{' '}
-            <br className="hidden md:block" /> No hidden fees, cancel anytime.
+            Get your tool in front of the right audience. Choose a plan that fits your growth stage. No hidden fees, cancel anytime.
           </p>
           {!isPaypalEnabled && (
             <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-2 rounded-full">
