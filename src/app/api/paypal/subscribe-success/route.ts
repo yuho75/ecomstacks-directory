@@ -87,7 +87,7 @@ export async function POST(request: Request) {
     }
 
     // 3. Update Supabase with verified subscription details
-    const { error: dbError } = await supabaseAdmin
+    const { data: dbData, error: dbError } = await supabaseAdmin
       .from('items')
       .update({
         paypal_subscription_id: subscriptionId,
@@ -95,11 +95,21 @@ export async function POST(request: Request) {
         status: 'pending', // Move to admin pending queue for review
         tier: 'featured'   // Upgrade to featured plan
       })
-      .eq('id', itemId);
+      .eq('id', itemId)
+      .select('email, title, tier')
+      .single();
 
-    if (dbError) {
+    if (dbError || !dbData) {
       console.error('❌ Failed to update database with subscription info:', dbError);
       return NextResponse.json({ error: 'Failed to record subscription status.' }, { status: 500 });
+    }
+
+    // Send submission email confirmation
+    try {
+      const { sendSubmissionEmail } = await import('@/lib/emails');
+      await sendSubmissionEmail(dbData.email, dbData.title, dbData.tier);
+    } catch (emailErr) {
+      console.error('Failed to send submission email:', emailErr);
     }
 
     console.log(`✅ Subscription ${subscriptionId} successfully mapped to item ${itemId}.`);

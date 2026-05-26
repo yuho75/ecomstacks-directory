@@ -35,7 +35,7 @@ export async function approveItem(id: string, secretKey: string | null) {
     // 1. Fetch the item's raw submission fields to analyze
     const { data: itemData, error: fetchError } = await supabaseAdmin
       .from('items')
-      .select('title, url, description, detailed_overview')
+      .select('title, url, description, detailed_overview, email')
       .eq('id', id)
       .single();
 
@@ -82,6 +82,14 @@ export async function approveItem(id: string, secretKey: string | null) {
 
     if (error) {
       throw new Error(`Database error: ${error.message}`);
+    }
+
+    // 4. Send Approval welcome email to the tool owner via Resend
+    try {
+      const { sendApprovalEmail } = await import('@/lib/emails');
+      await sendApprovalEmail(itemData.email, itemData.title, id);
+    } catch (emailErr) {
+      console.error('Failed to send approval email:', emailErr);
     }
   }
 

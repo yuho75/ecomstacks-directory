@@ -83,6 +83,14 @@ export async function POST(request: Request) {
             paypal_order_id: `mock_order_${Date.now()}`
           })
           .eq('id', item.id);
+
+        // Send submission email confirmation
+        try {
+          const { sendSubmissionEmail } = await import('@/lib/emails');
+          await sendSubmissionEmail(email, title, tier);
+        } catch (emailErr) {
+          console.error('Failed to send submission email:', emailErr);
+        }
       }
 
       return NextResponse.json({

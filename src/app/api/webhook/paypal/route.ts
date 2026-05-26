@@ -107,6 +107,18 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Database update failed.' }, { status: 500 });
       }
 
+      // Send submission email confirmation
+      if (data && data.length > 0) {
+        try {
+          const { sendSubmissionEmail } = await import('@/lib/emails');
+          for (const item of data) {
+            await sendSubmissionEmail(item.email, item.title, item.tier);
+          }
+        } catch (emailErr) {
+          console.error('Failed to send submission email:', emailErr);
+        }
+      }
+
       console.log('Successfully updated Supabase item state to pending approval:', data);
       return NextResponse.json({ verified: true, updated: data?.length || 0 });
     }
