@@ -160,11 +160,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
       if (!res.ok) throw new Error(data.error || 'Failed to submit.');
 
       setSubmitSuccess(true);
-      setTimeout(() => {
-        onSuccess();
-        onClose();
-        resetForm();
-      }, 3000);
+      onSuccess();
     } catch (err: any) {
       setError(err.message || 'Submission failed.');
     } finally {
@@ -227,7 +223,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                 Thank you! Your tool <strong>{title}</strong> has been submitted and is now{' '}
                 <strong>pending approval</strong>.
               </p>
-              <p className="font-body-sm text-body-sm text-primary">Redirecting back to homepage...</p>
+              <p className="font-body-sm text-body-sm text-primary">You can now close this window by clicking the &quot;X&quot; button above.</p>
             </div>
           ) : (
             <form className="space-y-md" onSubmit={(e) => e.preventDefault()}>
@@ -627,11 +623,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               if (!res.ok) throw new Error(resData.error || 'Failed to capture subscription.');
 
                               setSubmitSuccess(true);
-                              setTimeout(() => {
-                                onSuccess();
-                                onClose();
-                                resetForm();
-                              }, 3000);
+                              onSuccess();
                             } catch (err: any) {
                               console.error('Subscription sync exception:', err);
                               setError('Payment successful but database sync failed. Please contact support.');
@@ -684,11 +676,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                                 const capture = await actions.order.capture();
                                 console.log('PayPal Capture succeeded:', capture);
                                 setSubmitSuccess(true);
-                                setTimeout(() => {
-                                  onSuccess();
-                                  onClose();
-                                  resetForm();
-                                }, 3000);
+                                onSuccess();
                               }
                             } catch (err: any) {
                               console.error('PayPal capture exception:', err);
@@ -773,11 +761,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                             if (actions.order) {
                               await actions.order.capture();
                               setSubmitSuccess(true);
-                              setTimeout(() => {
-                                onSuccess();
-                                onClose();
-                                resetForm();
-                              }, 3000);
+                              onSuccess();
                             }
                           } catch (err: any) {
                             setError('Payment captured but sync failed. Contact support.');
