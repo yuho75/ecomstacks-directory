@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { approveItem, rejectItem } from '@/app/actions';
+import { approveItem, rejectItem, updateItemAdmin } from '@/app/actions';
 import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
+import AdminEditModal from '@/components/AdminEditModal';
 
 interface Item {
   id: string;
@@ -15,6 +16,21 @@ interface Item {
   status: string;
   created_at: string;
   tier?: string;
+
+  // Copywriting, reviews, rating, and documentation fields
+  detailed_overview?: string;
+  key_features?: string[];
+  key_features_descriptions?: string[];
+  rating?: number;
+  rating_count?: number;
+  customer_review?: string;
+  customer_review_author?: string;
+  customer_review_2?: string;
+  customer_review_2_author?: string;
+  integration_guide_1_label?: string;
+  integration_guide_1_url?: string;
+  integration_guide_2_label?: string;
+  integration_guide_2_url?: string;
 }
 
 interface Subscriber {
@@ -57,6 +73,7 @@ export default function AdminPanel({
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
 
   // Search & Pagination States
   const [searchTerm, setSearchTerm] = useState('');
@@ -834,6 +851,14 @@ export default function AdminPanel({
                   </div>
 
                   <div className="flex gap-base w-full sm:w-auto shrink-0 justify-center sm:justify-end">
+                    <button
+                      disabled={isProcessing}
+                      onClick={() => setEditingItem(item)}
+                      className="bg-neutral-100 hover:bg-neutral-200 border border-outline-variant hover:border-transparent text-on-surface-variant rounded-lg font-label-md text-label-md flex items-center justify-center gap-xs active:scale-95 transition-all shadow-sm duration-300 cursor-pointer py-1.5 px-3 text-[13px] font-semibold"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">edit</span>
+                      <span>Edit Details</span>
+                    </button>
                     {activeTab === 'pending' ? (
                       <>
                         <button
@@ -972,6 +997,22 @@ export default function AdminPanel({
           </div>
         )}
       </>
+      )}
+
+      {editingItem && (
+        <AdminEditModal
+          item={editingItem}
+          secretKey={secretKey}
+          onClose={() => setEditingItem(null)}
+          onSave={(updatedItem) => {
+            setPendingItems(prev => prev.map(item => item.id === updatedItem.id ? { ...item, ...updatedItem } : item));
+            setApprovedItems(prev => prev.map(item => item.id === updatedItem.id ? { ...item, ...updatedItem } : item));
+            setRejectedItems(prev => prev.map(item => item.id === updatedItem.id ? { ...item, ...updatedItem } : item));
+            setEditingItem(null);
+            setSuccess('Tool listing details manually updated successfully!');
+            setTimeout(() => setSuccess(null), 3000);
+          }}
+        />
       )}
     </div>
   );

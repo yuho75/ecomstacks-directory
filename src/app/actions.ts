@@ -181,3 +181,45 @@ export async function logoutAndRedirectToHome() {
   redirect('/');
 }
 
+/**
+ * Server Action: Manually updates all attributes of a listing from the Admin Panel.
+ * Verifies administrative credentials, updates Supabase/MockDB, and revalidates Next.js cache.
+ */
+export async function updateItemAdmin(id: string, updates: any, secretKey: string | null) {
+  const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
+  
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
+    throw new Error('Unauthorized administrative action.');
+  }
+
+  const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+  const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+  if (isPlaceholder || isBypass) {
+    const { updateMockItemFullDetails } = await import('@/lib/mockDb');
+    const updated = await updateMockItemFullDetails(id, updates);
+    if (!updated) {
+      throw new Error('Item not found in mock database.');
+    }
+  } else {
+    const { error } = await supabaseAdmin
+      .from('items')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) {
+      throw new Error(`Database error: ${error.message}`);
+    }
+  }
+
+  // Instantly revalidate Landing Page lists and the tool's detailed page
+  revalidatePath('/');
+  revalidatePath(`/items/${id}`);
+
+  return { success: true };
+}
+

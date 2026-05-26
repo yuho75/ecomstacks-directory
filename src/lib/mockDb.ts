@@ -17,6 +17,21 @@ export interface MockItem {
   created_at: string;
   edit_token?: string;
   edit_token_expires_at?: string;
+  
+  // Rich details added for Gemini AI & Administrative editing
+  detailed_overview?: string;
+  key_features?: string[];
+  key_features_descriptions?: string[];
+  rating?: number;
+  rating_count?: number;
+  customer_review?: string;
+  customer_review_author?: string;
+  customer_review_2?: string;
+  customer_review_2_author?: string;
+  integration_guide_1_label?: string;
+  integration_guide_1_url?: string;
+  integration_guide_2_label?: string;
+  integration_guide_2_url?: string;
 }
 
 
@@ -171,6 +186,20 @@ export async function updateMockItemSubscription(id: string, subscriptionId: str
     items[index].subscription_status = subscriptionStatus;
     items[index].status = 'pending';
     items[index].tier = 'featured';
+    await writeMockDb(items);
+    return items[index];
+  }
+  return null;
+}
+
+export async function updateMockItemFullDetails(id: string, updates: Partial<MockItem>): Promise<MockItem | null> {
+  const items = await readMockDb();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    items[index] = {
+      ...items[index],
+      ...updates
+    };
     await writeMockDb(items);
     return items[index];
   }
