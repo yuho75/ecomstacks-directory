@@ -32,9 +32,52 @@ export async function approveItem(id: string, secretKey: string | null) {
       throw new Error('Item not found in mock database.');
     }
   } else {
+    // 1. Fetch the item's raw submission fields to analyze
+    const { data: itemData, error: fetchError } = await supabaseAdmin
+      .from('items')
+      .select('title, url, description, detailed_overview')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !itemData) {
+      throw new Error(`Failed to retrieve item details: ${fetchError?.message || 'Not found'}`);
+    }
+
+    // 2. If it doesn't have a detailed overview yet, enrich it using Gemini AI
+    let aiUpdates = {};
+    if (!itemData.detailed_overview && process.env.GEMINI_API_KEY) {
+      console.log(`🤖 Enriching tool ${itemData.title} using Gemini AI...`);
+      try {
+        const { generateToolDetailsWithAI } = await import('@/lib/gemini');
+        const aiData = await generateToolDetailsWithAI(itemData.title, itemData.url, itemData.description);
+        if (aiData) {
+          aiUpdates = {
+            detailed_overview: aiData.detailed_overview,
+            key_features: aiData.key_features,
+            key_features_descriptions: aiData.key_features_descriptions,
+            rating: aiData.rating,
+            rating_count: aiData.rating_count,
+            customer_review: aiData.customer_review,
+            customer_review_author: aiData.customer_review_author,
+            customer_review_2: aiData.customer_review_2,
+            customer_review_2_author: aiData.customer_review_2_author,
+            integration_guide_1_label: aiData.integration_guide_1_label,
+            integration_guide_1_url: aiData.integration_guide_1_url
+          };
+          console.log(`🤖 Gemini AI successfully generated detailed content for ${itemData.title}!`);
+        }
+      } catch (geminiErr) {
+        console.error('❌ Failed to enrich with Gemini, approving with basic details:', geminiErr);
+      }
+    }
+
+    // 3. Approve and save the rich details
     const { error } = await supabaseAdmin
       .from('items')
-      .update({ status: 'approved' })
+      .update({
+        status: 'approved',
+        ...aiUpdates
+      })
       .eq('id', id);
 
     if (error) {
