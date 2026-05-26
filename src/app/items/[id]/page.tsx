@@ -463,7 +463,7 @@ export default async function Page({ params }: PageProps) {
               <div className="bg-primary-container p-md rounded-xl text-white shadow-md">
                 <h4 className="font-headline-md text-[18px] mb-xs font-bold text-white">List your AI tool</h4>
                 <p className="font-body-sm text-body-sm text-on-primary-container mb-md leading-relaxed">
-                  Reach 50,000+ Shopify merchants searching for AI and SaaS solutions every month.
+                  Promote your tool to e-commerce brands and online sellers looking for AI and SaaS solutions.
                 </p>
                 <Link 
                   href="/?submit=true"
