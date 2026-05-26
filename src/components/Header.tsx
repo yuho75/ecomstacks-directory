@@ -142,6 +142,8 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                   id="announcement-email-input"
                   type="email"
                   required
+                  onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Please fill out this field.')}
+                  onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"

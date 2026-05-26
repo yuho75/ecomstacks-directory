@@ -121,6 +121,8 @@ export default function SubscribePage() {
                     <input 
                       type="email"
                       required
+                      onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Please fill out this field.')}
+                      onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                       disabled={status === 'loading'}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
