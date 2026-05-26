@@ -23,7 +23,7 @@ export default function PricingPage() {
             className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Reach 10,000+ E-Commerce Founders
+            Get Discovered by E-Commerce Brands & Founders
           </h1>
           <p className="text-lg text-on-surface-variant leading-relaxed">
             Get your tool in front of the right audience. Choose a plan that fits your growth stage.{' '}
