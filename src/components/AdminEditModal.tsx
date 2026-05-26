@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { updateItemAdmin } from '@/app/actions';
+import { getHybridDetails } from '@/lib/utils';
 
 interface Item {
   id: string;
@@ -52,7 +53,58 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
   const [imageUrl, setImageUrl] = useState(item.image_url || '');
   const [email, setEmail] = useState(item.email || '');
 
-  const [detailedOverview, setDetailedOverview] = useState(item.detailed_overview || '');
+  const [detailedOverview, setDetailedOverview] = useState(() => {
+    const raw = item.detailed_overview || '';
+    if (raw.trim().startsWith('{')) {
+      try {
+        return JSON.parse(raw).overview || '';
+      } catch (e) {
+        return raw;
+      }
+    }
+    return raw;
+  });
+
+  const [hybridTitle1, setHybridTitle1] = useState(() => {
+    const raw = item.detailed_overview || '';
+    if (raw.trim().startsWith('{')) {
+      try {
+        return JSON.parse(raw).title1 || '';
+      } catch (e) {}
+    }
+    return getHybridDetails(item.category, item.title).title1;
+  });
+
+  const [hybridDesc1, setHybridDesc1] = useState(() => {
+    const raw = item.detailed_overview || '';
+    if (raw.trim().startsWith('{')) {
+      try {
+        return JSON.parse(raw).desc1 || '';
+      } catch (e) {}
+    }
+    return getHybridDetails(item.category, item.title).desc1;
+  });
+
+  const [hybridTitle2, setHybridTitle2] = useState(() => {
+    const raw = item.detailed_overview || '';
+    if (raw.trim().startsWith('{')) {
+      try {
+        return JSON.parse(raw).title2 || '';
+      } catch (e) {}
+    }
+    return getHybridDetails(item.category, item.title).title2;
+  });
+
+  const [hybridDesc2, setHybridDesc2] = useState(() => {
+    const raw = item.detailed_overview || '';
+    if (raw.trim().startsWith('{')) {
+      try {
+        return JSON.parse(raw).desc2 || '';
+      } catch (e) {}
+    }
+    return getHybridDetails(item.category, item.title).desc2;
+  });
+
   const [rating, setRating] = useState<string>(String(item.rating || '4.9'));
   const [ratingCount, setRatingCount] = useState<string>(String(item.rating_count || '120'));
 
@@ -91,6 +143,14 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
       return;
     }
 
+    const serializedOverview = JSON.stringify({
+      overview: detailedOverview,
+      title1: hybridTitle1,
+      desc1: hybridDesc1,
+      title2: hybridTitle2,
+      desc2: hybridDesc2
+    });
+
     const updates = {
       title,
       url,
@@ -98,7 +158,7 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
       category,
       image_url: imageUrl,
       email,
-      detailed_overview: detailedOverview || undefined,
+      detailed_overview: serializedOverview,
       rating: parsedRating,
       rating_count: parsedRatingCount,
       key_features: [feat1, feat2, feat3].filter(Boolean).length > 0 ? [feat1, feat2, feat3] : undefined,
@@ -307,6 +367,61 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
                       required
                       disabled={saving}
                     />
+                  </div>
+                </div>
+
+                {/* Hybrid Dynamic Sections */}
+                <div className="pt-sm border-t border-outline-variant space-y-sm">
+                  <h4 className="font-label-md text-label-md text-primary font-bold">Category Features (카테고리 상세 특징 2종)</h4>
+                  
+                  {/* Pair 1 */}
+                  <div className="p-sm bg-surface-container-low rounded-xl border border-outline-variant space-y-sm">
+                    <div className="flex flex-col gap-xs">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant font-bold">특징 1 제목 (Feature 1 Title)</label>
+                      <input
+                        className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all font-semibold"
+                        type="text"
+                        value={hybridTitle1}
+                        onChange={(e) => setHybridTitle1(e.target.value)}
+                        placeholder="e.g. Automated Studio Quality"
+                        disabled={saving}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-xs">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant font-bold">특징 1 내용 (Feature 1 Description)</label>
+                      <textarea
+                        className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all min-h-[60px] leading-relaxed"
+                        value={hybridDesc1}
+                        onChange={(e) => setHybridDesc1(e.target.value)}
+                        placeholder="특징 1에 대한 자세한 마케팅 문구입니다."
+                        disabled={saving}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Pair 2 */}
+                  <div className="p-sm bg-surface-container-low rounded-xl border border-outline-variant space-y-sm">
+                    <div className="flex flex-col gap-xs">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant font-bold">특징 2 제목 (Feature 2 Title)</label>
+                      <input
+                        className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all font-semibold"
+                        type="text"
+                        value={hybridTitle2}
+                        onChange={(e) => setHybridTitle2(e.target.value)}
+                        placeholder="e.g. High-Speed Asset Pipeline"
+                        disabled={saving}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-xs">
+                      <label className="font-label-sm text-label-sm text-on-surface-variant font-bold">특징 2 내용 (Feature 2 Description)</label>
+                      <textarea
+                        className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all min-h-[60px] leading-relaxed"
+                        value={hybridDesc2}
+                        onChange={(e) => setHybridDesc2(e.target.value)}
+                        placeholder="특징 2에 대한 자세한 마케팅 문구입니다."
+                        disabled={saving}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

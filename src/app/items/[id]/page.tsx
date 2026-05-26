@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SEED_ITEMS } from '@/lib/seeds';
-import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
+import { getOptimizedCloudinaryUrl, formatDate, getHybridDetails } from '@/lib/utils';
 import type { Metadata } from 'next';
 import EditToolButton from '@/components/EditToolButton';
 import ItemViewTracker from '@/components/ItemViewTracker';
@@ -118,47 +118,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function getHybridDetails(category: string, title: string) {
-  const normCategory = category?.toLowerCase() || '';
-
-  if (normCategory.includes('visual') || normCategory.includes('design')) {
-    return {
-      title1: "Automated Studio Quality",
-      desc1: `Generate professional-grade product visuals instantly. Get flawless background removals, custom studio lighting, and high-fidelity product placement in seconds with ${title}.`,
-      title2: "High-Speed Asset Pipeline",
-      desc2: "Designed for fast catalog updates and ad creatives. Export pixel-perfect marketing assets directly optimized for Shopify, Instagram, or Etsy storefronts."
-    };
-  } else if (normCategory.includes('copywriting') || normCategory.includes('marketing')) {
-    return {
-      title1: "Conversion-Focused AI Copy",
-      desc1: `Leverage retail psychology and consumer behavior datasets. Craft persuasive sales copy, high-engagement captions, and social media reels that turn visitors into buyers using ${title}.`,
-      title2: "Multi-Store Scaling",
-      desc2: "Easily sync your product feeds. Generate bulk product descriptions, email flows, and social creatives for Shopify, Amazon, or boutique shops in a single click."
-    };
-  } else if (normCategory.includes('store') || normCategory.includes('optimization') || normCategory.includes('popup') || normCategory.includes('review')) {
-    return {
-      title1: "Frictionless Checkout Funnels",
-      desc1: `Optimize every touchpoint of your customer journey. Minimize cart abandonment, boost average order value (AOV), and design stunning elements built to convert with ${title}.`,
-      title2: "Real-Time Customer Trust",
-      desc2: "Embed social proof, interactive reviews, and high-converting popups. Build immediate shopper credibility and turn first-time visitors into repeat purchasers."
-    };
-  } else if (normCategory.includes('analytics') || normCategory.includes('tracking') || normCategory.includes('metric')) {
-    return {
-      title1: "Data-Driven Decisions",
-      desc1: `Uncover hidden marketing and traffic insights. Gain granular attribution, track accurate customer lifetime value (LTV), and stop wasting ad spend with ${title}.`,
-      title2: "Multi-Channel Tracking",
-      desc2: "Unify your shop metrics across TikTok, Google, Meta, and Shopify. View accurate conversion sources and pixel events in a single, consolidated dashboard."
-    };
-  } else {
-    // Default fallback (e.g. Operations & Automation or others)
-    return {
-      title1: "Zero-Touch E-commerce Workflows",
-      desc1: `Eliminate manual backend bottlenecks. Connect your storefront with ERPs, automate customer support triggers, and sync inventories across suppliers seamlessly via ${title}.`,
-      title2: "Infinite Scale Integration",
-      desc2: "Designed for modern solopreneurs. Build complex automated triggers and database syncs without writing a single line of custom code."
-    };
-  }
-}
 
 export default async function Page({ params }: PageProps) {
   const item = await getToolById(params.id);
@@ -289,22 +248,52 @@ export default async function Page({ params }: PageProps) {
             <section>
               <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Detailed Overview</h2>
               <div className="space-y-md text-on-surface-variant font-body-md leading-relaxed">
-                <p>
-                  {item.detailed_overview || `${item.title} represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments, description generations, or conversion rate optimization, this tool removes technical barriers and allows founders to focus entirely on high-level growth and scaling strategies.`}
-                </p>
                 {(() => {
-                  const hybrid = getHybridDetails(item.category, item.title);
+                  let overviewText = item.detailed_overview || '';
+                  let title1 = '';
+                  let desc1 = '';
+                  let title2 = '';
+                  let desc2 = '';
+
+                  if (overviewText.trim().startsWith('{')) {
+                    try {
+                      const parsed = JSON.parse(overviewText);
+                      overviewText = parsed.overview || '';
+                      title1 = parsed.title1 || '';
+                      desc1 = parsed.desc1 || '';
+                      title2 = parsed.title2 || '';
+                      desc2 = parsed.desc2 || '';
+                    } catch (e) {
+                      console.error('Failed to parse detailed_overview JSON:', e);
+                    }
+                  }
+
+                  if (!overviewText) {
+                    overviewText = `${item.title} represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments, description generations, or conversion rate optimization, this tool removes technical barriers and allows founders to focus entirely on high-level growth and scaling strategies.`;
+                  }
+
+                  if (!title1 || !desc1 || !title2 || !desc2) {
+                    const hybrid = getHybridDetails(item.category, item.title);
+                    title1 = title1 || hybrid.title1;
+                    desc1 = desc1 || hybrid.desc1;
+                    title2 = title2 || hybrid.title2;
+                    desc2 = desc2 || hybrid.desc2;
+                  }
+
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
-                      <div className="space-y-base">
-                        <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{hybrid.title1}</h3>
-                        <p>{hybrid.desc1}</p>
+                    <>
+                      <p>{overviewText}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
+                        <div className="space-y-base">
+                          <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{title1}</h3>
+                          <p>{desc1}</p>
+                        </div>
+                        <div className="space-y-base">
+                          <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{title2}</h3>
+                          <p>{desc2}</p>
+                        </div>
                       </div>
-                      <div className="space-y-base">
-                        <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{hybrid.title2}</h3>
-                        <p>{hybrid.desc2}</p>
-                      </div>
-                    </div>
+                    </>
                   );
                 })()}
               </div>
