@@ -466,7 +466,7 @@ export default async function Page({ params }: PageProps) {
                   Reach 50,000+ Shopify merchants searching for AI and SaaS solutions every month.
                 </p>
                 <Link 
-                  href="/"
+                  href="/?submit=true"
                   className="bg-white text-primary px-md py-sm rounded-lg font-label-md text-label-md w-full hover:bg-surface-container-lowest transition-colors text-center block shadow-sm"
                 >
                   Get Started
