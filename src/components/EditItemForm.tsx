@@ -13,6 +13,9 @@ interface EditItemFormProps {
     image_url: string;
     category: string;
     email: string;
+    tier?: string;
+    paypal_subscription_id?: string;
+    subscription_status?: string;
   };
   token: string;
 }
@@ -35,6 +38,41 @@ export default function EditItemForm({ item, token }: EditItemFormProps) {
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+
+  const [cancelling, setCancelling] = useState(false);
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Are you sure you want to cancel your Featured subscription? Your tool will return to standard listing when the period expires.")) {
+      return;
+    }
+    
+    setCancelling(true);
+    setError(null);
+    
+    try {
+      const res = await fetch('/api/paypal/cancel-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          itemId: item.id,
+          token
+        })
+      });
+      
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to cancel subscription.');
+      }
+      
+      alert('Your subscription has been successfully cancelled. It will not renew next month.');
+      router.refresh();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to request cancellation.');
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const handleDeleteSubmit = async () => {
     if (deleteConfirmText !== item.title) return;
@@ -213,6 +251,51 @@ export default function EditItemForm({ item, token }: EditItemFormProps) {
               Registered Owner: <span className="font-semibold">{item.email}</span> (Read-only)
             </p>
           </div>
+
+          {/* Subscription Status Block */}
+          {item.tier === 'featured' && (
+            <div className="bg-surface-container rounded-xl p-md border border-outline-variant flex flex-col md:flex-row items-center justify-between gap-md mb-md">
+              <div>
+                <p className="font-label-md text-label-md text-on-surface flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-primary text-[20px]">workspace_premium</span>
+                  Plan: <span className="font-extrabold text-primary">Featured Placement ($49/mo)</span>
+                </p>
+                <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  Status: {' '}
+                  <span className={`font-semibold capitalize ${
+                    item.subscription_status === 'active' ? 'text-green-600' : 'text-amber-600'
+                  }`}>
+                    {item.subscription_status || 'active'}
+                  </span>
+                  {item.subscription_status === 'cancelled' && ' (Expiring at end of period)'}
+                </p>
+              </div>
+
+              {item.subscription_status === 'active' && item.paypal_subscription_id && (
+                <button
+                  type="button"
+                  onClick={handleCancelSubscription}
+                  disabled={cancelling}
+                  className="border border-outline-variant hover:bg-neutral-100 font-label-md text-label-md px-md py-sm rounded-lg flex items-center gap-xs disabled:opacity-50 transition-all bg-white"
+                >
+                  {cancelling ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Cancelling...
+                    </>
+                  ) : (
+                    <>
+                      <span className="material-symbols-outlined text-[18px]">cancel</span>
+                      Cancel Subscription
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
 
           {error && (
             <div className="bg-error-container text-on-error-container p-sm rounded-lg font-body-sm flex items-center gap-xs animate-shake">

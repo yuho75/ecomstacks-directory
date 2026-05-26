@@ -12,6 +12,8 @@ export interface MockItem {
   status: 'pending_payment' | 'pending' | 'approved' | 'rejected' | 'deleted';
   tier: 'standard' | 'featured' | 'premium';
   paypal_order_id?: string;
+  paypal_subscription_id?: string;
+  subscription_status?: 'active' | 'suspended' | 'cancelled' | 'expired';
   created_at: string;
   edit_token?: string;
   edit_token_expires_at?: string;
@@ -141,6 +143,34 @@ export async function updateMockItemDetails(
     items[index].description = description;
     items[index].category = category;
     items[index].image_url = imageUrl;
+    await writeMockDb(items);
+    return items[index];
+  }
+  return null;
+}
+
+export async function updateMockItemSubscriptionStatus(id: string, subscriptionStatus: MockItem['subscription_status']): Promise<MockItem | null> {
+  const items = await readMockDb();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    items[index].subscription_status = subscriptionStatus;
+    if (subscriptionStatus === 'cancelled' || subscriptionStatus === 'expired') {
+      items[index].tier = 'standard';
+    }
+    await writeMockDb(items);
+    return items[index];
+  }
+  return null;
+}
+
+export async function updateMockItemSubscription(id: string, subscriptionId: string, subscriptionStatus: MockItem['subscription_status']): Promise<MockItem | null> {
+  const items = await readMockDb();
+  const index = items.findIndex(item => item.id === id);
+  if (index !== -1) {
+    items[index].paypal_subscription_id = subscriptionId;
+    items[index].subscription_status = subscriptionStatus;
+    items[index].status = 'pending';
+    items[index].tier = 'featured';
     await writeMockDb(items);
     return items[index];
   }

@@ -52,6 +52,16 @@ export async function POST(request: Request) {
       item = data;
     }
 
+    // Featured tier is a recurring subscription, so we skip PayPal checkout order creation
+    // and immediately return the initialized Supabase item ID to the frontend.
+    if (tier === 'featured') {
+      console.log('✅ Featured subscription database entry initialized:', item.id);
+      return NextResponse.json({
+        id: `sub_placeholder_${Date.now()}`,
+        supabaseItemId: item.id
+      });
+    }
+
     // 2. Fetch PayPal Access Token
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;

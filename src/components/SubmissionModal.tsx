@@ -46,6 +46,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const currentItemIdRef = useRef<string | null>(null);
 
   const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
@@ -569,64 +570,141 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                     <p className="text-center font-label-sm text-on-surface-variant text-[13px]">
                       You will be charged{' '}
                       <strong className="text-primary">${TIER_PRICES[tier]}</strong>{' '}
-                      {tier === 'featured' ? '/month' : 'one-time'} via PayPal.
+                      {tier === 'featured' ? '/month (Auto-renewing)' : 'one-time'} via PayPal.
                     </p>
-                    <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US' }}>
-                      <PayPalButtons
-                        style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
-                        disabled={submitting}
-                        createOrder={async () => {
-                          setSubmitting(true);
-                          setError(null);
-                          try {
-                            const res = await fetch('/api/paypal/create-order', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                title,
-                                url,
-                                description,
-                                category,
-                                email,
-                                image_url: imageUrl,
-                                tier,
-                              }),
-                            });
-                            const data = await res.json();
-                            if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order.');
-                            return data.id;
-                          } catch (err: any) {
-                            setError(err.message || 'PayPal order initialization failed.');
-                            setSubmitting(false);
-                            throw err;
-                          }
-                        }}
-                        onApprove={async (_data, actions) => {
-                          try {
-                            if (actions.order) {
-                              const capture = await actions.order.capture();
-                              console.log('PayPal Capture succeeded:', capture);
+                    {tier === 'featured' ? (
+                      /* ── FEATURED SUBSCRIPTION BUTTON ── */
+                      <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US', vault: 'true' }}>
+                        <PayPalButtons
+                          style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'subscribe' }}
+                          disabled={submitting}
+                          createSubscription={async (data, actions) => {
+                            setSubmitting(true);
+                            setError(null);
+                            try {
+                              const res = await fetch('/api/paypal/create-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  title,
+                                  url,
+                                  description,
+                                  category,
+                                  email,
+                                  image_url: imageUrl,
+                                  tier,
+                                }),
+                              });
+                              const resData = await res.json();
+                              if (!res.ok) throw new Error(resData.error || 'Failed to initialize subscription.');
+                              
+                              // Save database ID in ref
+                              currentItemIdRef.current = resData.supabaseItemId;
+
+                              return actions.subscription.create({
+                                plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-37M6441785535544V',
+                              });
+                            } catch (err: any) {
+                              setError(err.message || 'Subscription initialization failed.');
+                              setSubmitting(false);
+                              throw err;
+                            }
+                          }}
+                          onApprove={async (data) => {
+                            try {
+                              const subId = data.subscriptionID;
+                              const itemId = currentItemIdRef.current;
+
+                              const res = await fetch('/api/paypal/subscribe-success', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  subscriptionId: subId,
+                                  itemId,
+                                }),
+                              });
+                              const resData = await res.json();
+                              if (!res.ok) throw new Error(resData.error || 'Failed to capture subscription.');
+
                               setSubmitSuccess(true);
                               setTimeout(() => {
                                 onSuccess();
                                 onClose();
                                 resetForm();
                               }, 3000);
+                            } catch (err: any) {
+                              console.error('Subscription sync exception:', err);
+                              setError('Payment successful but database sync failed. Please contact support.');
+                            } finally {
+                              setSubmitting(false);
                             }
-                          } catch (err: any) {
-                            console.error('PayPal capture exception:', err);
-                            setError('Payment captured but database sync failed. Please contact support.');
-                          } finally {
+                          }}
+                          onError={(err) => {
+                            console.error('PayPal Subscription error:', err);
+                            setError('PayPal checkout encountered an error. Please try again.');
                             setSubmitting(false);
-                          }
-                        }}
-                        onError={(err) => {
-                          console.error('PayPal checkout error:', err);
-                          setError('PayPal checkout encountered an error. Please try again.');
-                          setSubmitting(false);
-                        }}
-                      />
-                    </PayPalScriptProvider>
+                          }}
+                        />
+                      </PayPalScriptProvider>
+                    ) : (
+                      /* ── PREMIUM ONE-TIME CHECKOUT BUTTON ── */
+                      <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US' }}>
+                        <PayPalButtons
+                          style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
+                          disabled={submitting}
+                          createOrder={async () => {
+                            setSubmitting(true);
+                            setError(null);
+                            try {
+                              const res = await fetch('/api/paypal/create-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  title,
+                                  url,
+                                  description,
+                                  category,
+                                  email,
+                                  image_url: imageUrl,
+                                  tier,
+                                }),
+                              });
+                              const data = await res.json();
+                              if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order.');
+                              return data.id;
+                            } catch (err: any) {
+                              setError(err.message || 'PayPal order initialization failed.');
+                              setSubmitting(false);
+                              throw err;
+                            }
+                          }}
+                          onApprove={async (_data, actions) => {
+                            try {
+                              if (actions.order) {
+                                const capture = await actions.order.capture();
+                                console.log('PayPal Capture succeeded:', capture);
+                                setSubmitSuccess(true);
+                                setTimeout(() => {
+                                  onSuccess();
+                                  onClose();
+                                  resetForm();
+                                }, 3000);
+                              }
+                            } catch (err: any) {
+                              console.error('PayPal capture exception:', err);
+                              setError('Payment captured but database sync failed. Please contact support.');
+                            } finally {
+                              setSubmitting(false);
+                            }
+                          }}
+                          onError={(err) => {
+                            console.error('PayPal checkout error:', err);
+                            setError('PayPal checkout encountered an error. Please try again.');
+                            setSubmitting(false);
+                          }}
+                        />
+                      </PayPalScriptProvider>
+                    )}
                   </div>
                 ) : isStandardFreeMode || (!isPaypalEnabled && tier === 'standard') ? (
                   /* ── FREE MODE: Bypass Submit Button ── */
