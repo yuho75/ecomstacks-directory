@@ -52,7 +52,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           uniques: Math.floor(Math.random() * 40) + 60
         });
       }
-      let tempAnalytics = {
+      let tempAnalytics: any = {
         totalViews: 1248,
         totalUniques: 512,
         todayViews: 145,
