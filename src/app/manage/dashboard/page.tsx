@@ -24,8 +24,9 @@ export default async function ManageDashboardPage() {
   let items = [];
 
   if (isPlaceholder || isBypass) {
-    const { mockItems } = await import('@/lib/mockDb');
-    items = mockItems.filter((i: any) => i.email.toLowerCase() === email.toLowerCase());
+    const { getMockItems } = await import('@/lib/mockDb');
+    const allMockItems = await getMockItems();
+    items = allMockItems.filter((i: any) => i.email.toLowerCase() === email.toLowerCase());
   } else {
     const { data, error } = await supabaseAdmin
       .from('items')
