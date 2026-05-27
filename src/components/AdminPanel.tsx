@@ -64,6 +64,7 @@ interface AdminPanelProps {
     todayUniques: number;
     dailyStats: { date: string; rawDate?: number; views: number; uniques: number }[];
     topPages: { path: string; count: number }[];
+    topUserAgents?: { agent: string; count: number }[];
   } | null;
   subscribers?: Subscriber[];
   itemClickStats?: Record<string, { cardViews: number; websiteClicks: number }>;
@@ -567,6 +568,35 @@ export default function AdminPanel({
             </div>
 
           </div>
+
+          {/* Top User Agents Panel */}
+          {analytics.topUserAgents && analytics.topUserAgents.length > 0 && (
+            <div className="bg-surface-container-lowest border border-outline-variant p-md rounded-xl mt-md animate-in fade-in duration-300">
+              <h4 className="font-bold text-on-surface mb-md text-[14px]">
+                방문자 기기/브라우저 (User-Agents)
+              </h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-[12px] border-collapse">
+                  <thead>
+                    <tr className="border-b border-outline-variant text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+                      <th className="py-2 pr-2 text-center w-8">순위</th>
+                      <th className="py-2 px-2">환경 정보</th>
+                      <th className="py-2 px-2 text-right">접속 횟수</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/30">
+                    {analytics.topUserAgents.map((ua, index) => (
+                      <tr key={index} className="hover:bg-neutral-50/50">
+                        <td className="py-2.5 pr-2 text-center font-bold text-neutral-400">{index + 1}</td>
+                        <td className="py-2.5 px-2 font-bold text-on-surface">{ua.agent}</td>
+                        <td className="py-2.5 px-2 text-right font-medium text-neutral-600">{ua.count.toLocaleString()}회</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

@@ -113,7 +113,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
           const { data: recentViews, error: errRecent } = await supabaseAdmin
             .from('page_views')
-            .select('session_id, created_at, pathname')
+            .select('session_id, created_at, pathname, user_agent')
             .gte('created_at', thirtyDaysAgo.toISOString());
 
           if (!errTotal && !errRecent && recentViews) {
@@ -182,13 +182,50 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               .sort((a, b) => b.count - a.count)
               .slice(0, 30);
 
+            // User Agent parsing logic
+            const parseUserAgent = (ua: string) => {
+              if (!ua) return 'Unknown';
+              if (ua.includes('Googlebot')) return 'Googlebot (Crawler)';
+              if (ua.includes('bingbot')) return 'Bingbot (Crawler)';
+              if (ua.includes('HeadlessChrome')) return 'Headless Chrome (Bot)';
+              if (ua.includes('Dataprovider.com')) return 'Dataprovider (Bot)';
+              if (ua.includes('GoogleOther')) return 'GoogleOther (Crawler)';
+              
+              let browser = 'Unknown Browser';
+              let os = 'Unknown OS';
+              
+              if (ua.includes('Edg/')) browser = 'Edge';
+              else if (ua.includes('Chrome/')) browser = 'Chrome';
+              else if (ua.includes('Safari/') && !ua.includes('Chrome')) browser = 'Safari';
+              else if (ua.includes('Firefox/')) browser = 'Firefox';
+
+              if (ua.includes('Windows')) os = 'Windows';
+              else if (ua.includes('Mac OS')) os = 'macOS';
+              else if (ua.includes('Android')) os = 'Android';
+              else if (ua.includes('iPhone') || ua.includes('iPad')) os = 'iOS';
+              else if (ua.includes('Linux')) os = 'Linux';
+              
+              return `${browser} on ${os}`;
+            };
+
+            const uaCounts: Record<string, number> = {};
+            allViews.forEach(v => {
+              const parsed = parseUserAgent(v.user_agent);
+              uaCounts[parsed] = (uaCounts[parsed] || 0) + 1;
+            });
+            const topUserAgents = Object.entries(uaCounts)
+              .map(([agent, count]) => ({ agent, count }))
+              .sort((a, b) => b.count - a.count)
+              .slice(0, 10);
+
             tempAnalytics = {
               totalViews: totalViews || 0,
               totalUniques: allUniqueSessions.size,
               todayViews: todayViewsList.length,
               todayUniques: todayUniquesSet.size,
               dailyStats,
-              topPages
+              topPages,
+              topUserAgents
             };
           }
         } catch (eAnalytics) {
