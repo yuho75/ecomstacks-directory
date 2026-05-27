@@ -516,12 +516,6 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
             {/* TAB 4: INTEGRATION GUIDES */}
             {activeTab === 'reviews' && (
               <div className="space-y-md">
-                <div className="bg-blue-50 border border-blue-200 text-blue-800 p-md rounded-xl text-[13px] font-medium leading-relaxed">
-                  <span className="material-symbols-outlined inline-block align-middle mr-1 text-[18px]">info</span>
-                  도구별 사용자 리뷰(구매자 후기)는 더 이상 이곳 수동 편집기에서 입력하지 않습니다.<br/>
-                  실제 사용자들이 제출한 리뷰들은 <strong>관리자 페이지 메인 화면의 [Live Reviews] 및 [Pending Reviews] 탭</strong>에서 통합 관리 및 승인/삭제하실 수 있습니다.
-                </div>
-
                 {/* Integration Docs */}
                 <div className="p-sm bg-surface-container-low rounded-xl border border-outline-variant space-y-sm">
                   <h4 className="font-label-md text-label-md text-on-surface font-bold">Integration Guide & Docs (가이드 문서 정보)</h4>
