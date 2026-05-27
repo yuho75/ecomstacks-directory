@@ -1,5 +1,4 @@
 import React from 'react';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
 import Header from '@/components/Header';
@@ -8,15 +7,18 @@ import DashboardGrid from '@/components/ManageDashboardClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ManageDashboardPage() {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get('manage_session_email');
+interface ManageDashboardPageProps {
+  searchParams: {
+    email?: string;
+  };
+}
+
+export default async function ManageDashboardPage({ searchParams }: ManageDashboardPageProps) {
+  const email = searchParams.email;
   
-  if (!sessionCookie || !sessionCookie.value) {
+  if (!email) {
     redirect('/manage');
   }
-  
-  const email = sessionCookie.value;
 
   const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
   const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');

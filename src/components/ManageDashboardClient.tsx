@@ -12,30 +12,20 @@ interface DashboardGridProps {
 export default function DashboardGrid({ items, email }: DashboardGridProps) {
   const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/manage/logout', { method: 'POST' });
-      router.push('/');
-      router.refresh();
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   return (
     <div className="w-full max-w-container-max mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-on-surface">My Listings</h1>
+          <h1 className="text-2xl font-extrabold text-on-surface">Found Listings</h1>
           <p className="text-neutral-500 text-sm mt-1">
-            Managing tools for <strong>{email}</strong>
+            Showing tools registered to <strong>{email}</strong>
           </p>
         </div>
         <button
-          onClick={handleLogout}
-          className="text-sm font-semibold text-neutral-500 hover:text-rose-500 transition-colors border border-outline-variant px-4 py-2 rounded-lg bg-white"
+          onClick={() => router.push('/manage')}
+          className="text-sm font-semibold text-neutral-500 hover:text-black transition-colors border border-outline-variant px-4 py-2 rounded-lg bg-white"
         >
-          Logout
+          Search Another Email
         </button>
       </div>
 
@@ -55,7 +45,6 @@ export default function DashboardGrid({ items, email }: DashboardGridProps) {
             <ToolCard 
               key={item.id} 
               item={item} 
-              onEditClick={() => router.push(`/items/${item.id}/edit`)} 
             />
           ))}
         </div>
