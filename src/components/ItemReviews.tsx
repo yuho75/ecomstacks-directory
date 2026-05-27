@@ -71,22 +71,22 @@ export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsP
         </div>
       ) : (
         <div className="space-y-md">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {(showAll ? reviews : reviews.slice(0, 4)).map(review => (
-              <div key={review.id} className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow flex flex-col justify-between">
+              <div key={review.id} className="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm flex flex-col justify-between">
                 <div>
-                  <div className="flex gap-xs mb-sm">
+                  <div className="flex gap-[2px] mb-2">
                     {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className={`material-symbols-outlined text-[18px] ${review.rating >= s ? 'text-tertiary-container' : 'text-outline-variant'}`} style={{ fontVariationSettings: review.rating >= s ? "'FILL' 1" : "'FILL' 0" }}>star</span>
+                      <span key={s} className={`material-symbols-outlined text-[15px] ${review.rating >= s ? 'text-tertiary-container' : 'text-outline-variant'}`} style={{ fontVariationSettings: review.rating >= s ? "'FILL' 1" : "'FILL' 0" }}>star</span>
                     ))}
                   </div>
-                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed whitespace-pre-wrap">
+                  <p className="text-[13px] text-on-surface-variant mb-3 italic leading-snug whitespace-pre-wrap">
                     "{review.content}"
                   </p>
                 </div>
-                <div className="flex items-center justify-between border-t border-outline-variant/30 pt-sm mt-sm">
-                  <span className="font-label-sm text-label-sm text-on-surface font-semibold">{review.author}</span>
-                  <span className="font-label-sm text-[12px] text-neutral-400">{formatDate(review.created_at)}</span>
+                <div className="flex items-center justify-between border-t border-outline-variant/50 pt-2 mt-auto">
+                  <span className="text-[12px] text-on-surface font-semibold">{review.author}</span>
+                  <span className="text-[11px] text-neutral-400">{formatDate(review.created_at)}</span>
                 </div>
               </div>
             ))}
