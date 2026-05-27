@@ -604,7 +604,7 @@ export default function AdminPanel({
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex border-b border-outline-variant gap-xs mb-md overflow-x-auto pb-1 no-scrollbar">
+      <div className="flex flex-wrap border-b border-outline-variant gap-xs mb-md pb-1">
         <button
           onClick={() => { setActiveTab('pending'); setCurrentPage(1); setSearchTerm(''); }}
           className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
