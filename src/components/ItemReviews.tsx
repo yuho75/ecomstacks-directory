@@ -46,17 +46,20 @@ export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsP
       </div>
 
       {reviews.length === 0 ? (
-        <div className="bg-surface-container-low border border-outline-variant rounded-xl p-xl text-center">
-          <span className="material-symbols-outlined text-[48px] text-primary/40 mb-xs">rate_review</span>
-          <p className="font-body-md text-on-surface-variant mb-md">
-            아직 작성된 리뷰가 없습니다. 이 툴을 사용해 보셨나요? 첫 번째 리뷰를 남겨주세요!
+        <div className="bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-xl p-xl text-center flex flex-col items-center justify-center animate-in fade-in duration-300">
+          <div className="w-16 h-16 bg-primary-container/20 rounded-full flex items-center justify-center mb-sm">
+            <span className="material-symbols-outlined text-[32px] text-primary">rate_review</span>
+          </div>
+          <h3 className="font-headline-md text-on-surface mb-xs font-bold">No Reviews Yet</h3>
+          <p className="font-body-md text-on-surface-variant mb-md max-w-sm">
+            Be the first to share your experience! Your feedback helps other founders make better software decisions.
           </p>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-xs text-primary font-label-md hover:underline bg-primary/10 px-md py-sm rounded-lg transition-colors"
+            className="inline-flex items-center gap-xs bg-primary text-white font-label-md px-md py-sm rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-sm"
           >
-            <span className="material-symbols-outlined text-[18px]">edit_note</span>
-            리뷰 작성하기
+            <span className="material-symbols-outlined text-[18px]">edit_square</span>
+            Write the First Review
           </button>
         </div>
       ) : (

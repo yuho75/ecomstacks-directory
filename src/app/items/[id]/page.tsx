@@ -388,17 +388,20 @@ export default async function Page({ params }: PageProps) {
               </div>
               
               {!item.integration_guide_1_url ? (
-                <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl text-center shadow-sm">
-                  <span className="material-symbols-outlined text-[48px] text-primary/40 mb-xs">integration_instructions</span>
-                  <p className="font-body-md text-on-surface-variant mb-md">
-                    이 툴의 개발자/관계자이신가요? 유저들을 위해 연동 가이드를 등록해 보세요.
+                <div className="bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-xl p-xl text-center flex flex-col items-center justify-center animate-in fade-in duration-300">
+                  <div className="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-sm">
+                    <span className="material-symbols-outlined text-[32px] text-on-surface-variant">integration_instructions</span>
+                  </div>
+                  <h3 className="font-headline-md text-on-surface mb-xs font-bold">Integration Guide Missing</h3>
+                  <p className="font-body-md text-on-surface-variant mb-md max-w-sm">
+                    Are you the developer or an affiliate of this tool? Help the community by submitting an integration guide.
                   </p>
                   <a 
                     href="mailto:admin@ecomstacks.com?subject=Submit Integration Guide"
-                    className="inline-flex items-center gap-xs text-primary font-label-md hover:underline bg-primary/10 px-md py-sm rounded-lg transition-colors"
+                    className="inline-flex items-center gap-xs border border-outline-variant text-on-surface font-label-md px-md py-sm rounded-lg hover:bg-surface-container-low active:scale-95 transition-all shadow-sm"
                   >
                     <span className="material-symbols-outlined text-[18px]">add_link</span>
-                    연동 가이드 제보하기
+                    Submit Guide
                   </a>
                 </div>
               ) : (
