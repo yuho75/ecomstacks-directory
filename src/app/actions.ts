@@ -272,3 +272,28 @@ export async function rejectReview(id: string, secretKey: string | null) {
   }
   revalidatePath('/admin');
 }
+
+export async function deleteReview(id: string, secretKey: string | null) {
+  const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
+    throw new Error('Unauthorized');
+  }
+
+  const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+  const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+  if (isBypass || isPlaceholder) {
+    const { deleteMockReview } = await import('@/lib/mockDb');
+    await deleteMockReview(id);
+  } else {
+    const { error } = await supabaseAdmin.from('reviews').delete().eq('id', id);
+    if (error) throw new Error('Database error');
+  }
+  revalidatePath('/');
+  revalidatePath('/admin');
+  revalidatePath('/items/[id]', 'page');
+}

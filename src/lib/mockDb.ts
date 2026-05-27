@@ -296,3 +296,14 @@ export async function updateMockReviewStatus(id: string, status: MockReview['sta
   }
   return null;
 }
+
+export async function deleteMockReview(id: string): Promise<boolean> {
+  const reviews = await readMockReviewsDb();
+  const index = reviews.findIndex(r => r.id === id);
+  if (index !== -1) {
+    reviews.splice(index, 1);
+    await writeMockReviewsDb(reviews);
+    return true;
+  }
+  return false;
+}

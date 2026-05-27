@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { approveItem, rejectItem, updateItemAdmin, approveReview, rejectReview } from '@/app/actions';
+import { approveItem, rejectItem, updateItemAdmin, approveReview, rejectReview, deleteReview } from '@/app/actions';
 import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
 import AdminEditModal from '@/components/AdminEditModal';
 
@@ -55,6 +55,7 @@ interface AdminPanelProps {
   initialApproved: Item[];
   initialRejected: Item[];
   initialPendingReviews?: Review[];
+  initialLiveReviews?: Review[];
   secretKey?: string | null;
   analytics?: {
     totalViews: number;
@@ -73,6 +74,7 @@ export default function AdminPanel({
   initialApproved, 
   initialRejected, 
   initialPendingReviews = [],
+  initialLiveReviews = [],
   secretKey = null,
   analytics = null,
   subscribers = [],
@@ -82,7 +84,8 @@ export default function AdminPanel({
   const [approvedItems, setApprovedItems] = useState<Item[]>(initialApproved);
   const [rejectedItems, setRejectedItems] = useState<Item[]>(initialRejected);
   const [pendingReviewsState, setPendingReviewsState] = useState<Review[]>(initialPendingReviews);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'subscribers' | 'pending_reviews'>('pending');
+  const [liveReviewsState, setLiveReviewsState] = useState<Review[]>(initialLiveReviews);
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'subscribers' | 'pending_reviews' | 'live_reviews'>('pending');
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -199,6 +202,27 @@ export default function AdminPanel({
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to reject review.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleDeleteReview = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this live review? This action cannot be undone.')) return;
+    
+    setProcessingId(id);
+    setError(null);
+    setSuccess(null);
+    try {
+      await deleteReview(id, secretKey);
+      setSuccess('Review successfully deleted!');
+      setTimeout(() => {
+        setLiveReviewsState(prev => prev.filter(r => r.id !== id));
+        setSuccess(null);
+      }, 1000);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to delete review.');
     } finally {
       setProcessingId(null);
     }
@@ -661,6 +685,22 @@ export default function AdminPanel({
             {pendingReviewsState.length}
           </span>
         </button>
+        <button
+          onClick={() => { setActiveTab('live_reviews'); setCurrentPage(1); setSearchTerm(''); }}
+          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+            activeTab === 'live_reviews'
+              ? 'border-primary text-primary font-bold'
+              : 'border-transparent text-on-surface-variant hover:text-primary'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[20px]">reviews</span>
+          <span>Live Reviews</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
+            activeTab === 'live_reviews' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          }`}>
+            {liveReviewsState.length}
+          </span>
+        </button>
       </div>
 
       {activeTab === 'pending_reviews' ? (
@@ -703,6 +743,49 @@ export default function AdminPanel({
                     className="flex-1 bg-surface-container-high text-on-surface hover:bg-error/10 hover:text-error py-2 rounded-lg font-label-md text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-1 border border-outline-variant/30"
                   >
                     <span className="material-symbols-outlined text-[16px]">close</span> Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : activeTab === 'live_reviews' ? (
+        liveReviewsState.length === 0 ? (
+          <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
+            <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">reviews</span>
+            <h2 className="font-headline-md text-headline-md text-on-surface">No Live Reviews</h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm mx-auto mt-xs">
+              There are no approved reviews currently live on the site.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md animate-in fade-in duration-300">
+            {liveReviewsState.map(review => (
+              <div key={review.id} className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col tool-card-shadow">
+                <div className="flex justify-between items-start mb-sm">
+                  <div>
+                    <h4 className="font-headline-sm text-on-surface font-semibold">{review.author}</h4>
+                    <p className="font-body-sm text-on-surface-variant text-xs">{formatDate(review.created_at)}</p>
+                  </div>
+                  <div className="flex text-tertiary-container text-sm">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <span key={star} className="material-symbols-outlined" style={{ fontVariationSettings: star <= review.rating ? "'FILL' 1" : "'FILL' 0", fontSize: '16px' }}>
+                        star
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p className="font-body-md text-on-surface mb-md italic flex-1">&quot;{review.content}&quot;</p>
+                <div className="text-xs text-on-surface-variant mb-md bg-surface-container p-xs rounded">
+                  Tool ID: {review.item_id.substring(0, 8)}...
+                </div>
+                <div className="flex mt-auto pt-sm border-t border-outline-variant/50">
+                  <button 
+                    onClick={() => handleDeleteReview(review.id)}
+                    disabled={processingId === review.id}
+                    className="flex-1 bg-surface-container-high text-on-surface hover:bg-error/10 hover:text-error py-2 rounded-lg font-label-md text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-1 border border-outline-variant/30"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">delete</span> Delete Review
                   </button>
                 </div>
               </div>

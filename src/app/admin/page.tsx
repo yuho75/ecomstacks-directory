@@ -30,6 +30,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   let approvedItems: any[] = [];
   let rejectedItems: any[] = [];
   let pendingReviews: any[] = [];
+  let liveReviews: any[] = [];
   let analyticsData: any = null;
   let subscriberList: any[] = [];
   let itemClickStats: Record<string, { cardViews: number; websiteClicks: number }> = {};
@@ -240,12 +241,27 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         } catch (eReviews) {
           console.warn('reviews table may not exist yet:', eReviews);
         }
+
+        // 8. Fetch live (approved) reviews
+        try {
+          const { data: lReviewsData, error: lReviewsError } = await supabaseAdmin
+            .from('reviews')
+            .select('*')
+            .eq('status', 'approved')
+            .order('created_at', { ascending: false });
+          if (!lReviewsError && lReviewsData) {
+            liveReviews = lReviewsData;
+          }
+        } catch (eReviews) {
+          console.warn('reviews table may not exist yet:', eReviews);
+        }
       } else {
         const { getMockItems, getMockReviews } = await import('@/lib/mockDb');
         pendingItems = await getMockItems('pending');
         approvedItems = await getMockItems('approved');
         rejectedItems = await getMockItems('rejected');
         pendingReviews = await getMockReviews('pending');
+        liveReviews = await getMockReviews('approved');
         subscriberList = [
           { id: 'mock-sub-1', email: 'test_founder@example.com', created_at: new Date().toISOString() },
           { id: 'mock-sub-2', email: 'growth_hacker@domain.com', created_at: new Date(Date.now() - 86400000).toISOString() }
@@ -320,13 +336,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             {/* Dynamic reactive approval flow */}
             <AdminPanel 
               initialPending={pendingItems} 
-              initialApproved={approvedItems}
-              initialRejected={rejectedItems}
+              initialApproved={approvedItems} 
+              initialRejected={rejectedItems} 
               initialPendingReviews={pendingReviews}
-              secretKey={secretKey}
+              initialLiveReviews={liveReviews}
               analytics={analyticsData}
               subscribers={subscriberList}
               itemClickStats={itemClickStats}
+              secretKey={secretKey}
             />
           </>
         )}
