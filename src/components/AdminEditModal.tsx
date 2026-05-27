@@ -115,10 +115,6 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
   const [feat3, setFeat3] = useState(item.key_features?.[2] || '');
   const [feat3Desc, setFeat3Desc] = useState(item.key_features_descriptions?.[2] || '');
 
-  const [review1, setReview1] = useState(item.customer_review || '');
-  const [review1Author, setReview1Author] = useState(item.customer_review_author || '');
-  const [review2, setReview2] = useState(item.customer_review_2 || '');
-  const [review2Author, setReview2Author] = useState(item.customer_review_2_author || '');
 
   const [guideLabel, setGuideLabel] = useState(item.integration_guide_1_label || '');
   const [guideUrl, setGuideUrl] = useState(item.integration_guide_1_url || '');
@@ -163,10 +159,7 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
       rating_count: parsedRatingCount,
       key_features: [feat1, feat2, feat3].filter(Boolean).length > 0 ? [feat1, feat2, feat3] : undefined,
       key_features_descriptions: [feat1Desc, feat2Desc, feat3Desc].filter(Boolean).length > 0 ? [feat1Desc, feat2Desc, feat3Desc] : undefined,
-      customer_review: review1 || undefined,
-      customer_review_author: review1Author || undefined,
-      customer_review_2: review2 || undefined,
-      customer_review_2_author: review2Author || undefined,
+
       integration_guide_1_label: guideLabel || undefined,
       integration_guide_1_url: guideUrl || undefined,
     };
@@ -193,7 +186,7 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
     { id: 'core', label: '기본 정보 (Core)', icon: 'info' },
     { id: 'details', label: '상세 개요 (Copy)', icon: 'article' },
     { id: 'features', label: '핵심 기능 (Features)', icon: 'featured_play_list' },
-    { id: 'reviews', label: '리뷰 & 가이드 (Trust)', icon: 'reviews' },
+    { id: 'reviews', label: '가이드 & 문서 (Docs)', icon: 'menu_book' },
   ];
 
   return (
@@ -520,57 +513,13 @@ export default function AdminEditModal({ item, secretKey, onClose, onSave }: Adm
               </div>
             )}
 
-            {/* TAB 4: REVIEWS & INTEGRATION GUIDES */}
+            {/* TAB 4: INTEGRATION GUIDES */}
             {activeTab === 'reviews' && (
               <div className="space-y-md">
-                {/* Review 1 */}
-                <div className="p-sm bg-surface-container-low rounded-xl border border-outline-variant space-y-sm">
-                  <h4 className="font-label-md text-label-md text-on-surface font-bold">Customer Review 1 (첫 번째 구매자 후기)</h4>
-                  <div className="flex flex-col gap-xs">
-                    <textarea
-                      className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all min-h-[60px]"
-                      value={review1}
-                      onChange={(e) => setReview1(e.target.value)}
-                      placeholder="e.g. Saved us over 40 hours of manual editing last month alone!"
-                      disabled={saving}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant">작성자 정보 (Author Label)</label>
-                    <input
-                      className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all"
-                      type="text"
-                      value={review1Author}
-                      onChange={(e) => setReview1Author(e.target.value)}
-                      placeholder="e.g. Sarah J. - Shopify Plus Merchant"
-                      disabled={saving}
-                    />
-                  </div>
-                </div>
-
-                {/* Review 2 */}
-                <div className="p-sm bg-surface-container-low rounded-xl border border-outline-variant space-y-sm">
-                  <h4 className="font-label-md text-label-md text-on-surface font-bold">Customer Review 2 (두 번째 구매자 후기)</h4>
-                  <div className="flex flex-col gap-xs">
-                    <textarea
-                      className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all min-h-[60px]"
-                      value={review2}
-                      onChange={(e) => setReview2(e.target.value)}
-                      placeholder="e.g. Allows us to display stunning, verified high-converting assets!"
-                      disabled={saving}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-xs">
-                    <label className="font-label-sm text-label-sm text-on-surface-variant">작성자 정보 (Author Label)</label>
-                    <input
-                      className="border border-outline-variant rounded-lg p-sm font-body-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none bg-white transition-all"
-                      type="text"
-                      value={review2Author}
-                      onChange={(e) => setReview2Author(e.target.value)}
-                      placeholder="e.g. Michael L. - Brand Owner"
-                      disabled={saving}
-                    />
-                  </div>
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 p-md rounded-xl text-[13px] font-medium leading-relaxed">
+                  <span className="material-symbols-outlined inline-block align-middle mr-1 text-[18px]">info</span>
+                  도구별 사용자 리뷰(구매자 후기)는 더 이상 이곳 수동 편집기에서 입력하지 않습니다.<br/>
+                  실제 사용자들이 제출한 리뷰들은 <strong>관리자 페이지 메인 화면의 [Live Reviews] 및 [Pending Reviews] 탭</strong>에서 통합 관리 및 승인/삭제하실 수 있습니다.
                 </div>
 
                 {/* Integration Docs */}
