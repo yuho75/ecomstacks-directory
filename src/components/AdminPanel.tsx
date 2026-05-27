@@ -604,99 +604,99 @@ export default function AdminPanel({
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex flex-wrap border-b border-outline-variant gap-xs mb-md pb-1">
+      <div className="flex overflow-x-auto no-scrollbar gap-2 mb-md bg-surface-container-lowest p-1.5 rounded-xl border border-outline-variant w-full shadow-sm">
         <button
           onClick={() => { setActiveTab('pending'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'pending'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
           <span className="material-symbols-outlined text-[20px]">pending_actions</span>
           <span>Pending Submissions</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'pending' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'pending' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {pendingItems.length}
           </span>
         </button>
         <button
           onClick={() => { setActiveTab('approved'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'approved'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
           <span className="material-symbols-outlined text-[20px]">verified</span>
           <span>Live Directory</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'approved' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'approved' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {approvedItems.length}
           </span>
         </button>
         <button
           onClick={() => { setActiveTab('rejected'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'rejected'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
           <span className="material-symbols-outlined text-[20px]">cancel</span>
           <span>Rejected / Hidden</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'rejected' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'rejected' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {rejectedItems.length}
           </span>
         </button>
         <button
           onClick={() => { setActiveTab('subscribers'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'subscribers'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
-          <span className="material-symbols-outlined text-[20px]">mail</span>
-          <span>Subscribers (구독자 명단)</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'subscribers' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className="material-symbols-outlined text-[18px]">mail</span>
+          <span>Subscribers</span>
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'subscribers' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {subscribers.length}
           </span>
         </button>
         <button
           onClick={() => { setActiveTab('pending_reviews'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'pending_reviews'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
-          <span className="material-symbols-outlined text-[20px]">rate_review</span>
+          <span className="material-symbols-outlined text-[18px]">rate_review</span>
           <span>Pending Reviews</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'pending_reviews' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'pending_reviews' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {pendingReviewsState.length}
           </span>
         </button>
         <button
           onClick={() => { setActiveTab('live_reviews'); setCurrentPage(1); setSearchTerm(''); }}
-          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+          className={`px-3 py-2 text-[13px] font-semibold transition-all duration-200 select-none flex items-center gap-2 whitespace-nowrap cursor-pointer rounded-lg ${
             activeTab === 'live_reviews'
-              ? 'border-primary text-primary font-bold'
-              : 'border-transparent text-on-surface-variant hover:text-primary'
+              ? 'bg-primary/5 text-primary ring-1 ring-primary/20 shadow-sm'
+              : 'text-neutral-500 hover:text-neutral-800 hover:bg-black/5'
           }`}
         >
-          <span className="material-symbols-outlined text-[20px]">reviews</span>
+          <span className="material-symbols-outlined text-[18px]">reviews</span>
           <span>Live Reviews</span>
-          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
-            activeTab === 'live_reviews' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-colors duration-200 ${
+            activeTab === 'live_reviews' ? 'bg-primary text-white' : 'bg-neutral-200 text-neutral-600'
           }`}>
             {liveReviewsState.length}
           </span>
