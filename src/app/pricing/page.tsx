@@ -23,10 +23,10 @@ export default function PricingPage() {
             className="text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-4"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
           >
-            Get Discovered by E-Commerce Brands & Founders
+            Boost Your Google SEO with a High-Quality Backlink
           </h1>
           <p className="text-lg text-on-surface-variant leading-relaxed">
-            Get your tool in front of the right audience. Choose a plan that fits your growth stage. No hidden fees, cancel anytime.
+            Submit your indie project to our niche directory. Get a permanent Do-Follow backlink, rank higher on Google, and get discovered by e-commerce founders instantly. Cheaper than a single Facebook Ad click.
           </p>
           {!isPaypalEnabled && (
             <div className="mt-4 inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-2 rounded-full">
@@ -69,15 +69,15 @@ export default function PricingPage() {
             <ul className="space-y-4 mb-8 flex-1">
               <li className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                <span className="text-sm text-on-surface">Permanent Do-follow link</span>
+                <span className="text-sm text-on-surface font-bold">Permanent Do-Follow Backlink</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                <span className="text-sm text-on-surface">Boost Domain Authority (SEO)</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
                 <span className="text-sm text-on-surface">Standard directory placement</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
-                <span className="text-sm text-on-surface">Approval in 2–4 weeks</span>
               </li>
             </ul>
 
@@ -111,15 +111,15 @@ export default function PricingPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                <span className="text-sm text-on-surface font-medium">Highlight border &amp; large thumbnail</span>
+                <span className="text-sm text-on-surface font-medium">Instant Targeted Traffic</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                <span className="text-sm text-on-surface font-medium">Approval in 24 hours</span>
+                <span className="text-sm text-on-surface font-medium">Approval &amp; Indexing in 24 hours</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="material-symbols-outlined text-primary text-[20px]">check_circle</span>
-                <span className="text-sm text-on-surface font-medium">Everything in Standard</span>
+                <span className="text-sm text-on-surface font-medium">Premium Do-Follow SEO value</span>
               </li>
             </ul>
 
