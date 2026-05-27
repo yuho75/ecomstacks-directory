@@ -81,10 +81,10 @@ export default function Footer() {
           </form>
           
           <nav className="flex flex-wrap justify-center md:justify-end gap-x-md gap-y-2 mt-8">
-            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/pricing">Pricing</Link>
-            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/terms">Terms</Link>
-            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/privacy">Privacy</Link>
-            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/manage">Find My Tools</Link>
+            <Link className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-white transition-colors" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} href="/pricing">Pricing</Link>
+            <Link className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-white transition-colors" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} href="/terms">Terms</Link>
+            <Link className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-white transition-colors" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} href="/privacy">Privacy</Link>
+            <Link className="text-[15px] font-extrabold tracking-[-0.045em] text-neutral-500 hover:text-white transition-colors" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }} href="/manage">Find My Tools</Link>
           </nav>
         </div>
       </div>
