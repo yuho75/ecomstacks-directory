@@ -454,8 +454,8 @@ export const SEED_ITEMS: SeedItem[] = [
   {
     id: "seed-tidio-lyro",
     title: "Tidio Lyro",
-    url: "https://www.tidio.com/lyro-ai/",
-    image_url: "https://res.cloudinary.com/ditb2aeea/image/upload/v1779548685/m0ncziklrj2lk51vwprm.png",
+    url: "https://www.tidio.com/lyro/",
+    image_url: "https://res.cloudinary.com/ditb2aeea/image/upload/v1779842030/bzeogne5yc12gieqe7bw.png",
     description: "Conversational AI customer service chatbot that resolves up to 70% of customer inquiries on autopilot.",
     category: "Automation",
     email: "creator@tidio.com",
