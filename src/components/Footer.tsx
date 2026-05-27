@@ -83,7 +83,7 @@ export default function Footer() {
           <nav className="flex flex-wrap justify-center md:justify-end gap-x-md gap-y-2 mt-8">
             <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/pricing">Pricing</Link>
             <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/terms">Terms</Link>
-            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/manage">Manage Listings</Link>
+            <Link className="font-label-sm text-neutral-500 hover:text-white transition-colors" href="/manage">Find My Tools</Link>
           </nav>
         </div>
       </div>

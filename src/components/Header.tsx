@@ -218,7 +218,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
               className={`text-[15px] font-extrabold tracking-[-0.045em] transition-colors py-2 ${pathname.startsWith('/manage') ? 'text-primary' : 'text-neutral-500 hover:text-black'}`}
               style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
             >
-              Manage My Listings
+              Find My Tools
             </Link>
           </nav>
 
@@ -284,7 +284,7 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                 className={`text-[16px] font-extrabold tracking-[-0.045em] py-2 border-b border-outline-variant/30 ${pathname.startsWith('/manage') ? 'text-primary' : 'text-neutral-500 hover:text-black'}`}
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
-                Manage My Listings
+                Find My Tools
               </Link>
               <button 
                 onClick={handleSubmitClick}
