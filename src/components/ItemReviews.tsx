@@ -46,20 +46,24 @@ export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsP
       </div>
 
       {reviews.length === 0 ? (
-        <div className="bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-xl p-xl text-center flex flex-col items-center justify-center animate-in fade-in duration-300">
-          <div className="w-16 h-16 bg-primary-container/20 rounded-full flex items-center justify-center mb-sm">
-            <span className="material-symbols-outlined text-[32px] text-primary">rate_review</span>
+        <div className="bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-xl p-md flex flex-col sm:flex-row items-center justify-between gap-md animate-in fade-in duration-300">
+          <div className="flex items-center gap-md">
+            <div className="w-12 h-12 bg-primary-container/20 rounded-full flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[24px] text-primary">rate_review</span>
+            </div>
+            <div>
+              <h3 className="font-headline-sm text-[16px] text-on-surface font-bold">No Reviews Yet</h3>
+              <p className="font-body-sm text-on-surface-variant mt-0.5">
+                Be the first to share your experience and help other founders!
+              </p>
+            </div>
           </div>
-          <h3 className="font-headline-md text-on-surface mb-xs font-bold">No Reviews Yet</h3>
-          <p className="font-body-md text-on-surface-variant mb-md max-w-sm">
-            Be the first to share your experience! Your feedback helps other founders make better software decisions.
-          </p>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-xs bg-primary text-white font-label-md px-md py-sm rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-sm"
+            className="inline-flex items-center justify-center gap-xs bg-primary text-white font-label-md px-md py-2 rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-sm shrink-0 w-full sm:w-auto"
           >
             <span className="material-symbols-outlined text-[18px]">edit_square</span>
-            Write the First Review
+            Write a Review
           </button>
         </div>
       ) : (
