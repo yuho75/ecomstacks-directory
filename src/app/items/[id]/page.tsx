@@ -381,60 +381,6 @@ export default async function Page({ params }: PageProps) {
             {/* Customer Reviews */}
             <ItemReviews itemId={item.id} itemTitle={item.title} reviews={reviews} />
 
-            {/* Integration Guide */}
-            <section className="bg-surface-container-low p-lg rounded-xl border border-outline-variant">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-md gap-sm">
-                <h2 className="font-headline-md text-headline-md text-on-surface">Integration Guide &amp; Docs</h2>
-              </div>
-              
-              {!item.integration_guide_1_url ? (
-                <div className="bg-surface-container-lowest border-2 border-dashed border-outline-variant/60 rounded-xl p-xl text-center flex flex-col items-center justify-center animate-in fade-in duration-300">
-                  <div className="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-sm">
-                    <span className="material-symbols-outlined text-[32px] text-on-surface-variant">integration_instructions</span>
-                  </div>
-                  <h3 className="font-headline-md text-on-surface mb-xs font-bold">Integration Guide Missing</h3>
-                  <p className="font-body-md text-on-surface-variant mb-md max-w-sm">
-                    Are you the developer or an affiliate of this tool? Help the community by submitting an integration guide.
-                  </p>
-                  <a 
-                    href="mailto:admin@ecomstacks.com?subject=Submit Integration Guide"
-                    className="inline-flex items-center gap-xs border border-outline-variant text-on-surface font-label-md px-md py-sm rounded-lg hover:bg-surface-container-low active:scale-95 transition-all shadow-sm"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">add_link</span>
-                    Submit Guide
-                  </a>
-                </div>
-              ) : (
-                <ul className="space-y-sm">
-                  <li>
-                    <a 
-                      className="flex items-center gap-sm text-primary hover:underline group" 
-                      href={item.integration_guide_1_url || "#"}
-                      target={item.integration_guide_1_url ? "_blank" : undefined}
-                      rel="noopener noreferrer"
-                    >
-                      <span className="material-symbols-outlined text-[20px]">description</span>
-                      <span className="font-body-md">{item.integration_guide_1_label || `${item.title} Setup Guide for E-commerce`}</span>
-                      <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
-                    </a>
-                  </li>
-                  {item.integration_guide_2_url && (
-                    <li>
-                      <a 
-                        className="flex items-center gap-sm text-primary hover:underline group" 
-                        href={item.integration_guide_2_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span className="material-symbols-outlined text-[20px]">code</span>
-                        <span className="font-body-md">{item.integration_guide_2_label || "SaaS Integration Endpoints"}</span>
-                        <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
-                      </a>
-                    </li>
-                  )}
-                </ul>
-              )}
-            </section>
           </div>
 
           {/* Right Column Sidebar (30%) */}
