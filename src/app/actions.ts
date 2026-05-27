@@ -247,7 +247,7 @@ export async function approveReview(id: string, secretKey: string | null) {
   }
   revalidatePath('/');
   revalidatePath('/admin');
-  // Note: we can't easily revalidate the specific item page without the item ID, so global revalidation works for now
+  revalidatePath('/items/[id]', 'page');
 }
 
 export async function rejectReview(id: string, secretKey: string | null) {
