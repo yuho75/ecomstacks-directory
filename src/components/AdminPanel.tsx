@@ -252,6 +252,13 @@ export default function AdminPanel({
     currentPage * itemsPerPage
   );
 
+  const totalLiveReviews = liveReviewsState.length;
+  const totalLiveReviewsPages = Math.ceil(totalLiveReviews / itemsPerPage) || 1;
+  const paginatedLiveReviews = liveReviewsState.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
     <div className="space-y-md">
       {/* Toast notifications */}
@@ -759,38 +766,95 @@ export default function AdminPanel({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md animate-in fade-in duration-300">
-            {liveReviewsState.map(review => (
-              <div key={review.id} className="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col tool-card-shadow">
-                <div className="flex justify-between items-start mb-sm">
-                  <div>
-                    <h4 className="font-headline-sm text-on-surface font-semibold">{review.author}</h4>
-                    <p className="font-body-sm text-on-surface-variant text-xs">{formatDate(review.created_at)}</p>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 animate-in fade-in duration-300">
+              {paginatedLiveReviews.map(review => {
+                const toolTitle = initialApproved.find(t => t.id === review.item_id)?.title || 'Unknown Tool';
+                return (
+                <div key={review.id} className="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex flex-col shadow-sm hover:border-primary/20 transition-all duration-200">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="text-[13px] text-on-surface font-bold">{review.author}</h4>
+                      <p className="text-[11px] text-neutral-400">{formatDate(review.created_at)}</p>
+                    </div>
+                    <div className="flex text-tertiary-container gap-[2px]">
+                      {[1, 2, 3, 4, 5].map(star => (
+                        <span key={star} className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: star <= review.rating ? "'FILL' 1" : "'FILL' 0" }}>
+                          star
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex text-tertiary-container text-sm">
-                    {[1, 2, 3, 4, 5].map(star => (
-                      <span key={star} className="material-symbols-outlined" style={{ fontVariationSettings: star <= review.rating ? "'FILL' 1" : "'FILL' 0", fontSize: '16px' }}>
-                        star
-                      </span>
-                    ))}
+                  <p className="text-[12px] leading-snug text-on-surface-variant mb-3 italic flex-1 line-clamp-4">&quot;{review.content}&quot;</p>
+                  
+                  <div className="text-[11px] font-semibold text-on-surface mb-3 bg-surface-container-high/50 p-2 rounded-lg flex items-center gap-1.5 border border-outline-variant/30">
+                    <span className="material-symbols-outlined text-[14px] text-primary">build</span>
+                    <span className="truncate">{toolTitle}</span>
+                  </div>
+                  
+                  <div className="flex mt-auto pt-3 border-t border-outline-variant/50">
+                    <button 
+                      onClick={() => handleDeleteReview(review.id)}
+                      disabled={processingId === review.id}
+                      className="flex-1 bg-surface-container-high text-on-surface hover:bg-error/10 hover:text-error py-1.5 rounded-lg text-[12px] font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-1 border border-outline-variant/30"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">delete</span> Delete
+                    </button>
                   </div>
                 </div>
-                <p className="font-body-md text-on-surface mb-md italic flex-1">&quot;{review.content}&quot;</p>
-                <div className="text-xs text-on-surface-variant mb-md bg-surface-container p-xs rounded">
-                  Tool ID: {review.item_id.substring(0, 8)}...
-                </div>
-                <div className="flex mt-auto pt-sm border-t border-outline-variant/50">
-                  <button 
-                    onClick={() => handleDeleteReview(review.id)}
-                    disabled={processingId === review.id}
-                    className="flex-1 bg-surface-container-high text-on-surface hover:bg-error/10 hover:text-error py-2 rounded-lg font-label-md text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-1 border border-outline-variant/30"
+              )})}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalLiveReviewsPages > 1 && (
+              <div className="flex flex-wrap justify-between items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-md py-sm mt-md gap-sm shadow-sm">
+                <span className="text-[13px] font-bold text-neutral-500 flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-[16px] text-primary">reviews</span>
+                  <span>총 {totalLiveReviews}개 중 {(currentPage - 1) * itemsPerPage + 1}~{Math.min(currentPage * itemsPerPage, totalLiveReviews)}개 표시</span>
+                </span>
+                
+                <div className="flex items-center gap-xs">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(1)}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="처음 페이지"
                   >
-                    <span className="material-symbols-outlined text-[16px]">delete</span> Delete Review
+                    <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+                  </button>
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="이전 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_left</span>
+                  </button>
+
+                  <span className="text-[13px] font-bold text-on-surface px-md select-none">
+                    {currentPage} / {totalLiveReviewsPages}
+                  </span>
+
+                  <button
+                    disabled={currentPage === totalLiveReviewsPages}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalLiveReviewsPages))}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="다음 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">chevron_right</span>
+                  </button>
+                  <button
+                    disabled={currentPage === totalLiveReviewsPages}
+                    onClick={() => setCurrentPage(totalLiveReviewsPages)}
+                    className="w-8 h-8 rounded-lg border border-outline-variant flex items-center justify-center text-on-surface hover:bg-primary hover:text-white disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-on-surface transition-all duration-200 cursor-pointer"
+                    title="마지막 페이지"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )
       ) : activeTab === 'subscribers' ? (
         subscribers.length === 0 ? (
