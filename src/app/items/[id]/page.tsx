@@ -9,6 +9,7 @@ import EditToolButton from '@/components/EditToolButton';
 import ItemViewTracker from '@/components/ItemViewTracker';
 import VisitWebsiteButton from '@/components/VisitWebsiteButton';
 import ItemReviews from '@/components/ItemReviews';
+import AnnouncementBar from '@/components/AnnouncementBar';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -166,7 +167,8 @@ export default async function Page({ params }: PageProps) {
       <ItemViewTracker itemId={item.id} />
 
       {/* TopNavBar */}
-      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0">
+      <header className="sticky top-0 z-50 w-full bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm shrink-0 flex flex-col">
+        <AnnouncementBar />
         <div className="max-w-container-max w-full mx-auto px-gutter h-20 flex justify-between items-center">
           <div className="flex items-center gap-base">
             <Link 
