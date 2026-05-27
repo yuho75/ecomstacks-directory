@@ -180,8 +180,8 @@ export default async function Page({ params }: PageProps) {
               Resources
             </Link>
           </nav>
-          <Link href="/" className="bg-primary-container text-white px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all block">
-            Submit Your Tool ($9.99)
+          <Link href="/?submit=true" className="bg-primary-container text-white px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-110 active:scale-95 transition-all block">
+            {process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true' ? 'Submit Your Tool' : 'Submit Your Tool (Free)'}
           </Link>
         </div>
       </header>

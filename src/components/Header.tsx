@@ -213,6 +213,13 @@ export default function Header({ onSubmitClick }: HeaderProps) {
             >
               Subscribe
             </Link>
+            <Link 
+              href="/manage" 
+              className={`text-[15px] font-extrabold tracking-[-0.045em] transition-colors py-2 ${pathname.startsWith('/manage') ? 'text-primary' : 'text-neutral-500 hover:text-black'}`}
+              style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+            >
+              Manage My Listings
+            </Link>
           </nav>
 
           {/* Desktop Submit Button & Hamburger for Mobile */}
@@ -270,6 +277,14 @@ export default function Header({ onSubmitClick }: HeaderProps) {
                 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
               >
                 Subscribe
+              </Link>
+              <Link 
+                href="/manage" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`text-[16px] font-extrabold tracking-[-0.045em] py-2 border-b border-outline-variant/30 ${pathname.startsWith('/manage') ? 'text-primary' : 'text-neutral-500 hover:text-black'}`}
+                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+              >
+                Manage My Listings
               </Link>
               <button 
                 onClick={handleSubmitClick}

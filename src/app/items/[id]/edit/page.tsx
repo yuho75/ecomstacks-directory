@@ -57,23 +57,34 @@ async function getToolById(id: string) {
   return null;
 }
 
+import { cookies } from 'next/headers';
+
 export default async function EditPage({ params, searchParams }: EditPageProps) {
   const { id } = params;
   const token = searchParams.token;
+  
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get('manage_session_email');
+  const sessionEmail = sessionCookie?.value?.toLowerCase();
 
   let isValid = false;
   let errorMessage = 'The secure link you clicked is invalid or expired. Please request a new edit link from the tool card.';
   let item: any = null;
 
-  if (token) {
-    item = await getToolById(id);
-    if (item) {
-      // Seeds cannot be edited
-      const isSeed = SEED_ITEMS.some((s) => s.id === id);
-      if (isSeed) {
-        isValid = false;
-        errorMessage = 'Seed/System listings are protected and cannot be edited.';
-      } else {
+  item = await getToolById(id);
+
+  if (item) {
+    const isSeed = SEED_ITEMS.some((s) => s.id === id);
+    if (isSeed) {
+      isValid = false;
+      errorMessage = 'Seed/System listings are protected and cannot be edited.';
+    } else {
+      // Check session cookie first
+      if (sessionEmail && item.email && sessionEmail === item.email.toLowerCase()) {
+        isValid = true;
+      } 
+      // Fallback to token check
+      else if (token) {
         const dbToken = item.edit_token;
         const dbExpiresAt = item.edit_token_expires_at;
 

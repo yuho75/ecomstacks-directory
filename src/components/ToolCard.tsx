@@ -20,9 +20,10 @@ interface Item {
 
 interface ToolCardProps {
   item: Item;
+  onEditClick?: () => void;
 }
 
-export default function ToolCard({ item }: ToolCardProps) {
+export default function ToolCard({ item, onEditClick }: ToolCardProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   // Apply Cloudinary real-time URL transformer for speed
   const optimizedImageSrc = getOptimizedCloudinaryUrl(item.image_url);
@@ -103,7 +104,7 @@ export default function ToolCard({ item }: ToolCardProps) {
           
           <div className="flex items-center gap-xs">
             <button
-              onClick={() => setIsEditOpen(true)}
+              onClick={() => onEditClick ? onEditClick() : setIsEditOpen(true)}
               className="text-neutral-400 hover:text-neutral-700 text-[12px] font-medium flex items-center gap-xs transition-colors focus:outline-none"
               title="Request edit link"
             >
