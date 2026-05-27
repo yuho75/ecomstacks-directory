@@ -430,14 +430,22 @@ export default async function Page({ params }: PageProps) {
                 <p className="text-body-sm text-on-surface-variant">No recommended tools found in this category yet.</p>
               ) : (
                 recommendations.map((rec) => (
-                  <div key={rec.id} className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden tool-card-shadow tool-card-hover">
-                    <div className="h-32 bg-surface-container-low overflow-hidden">
-                      <img className="w-full h-full object-cover" src={getOptimizedCloudinaryUrl(rec.image_url)} alt={rec.title} />
-                    </div>
+                  <div key={rec.id} className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden tool-card-shadow tool-card-hover group">
+                    <Link href={`/items/${rec.id}`} className="block h-32 bg-surface-container-low overflow-hidden">
+                      <img 
+                        className="w-full h-full object-cover brightness-90 group-hover:brightness-100 group-hover:scale-105 transition-all duration-500" 
+                        src={getOptimizedCloudinaryUrl(rec.image_url)} 
+                        alt={rec.title} 
+                      />
+                    </Link>
                     <div className="p-md">
                       <div className="flex items-center justify-between mb-xs">
-                        <h3 className="font-headline-md text-[16px] text-on-surface font-semibold">{rec.title}</h3>
-                        <span className="material-symbols-outlined text-tertiary-container text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <h3 className="font-headline-md text-[16px] text-on-surface font-semibold line-clamp-1 min-w-0">
+                          <Link href={`/items/${rec.id}`} className="hover:text-primary transition-colors">
+                            {rec.title}
+                          </Link>
+                        </h3>
+                        <span className="material-symbols-outlined text-tertiary-container text-[16px] shrink-0 ml-2" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                       </div>
                       <p className="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-1">{rec.description}</p>
                       <Link className="text-primary font-label-sm text-label-sm flex items-center gap-xs hover:underline" href={`/items/${rec.id}`}>
