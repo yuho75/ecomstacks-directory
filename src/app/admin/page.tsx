@@ -29,6 +29,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   let pendingItems: any[] = [];
   let approvedItems: any[] = [];
   let rejectedItems: any[] = [];
+  let pendingReviews: any[] = [];
   let analyticsData: any = null;
   let subscriberList: any[] = [];
   let itemClickStats: Record<string, { cardViews: number; websiteClicks: number }> = {};
@@ -225,11 +226,26 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         } catch (eClicks) {
           console.warn('item_clicks table may not exist yet:', eClicks);
         }
+
+        // 7. Fetch pending reviews
+        try {
+          const { data: pReviewsData, error: pReviewsError } = await supabaseAdmin
+            .from('reviews')
+            .select('*')
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false });
+          if (!pReviewsError && pReviewsData) {
+            pendingReviews = pReviewsData;
+          }
+        } catch (eReviews) {
+          console.warn('reviews table may not exist yet:', eReviews);
+        }
       } else {
-        const { getMockItems } = await import('@/lib/mockDb');
+        const { getMockItems, getMockReviews } = await import('@/lib/mockDb');
         pendingItems = await getMockItems('pending');
         approvedItems = await getMockItems('approved');
         rejectedItems = await getMockItems('rejected');
+        pendingReviews = await getMockReviews('pending');
         subscriberList = [
           { id: 'mock-sub-1', email: 'test_founder@example.com', created_at: new Date().toISOString() },
           { id: 'mock-sub-2', email: 'growth_hacker@domain.com', created_at: new Date(Date.now() - 86400000).toISOString() }
@@ -306,6 +322,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               initialPending={pendingItems} 
               initialApproved={approvedItems}
               initialRejected={rejectedItems}
+              initialPendingReviews={pendingReviews}
               secretKey={secretKey}
               analytics={analyticsData}
               subscribers={subscriberList}

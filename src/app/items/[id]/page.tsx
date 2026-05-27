@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import EditToolButton from '@/components/EditToolButton';
 import ItemViewTracker from '@/components/ItemViewTracker';
 import VisitWebsiteButton from '@/components/VisitWebsiteButton';
+import ItemReviews from '@/components/ItemReviews';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -99,6 +100,35 @@ async function getRecommendations(category: string, currentId: string) {
   return unique.slice(0, 2);
 }
 
+// Fetch reviews for the item
+async function getReviewsByItemId(id: string) {
+  let dbReviews: any[] = [];
+  const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+  const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+  if (!isPlaceholder && !isBypass) {
+    try {
+      const { data } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('item_id', id)
+        .eq('status', 'approved')
+        .order('created_at', { ascending: false });
+      if (data) dbReviews = data;
+    } catch (e) {
+      console.error('Error fetching reviews:', e);
+    }
+  } else {
+    try {
+      const { getMockReviews } = await import('@/lib/mockDb');
+      dbReviews = await getMockReviews('approved', id);
+    } catch (e) {
+      console.error('Error fetching mock reviews:', e);
+    }
+  }
+  return dbReviews;
+}
+
 // Generate dynamic SEO titles and metadata tags per product
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const item = await getToolById(params.id);
@@ -127,6 +157,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   const recommendations = await getRecommendations(item.category, item.id);
+  const reviews = await getReviewsByItemId(item.id);
   const optimizedImage = getOptimizedCloudinaryUrl(item.image_url);
 
   return (
@@ -348,76 +379,58 @@ export default async function Page({ params }: PageProps) {
             </section>
 
             {/* Customer Reviews */}
-            <section>
-              <div className="flex items-center justify-between mb-md">
-                <h2 className="font-headline-md text-headline-md text-on-surface">Customer Reviews</h2>
-                <div className="flex gap-xs items-center">
-                  <span className="material-symbols-outlined text-tertiary-container" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                  <span className="font-bold">{item.rating || "4.9"}</span>
-                  <span className="text-on-surface-variant text-body-sm">({item.rating_count || "124"} verified reviews)</span>
-                </div>
-              </div>
-              <div className="flex gap-md overflow-x-auto pb-md custom-scrollbar">
-                {/* Review Card 1 */}
-                <div className="min-w-[320px] bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow shrink-0">
-                  <div className="flex gap-xs mb-sm">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className="material-symbols-outlined text-tertiary-container text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    ))}
-                  </div>
-                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">&quot;{item.customer_review || "Saved us over 40 hours of manual editing last month alone. Absolute game-changer for solo sellers!"}&quot;</p>
-                  <div className="flex items-center gap-sm">
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">{item.customer_review_author || "Sarah J. - Shopify Plus Merchant"}</span>
-                  </div>
-                </div>
-                {/* Review Card 2 */}
-                <div className="min-w-[320px] bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow shrink-0">
-                  <div className="flex gap-xs mb-sm">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <span key={s} className="material-symbols-outlined text-tertiary-container text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                    ))}
-                  </div>
-                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed">
-                    &quot;{item.customer_review_2 || "Allows us to display stunning, verified high-converting assets without expensive photography rigs."}&quot;
-                  </p>
-                  <div className="flex items-center gap-sm">
-                    <span className="font-label-sm text-label-sm text-on-surface font-semibold">
-                      {item.customer_review_2_author || "Michael L. - Brand Owner"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <ItemReviews itemId={item.id} itemTitle={item.title} reviews={reviews} />
 
             {/* Integration Guide */}
             <section className="bg-surface-container-low p-lg rounded-xl border border-outline-variant">
-              <h2 className="font-headline-md text-headline-md text-on-surface mb-md">Integration Guide &amp; Docs</h2>
-              <ul className="space-y-sm">
-                <li>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-md gap-sm">
+                <h2 className="font-headline-md text-headline-md text-on-surface">Integration Guide &amp; Docs</h2>
+              </div>
+              
+              {!item.integration_guide_1_url ? (
+                <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-xl text-center shadow-sm">
+                  <span className="material-symbols-outlined text-[48px] text-primary/40 mb-xs">integration_instructions</span>
+                  <p className="font-body-md text-on-surface-variant mb-md">
+                    이 툴의 개발자/관계자이신가요? 유저들을 위해 연동 가이드를 등록해 보세요.
+                  </p>
                   <a 
-                    className="flex items-center gap-sm text-primary hover:underline group" 
-                    href={item.integration_guide_1_url || "#"}
-                    target={item.integration_guide_1_url ? "_blank" : undefined}
-                    rel="noopener noreferrer"
+                    href="mailto:admin@ecomstacks.com?subject=Submit Integration Guide"
+                    className="inline-flex items-center gap-xs text-primary font-label-md hover:underline bg-primary/10 px-md py-sm rounded-lg transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[20px]">description</span>
-                    <span className="font-body-md">{item.integration_guide_1_label || `${item.title} Setup Guide for E-commerce`}</span>
-                    <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                    <span className="material-symbols-outlined text-[18px]">add_link</span>
+                    연동 가이드 제보하기
                   </a>
-                </li>
-                <li>
-                  <a 
-                    className="flex items-center gap-sm text-primary hover:underline group" 
-                    href={item.integration_guide_2_url || "#"}
-                    target={item.integration_guide_2_url ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">code</span>
-                    <span className="font-body-md">{item.integration_guide_2_label || "SaaS Integration Endpoints"}</span>
-                    <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
-                  </a>
-                </li>
-              </ul>
+                </div>
+              ) : (
+                <ul className="space-y-sm">
+                  <li>
+                    <a 
+                      className="flex items-center gap-sm text-primary hover:underline group" 
+                      href={item.integration_guide_1_url || "#"}
+                      target={item.integration_guide_1_url ? "_blank" : undefined}
+                      rel="noopener noreferrer"
+                    >
+                      <span className="material-symbols-outlined text-[20px]">description</span>
+                      <span className="font-body-md">{item.integration_guide_1_label || `${item.title} Setup Guide for E-commerce`}</span>
+                      <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                    </a>
+                  </li>
+                  {item.integration_guide_2_url && (
+                    <li>
+                      <a 
+                        className="flex items-center gap-sm text-primary hover:underline group" 
+                        href={item.integration_guide_2_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">code</span>
+                        <span className="font-body-md">{item.integration_guide_2_label || "SaaS Integration Endpoints"}</span>
+                        <span className="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity">open_in_new</span>
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              )}
             </section>
           </div>
 

@@ -223,3 +223,52 @@ export async function updateItemAdmin(id: string, updates: any, secretKey: strin
   return { success: true };
 }
 
+
+
+export async function approveReview(id: string, secretKey: string | null) {
+  const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
+    throw new Error('Unauthorized');
+  }
+
+  const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+  const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+  if (isBypass || isPlaceholder) {
+    const { updateMockReviewStatus } = await import('@/lib/mockDb');
+    await updateMockReviewStatus(id, 'approved');
+  } else {
+    const { error } = await supabaseAdmin.from('reviews').update({ status: 'approved' }).eq('id', id);
+    if (error) throw new Error('Database error');
+  }
+  revalidatePath('/');
+  revalidatePath('/admin');
+  // Note: we can't easily revalidate the specific item page without the item ID, so global revalidation works for now
+}
+
+export async function rejectReview(id: string, secretKey: string | null) {
+  const adminSecret = process.env.ADMIN_SECRET_KEY || 'secret-key-123';
+  const cookieStore = cookies();
+  const session = cookieStore.get('ecomstacks_admin_session');
+  const isSessionAuthenticated = session?.value === 'authenticated';
+
+  if (!isSessionAuthenticated && secretKey !== adminSecret) {
+    throw new Error('Unauthorized');
+  }
+
+  const isBypass = process.env.NEXT_PUBLIC_MOCK_BYPASS === 'true';
+  const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+  if (isBypass || isPlaceholder) {
+    const { updateMockReviewStatus } = await import('@/lib/mockDb');
+    await updateMockReviewStatus(id, 'rejected');
+  } else {
+    const { error } = await supabaseAdmin.from('reviews').update({ status: 'rejected' }).eq('id', id);
+    if (error) throw new Error('Database error');
+  }
+  revalidatePath('/admin');
+}

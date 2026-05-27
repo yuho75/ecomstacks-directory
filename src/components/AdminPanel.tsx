@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { approveItem, rejectItem, updateItemAdmin } from '@/app/actions';
+import { approveItem, rejectItem, updateItemAdmin, approveReview, rejectReview } from '@/app/actions';
 import { getOptimizedCloudinaryUrl, formatDate } from '@/lib/utils';
 import AdminEditModal from '@/components/AdminEditModal';
 
@@ -33,6 +33,16 @@ interface Item {
   integration_guide_2_url?: string;
 }
 
+export interface Review {
+  id: string;
+  item_id: string;
+  author: string;
+  rating: number;
+  content: string;
+  status: string;
+  created_at: string;
+}
+
 interface Subscriber {
   id: string;
   email: string;
@@ -44,6 +54,7 @@ interface AdminPanelProps {
   initialPending: Item[];
   initialApproved: Item[];
   initialRejected: Item[];
+  initialPendingReviews?: Review[];
   secretKey?: string | null;
   analytics?: {
     totalViews: number;
@@ -61,6 +72,7 @@ export default function AdminPanel({
   initialPending, 
   initialApproved, 
   initialRejected, 
+  initialPendingReviews = [],
   secretKey = null,
   analytics = null,
   subscribers = [],
@@ -69,7 +81,8 @@ export default function AdminPanel({
   const [pendingItems, setPendingItems] = useState<Item[]>(initialPending);
   const [approvedItems, setApprovedItems] = useState<Item[]>(initialApproved);
   const [rejectedItems, setRejectedItems] = useState<Item[]>(initialRejected);
-  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'subscribers'>('pending');
+  const [pendingReviewsState, setPendingReviewsState] = useState<Review[]>(initialPendingReviews);
+  const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'rejected' | 'subscribers' | 'pending_reviews'>('pending');
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -148,6 +161,44 @@ export default function AdminPanel({
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Failed to reject/unpublish item.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleApproveReview = async (id: string) => {
+    setProcessingId(id);
+    setError(null);
+    setSuccess(null);
+    try {
+      await approveReview(id, secretKey);
+      setSuccess('Review successfully approved!');
+      setTimeout(() => {
+        setPendingReviewsState(prev => prev.filter(r => r.id !== id));
+        setSuccess(null);
+      }, 1000);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to approve review.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleRejectReview = async (id: string) => {
+    setProcessingId(id);
+    setError(null);
+    setSuccess(null);
+    try {
+      await rejectReview(id, secretKey);
+      setSuccess('Review successfully rejected!');
+      setTimeout(() => {
+        setPendingReviewsState(prev => prev.filter(r => r.id !== id));
+        setSuccess(null);
+      }, 1000);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Failed to reject review.');
     } finally {
       setProcessingId(null);
     }
@@ -594,9 +645,71 @@ export default function AdminPanel({
             {subscribers.length}
           </span>
         </button>
+        <button
+          onClick={() => { setActiveTab('pending_reviews'); setCurrentPage(1); setSearchTerm(''); }}
+          className={`px-md py-base font-label-md text-label-md transition-all duration-200 select-none border-b-2 flex items-center gap-xs whitespace-nowrap cursor-pointer ${
+            activeTab === 'pending_reviews'
+              ? 'border-primary text-primary font-bold'
+              : 'border-transparent text-on-surface-variant hover:text-primary'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[20px]">rate_review</span>
+          <span>Pending Reviews</span>
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold transition-colors duration-200 ${
+            activeTab === 'pending_reviews' ? 'bg-primary/10 text-primary' : 'bg-surface-container-high text-on-surface-variant'
+          }`}>
+            {pendingReviewsState.length}
+          </span>
+        </button>
       </div>
 
-      {activeTab === 'subscribers' ? (
+      {activeTab === 'pending_reviews' ? (
+        pendingReviewsState.length === 0 ? (
+          <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
+            <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">rate_review</span>
+            <h2 className="font-headline-md text-headline-md text-on-surface">No Pending Reviews</h2>
+            <p className="font-body-sm text-body-sm text-on-surface-variant max-w-sm mx-auto mt-xs">
+              There are no pending user reviews waiting for approval.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-base animate-in fade-in duration-300">
+            {pendingReviewsState.map(review => (
+              <div key={review.id} className="bg-surface-container-lowest border border-outline-variant hover:border-primary/20 rounded-xl p-md flex flex-col justify-between tool-card-shadow transition-all duration-300">
+                <div>
+                  <div className="flex items-center justify-between mb-sm">
+                    <span className="font-label-sm text-[12px] bg-surface-container-high px-2 py-1 rounded text-on-surface-variant">Tool ID: {review.item_id.substring(0,8)}...</span>
+                    <span className="font-label-sm text-[12px] text-neutral-500">{formatDate(review.created_at)}</span>
+                  </div>
+                  <div className="flex gap-1 mb-sm">
+                    {[1, 2, 3, 4, 5].map(star => (
+                      <span key={star} className={`material-symbols-outlined text-[18px] ${review.rating >= star ? 'text-tertiary-container' : 'text-outline-variant'}`} style={{ fontVariationSettings: review.rating >= star ? "'FILL' 1" : "'FILL' 0" }}>star</span>
+                    ))}
+                  </div>
+                  <p className="font-body-md text-on-surface-variant italic mb-md">"{review.content}"</p>
+                  <p className="font-label-md font-bold text-on-surface mb-md">- {review.author}</p>
+                </div>
+                <div className="flex gap-sm mt-auto pt-sm border-t border-outline-variant/50">
+                  <button 
+                    onClick={() => handleApproveReview(review.id)}
+                    disabled={processingId === review.id}
+                    className="flex-1 bg-primary text-white py-2 rounded-lg font-label-md text-sm hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">check</span> Approve
+                  </button>
+                  <button 
+                    onClick={() => handleRejectReview(review.id)}
+                    disabled={processingId === review.id}
+                    className="flex-1 bg-surface-container-high text-on-surface hover:bg-error/10 hover:text-error py-2 rounded-lg font-label-md text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-1 border border-outline-variant/30"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">close</span> Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      ) : activeTab === 'subscribers' ? (
         subscribers.length === 0 ? (
           <div className="text-center py-xl border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-lowest animate-in fade-in duration-300">
             <span className="material-symbols-outlined text-[64px] text-primary/40 mb-xs">mail</span>

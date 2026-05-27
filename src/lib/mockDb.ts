@@ -205,3 +205,94 @@ export async function updateMockItemFullDetails(id: string, updates: Partial<Moc
   }
   return null;
 }
+
+export interface MockReview {
+  id: string;
+  item_id: string;
+  author: string;
+  rating: number;
+  content: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+}
+
+let memoryReviewsDb: MockReview[] = [];
+
+const getReviewsFilePath = () => {
+  return path.join(process.cwd(), 'src', 'lib', 'mock_reviews_db.json');
+};
+
+const initializeReviewsFileDb = () => {
+  try {
+    const filePath = getReviewsFilePath();
+    if (!fs.existsSync(filePath)) {
+      fs.writeFileSync(filePath, JSON.stringify([], null, 2), 'utf-8');
+    }
+  } catch (err) {
+    console.warn('Fs init bypass (likely serverless build environment):', err);
+  }
+};
+
+export async function readMockReviewsDb(): Promise<MockReview[]> {
+  try {
+    initializeReviewsFileDb();
+    const filePath = getReviewsFilePath();
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const fileData = JSON.parse(content) as MockReview[];
+      memoryReviewsDb = fileData;
+      return fileData;
+    }
+  } catch (err) {
+    console.warn('Failed to read local mock reviews DB file:', err);
+  }
+  return memoryReviewsDb;
+}
+
+export async function writeMockReviewsDb(data: MockReview[]): Promise<boolean> {
+  memoryReviewsDb = data;
+  try {
+    initializeReviewsFileDb();
+    const filePath = getReviewsFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    return true;
+  } catch (err) {
+    console.error('Failed to write mock reviews DB:', err);
+    return false;
+  }
+}
+
+export async function getMockReviews(status?: 'pending' | 'approved' | 'rejected', itemId?: string): Promise<MockReview[]> {
+  const reviews = await readMockReviewsDb();
+  let filtered = reviews;
+  if (status) {
+    filtered = filtered.filter(r => r.status === status);
+  }
+  if (itemId) {
+    filtered = filtered.filter(r => r.item_id === itemId);
+  }
+  return filtered;
+}
+
+export async function insertMockReview(review: Omit<MockReview, 'id' | 'created_at'>): Promise<MockReview> {
+  const reviews = await readMockReviewsDb();
+  const newReview: MockReview = {
+    ...review,
+    id: "mock_review_" + Math.random().toString(36).substr(2, 9),
+    created_at: new Date().toISOString()
+  };
+  reviews.push(newReview);
+  await writeMockReviewsDb(reviews);
+  return newReview;
+}
+
+export async function updateMockReviewStatus(id: string, status: MockReview['status']): Promise<MockReview | null> {
+  const reviews = await readMockReviewsDb();
+  const index = reviews.findIndex(r => r.id === id);
+  if (index !== -1) {
+    reviews[index].status = status;
+    await writeMockReviewsDb(reviews);
+    return reviews[index];
+  }
+  return null;
+}
