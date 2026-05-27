@@ -95,7 +95,7 @@ export default function AdminPanel({
   // Search & Pagination States
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
 
   // Time range selector state for analytics chart (7d, 30d, 90d, 180d, 365d, all)
   const [timeRange, setTimeRange] = useState<7 | 30 | 90 | 180 | 365 | 'all'>(7);
