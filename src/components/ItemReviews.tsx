@@ -21,6 +21,7 @@ interface ItemReviewsProps {
 
 export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showAll, setShowAll] = useState(false);
 
   return (
     <section>
@@ -69,25 +70,36 @@ export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsP
           </button>
         </div>
       ) : (
-        <div className="flex gap-md overflow-x-auto pb-md custom-scrollbar">
-          {reviews.map(review => (
-            <div key={review.id} className="min-w-[320px] bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow shrink-0 flex flex-col justify-between">
-              <div>
-                <div className="flex gap-xs mb-sm">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <span key={s} className={`material-symbols-outlined text-[18px] ${review.rating >= s ? 'text-tertiary-container' : 'text-outline-variant'}`} style={{ fontVariationSettings: review.rating >= s ? "'FILL' 1" : "'FILL' 0" }}>star</span>
-                  ))}
+        <div className="space-y-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
+            {(showAll ? reviews : reviews.slice(0, 4)).map(review => (
+              <div key={review.id} className="bg-surface-container-lowest p-md rounded-xl border border-outline-variant tool-card-shadow flex flex-col justify-between">
+                <div>
+                  <div className="flex gap-xs mb-sm">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <span key={s} className={`material-symbols-outlined text-[18px] ${review.rating >= s ? 'text-tertiary-container' : 'text-outline-variant'}`} style={{ fontVariationSettings: review.rating >= s ? "'FILL' 1" : "'FILL' 0" }}>star</span>
+                    ))}
+                  </div>
+                  <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed whitespace-pre-wrap">
+                    "{review.content}"
+                  </p>
                 </div>
-                <p className="font-body-md text-on-surface-variant mb-md italic leading-relaxed whitespace-pre-wrap">
-                  "{review.content}"
-                </p>
+                <div className="flex items-center justify-between border-t border-outline-variant/30 pt-sm mt-sm">
+                  <span className="font-label-sm text-label-sm text-on-surface font-semibold">{review.author}</span>
+                  <span className="font-label-sm text-[12px] text-neutral-400">{formatDate(review.created_at)}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between border-t border-outline-variant/30 pt-sm mt-sm">
-                <span className="font-label-sm text-label-sm text-on-surface font-semibold">{review.author}</span>
-                <span className="font-label-sm text-[12px] text-neutral-400">{formatDate(review.created_at)}</span>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          {reviews.length > 4 && !showAll && (
+            <button
+              onClick={() => setShowAll(true)}
+              className="w-full py-3 bg-surface-container-low hover:bg-surface-container-high transition-colors rounded-xl border border-outline-variant font-label-md text-on-surface flex items-center justify-center gap-2"
+            >
+              <span>Show {reviews.length - 4} more reviews</span>
+              <span className="material-symbols-outlined text-[18px]">expand_more</span>
+            </button>
+          )}
         </div>
       )}
 
