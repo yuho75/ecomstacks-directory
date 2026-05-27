@@ -10,6 +10,7 @@ import ItemViewTracker from '@/components/ItemViewTracker';
 import VisitWebsiteButton from '@/components/VisitWebsiteButton';
 import ItemReviews from '@/components/ItemReviews';
 import AnnouncementBar from '@/components/AnnouncementBar';
+import Footer from '@/components/Footer';
 
 export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
 
@@ -439,36 +440,7 @@ export default async function Page({ params }: PageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-[#09090b] border-t border-neutral-800 shrink-0 py-md">
-        <div className="max-w-container-max w-full mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-md">
-          <div className="flex flex-col md:flex-row items-center gap-sm md:gap-md text-center md:text-left">
-            <div className="flex items-center gap-xs">
-              <div className="relative w-7 h-7 flex items-center justify-center bg-black rounded shrink-0">
-                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 3L21 7.5L12 12L3 7.5L12 3Z" fill="currentColor" fillOpacity="0.2" />
-                  <path d="M3 12L12 16.5L21 12" />
-                  <path d="M3 16.5L12 21L21 16.5" />
-                </svg>
-              </div>
-              <span 
-                className="text-[20px] font-extrabold tracking-[-0.045em] text-white select-none" 
-                style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
-              >
-                Ecom<span className="text-neutral-400">Stacks</span>
-              </span>
-            </div>
-            <span className="hidden md:inline text-neutral-600 text-sm">•</span>
-            <p className="font-body-sm text-body-sm text-neutral-400">
-              © {new Date().getFullYear()} EcomStacks. High-trust directory for e-commerce.
-            </p>
-          </div>
-          <nav className="flex flex-wrap justify-center md:justify-end gap-md">
-            <Link className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="/">Home</Link>
-            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="#">Terms of Service</a>
-            <a className="font-label-sm text-label-sm text-neutral-400 hover:text-white transition-opacity" href="#">Privacy Policy</a>
-          </nav>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
