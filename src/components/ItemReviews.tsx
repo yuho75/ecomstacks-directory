@@ -37,12 +37,14 @@ export default function ItemReviews({ itemId, itemTitle, reviews }: ItemReviewsP
             </div>
           )}
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="bg-primary text-white px-md py-sm rounded-lg font-label-md hover:brightness-110 active:scale-95 transition-all text-sm shrink-0"
-        >
-          Write a Review
-        </button>
+        {reviews.length > 0 && (
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary text-white px-md py-sm rounded-lg font-label-md hover:brightness-110 active:scale-95 transition-all text-sm shrink-0"
+          >
+            Write a Review
+          </button>
+        )}
       </div>
 
       {reviews.length === 0 ? (
