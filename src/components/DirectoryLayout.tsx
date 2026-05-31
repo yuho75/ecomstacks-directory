@@ -107,6 +107,22 @@ export default function DirectoryLayout({ initialItems }: DirectoryLayoutProps) 
       <main className="max-w-container-max w-full mx-auto px-gutter pb-xl flex-grow">
         {/* Hero Section */}
         <section className="pt-md pb-sm md:pt-lg md:pb-md text-center flex flex-col items-center max-w-4xl mx-auto">
+          {/* Product Hunt Badge */}
+          <a
+            href="https://www.producthunt.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-[#DA552F]/20 shadow-sm hover:shadow-md hover:border-[#DA552F]/40 transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-[#DA552F]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 24C18.6274 24 24 18.6274 24 12C24 5.37258 18.6274 0 12 0C5.37258 0 0 5.37258 0 12C0 18.6274 5.37258 24 12 24ZM13.3333 7.99992H9.33333V15.9999H11.3333V12.6666H13.3333C14.8061 12.6666 16 11.4727 16 9.99992C16 8.52716 14.8061 7.99992 13.3333 7.99992ZM11.3333 10.6666V9.33325H13.3333C13.7015 9.33325 14 9.63173 14 9.99992C14 10.3681 13.7015 10.6666 13.3333 10.6666H11.3333Z" />
+            </svg>
+            <span className="text-xs font-bold text-neutral-600 group-hover:text-black">
+              LAUNCHING ON PRODUCT HUNT
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#DA552F] animate-pulse"></span>
+          </a>
+
           <h1
             className="font-extrabold text-[44px] md:text-[56px] tracking-[-0.05em] leading-[1.1] text-on-surface mb-sm select-none"
             style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
