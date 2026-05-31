@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     title: 'EcomStacks Directory Platform',
     description: 'Curated 1-person e-commerce stack to scale storefront conversion rates.',
   },
+  verification: {
+    google: '7vSf6mpofEcQ1ira1jC9w4wyQHe3xh9I3JRbLl190is',
+  },
 };
 
 export default function RootLayout({
