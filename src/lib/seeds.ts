@@ -664,7 +664,7 @@ export const SEED_ITEMS: SeedItem[] = [
     image_url: "https://res.cloudinary.com/ditb2aeea/image/upload/v1780655815/ctiyvodmcjr4yqnfavms.gif",
     description: "AI-powered personalization and merchandising engine for scaling Shopify brands.",
     category: "Store Optimization",
-    email: "hello@rebuyengine.com",
+    email: "support@rebuyengine.com",
     status: "approved",
     created_at: "2026-06-05T02:00:00Z",
     detailed_overview: JSON.stringify({
