@@ -601,7 +601,13 @@ export const SEED_ITEMS: SeedItem[] = [
     email: "nic@sequenzy.com",
     status: "approved",
     created_at: "2026-06-05T00:00:00Z",
-    detailed_overview: "Sequenzy is a developer-first email platform tailored perfectly for SaaS businesses. It seamlessly blends powerful marketing campaigns with robust transactional email delivery, eliminating the need to juggle multiple email providers. With its native MCP (Model Context Protocol) support, your AI agents can autonomously trigger onboarding flows, retention alerts, and promotional campaigns.",
+    detailed_overview: JSON.stringify({
+      overview: "Sequenzy is a developer-first email platform tailored perfectly for SaaS businesses. It seamlessly blends powerful marketing campaigns with robust transactional email delivery, eliminating the need to juggle multiple email providers. With its native MCP (Model Context Protocol) support, your AI agents can autonomously trigger onboarding flows, retention alerts, and promotional campaigns.",
+      title1: "Unified Email Infrastructure",
+      desc1: "Stop paying for both Mailchimp and Sendgrid. Sequenzy handles both marketing newsletters and crucial transactional password resets from one dashboard.",
+      title2: "AI-Powered Automation",
+      desc2: "With native MCP integration, your AI agents can autonomously design, schedule, and trigger complex behavioral email sequences without human intervention."
+    }),
     key_features: ["Unified Marketing & Transactional Engine", "Native MCP Integration for AI", "Advanced Onboarding Flow Builder"],
     key_features_descriptions: [
       "Send beautiful newsletters and critical password reset emails from the exact same robust infrastructure.",
