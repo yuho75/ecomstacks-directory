@@ -590,5 +590,33 @@ export const SEED_ITEMS: SeedItem[] = [
     integration_guide_1_url: "https://apps.shopify.com/excel-export-import",
     integration_guide_2_label: "Matrixify Documentation Center",
     integration_guide_2_url: "https://matrixify.app/documentation/"
+  },
+  {
+    id: "seed-sequenzy",
+    title: "Sequenzy",
+    url: "https://www.sequenzy.com",
+    image_url: "https://res.cloudinary.com/ditb2aeea/image/upload/v1779548688/rtuob3nxctgywqkecfa5.png",
+    description: "The ultimate email platform for SaaS teams. Handles both marketing and transactional emails effortlessly.",
+    category: "Automation",
+    email: "nic@sequenzy.com",
+    status: "approved",
+    created_at: "2026-06-05T00:00:00Z",
+    detailed_overview: "Sequenzy is a developer-first email platform tailored perfectly for SaaS businesses. It seamlessly blends powerful marketing campaigns with robust transactional email delivery, eliminating the need to juggle multiple email providers. With its native MCP (Model Context Protocol) support, your AI agents can autonomously trigger onboarding flows, retention alerts, and promotional campaigns.",
+    key_features: ["Unified Marketing & Transactional Engine", "Native MCP Integration for AI", "Advanced Onboarding Flow Builder"],
+    key_features_descriptions: [
+      "Send beautiful newsletters and critical password reset emails from the exact same robust infrastructure.",
+      "Empower your autonomous AI teams to draft, schedule, and trigger highly personalized emails using standard MCP protocols.",
+      "Design complex behavioral email sequences to maximize user retention and product activation in the crucial first 14 days."
+    ],
+    rating: 5.0,
+    rating_count: 89,
+    customer_review: "The MCP integration is an absolute game-changer. Our AI agent now handles our entire onboarding email flow completely autonomously.",
+    customer_review_author: "David M. - SaaS Founder",
+    customer_review_2: "Finally, an email tool that doesn't charge Enterprise pricing for basic transactional workflows. Sequenzy replaced both Mailchimp and Sendgrid for us.",
+    customer_review_2_author: "Elena R. - CTO",
+    integration_guide_1_label: "Sequenzy MCP Features",
+    integration_guide_1_url: "https://www.sequenzy.com/features/mcp",
+    integration_guide_2_label: "MCP Setup Guide",
+    integration_guide_2_url: "https://www.sequenzy.com/blog/mcp-setup-email-marketing-guide"
   }
 ];
