@@ -625,4 +625,126 @@ export const SEED_ITEMS: SeedItem[] = [
     integration_guide_2_label: "MCP Setup Guide",
     integration_guide_2_url: "https://www.sequenzy.com/blog/mcp-setup-email-marketing-guide"
   }
+
+  ,
+  {
+    id: "27e658a3-2e7d-4ba5-9ca8-9b640268dfda",
+    title: "Klaviyo",
+    url: "https://www.klaviyo.com",
+    image_url: "https://logo.clearbit.com/klaviyo.com",
+    description: "The gold standard for e-commerce email and SMS marketing automation.",
+    category: "Automation",
+    email: "partners@klaviyo.com",
+    status: "approved",
+    created_at: "2026-06-05T01:00:00Z",
+    detailed_overview: JSON.stringify({
+      overview: "Klaviyo is the ultimate marketing automation platform built specifically for e-commerce. It uses historical and real-time data to personalize email and SMS campaigns, significantly boosting customer lifetime value.",
+      title1: "Hyper-Targeted Segmentation",
+      desc1: "Target customers based on exact behaviors like specific items viewed, purchase frequency, and predictive lifetime value.",
+      title2: "Unified Email & SMS",
+      desc2: "Manage your email campaigns and text messaging from a single dashboard for perfectly timed multi-channel marketing."
+    }),
+    key_features: ["Predictive Analytics", "Pre-built Flow Templates", "Deep E-commerce Integrations"],
+    key_features_descriptions: [
+      "AI automatically predicts next purchase dates, churn risk, and customer lifetime value.",
+      "Launch proven automated flows like abandoned cart and win-back campaigns in just minutes.",
+      "Natively syncs with Shopify, WooCommerce, and BigCommerce to pull in all customer data instantly."
+    ],
+    rating: 4.9,
+    rating_count: 3241,
+    integration_guide_1_label: "Shopify Integration",
+    integration_guide_1_url: "https://www.klaviyo.com/integrations/shopify",
+    integration_guide_2_label: "Marketing Flows",
+    integration_guide_2_url: "https://www.klaviyo.com/features/automation"
+  },
+  {
+    id: "d39724d5-77b4-49e5-ada0-2719a151beca",
+    title: "Rebuy",
+    url: "https://www.rebuyengine.com",
+    image_url: "https://logo.clearbit.com/rebuyengine.com",
+    description: "AI-powered personalization and merchandising engine for scaling Shopify brands.",
+    category: "Store Optimization",
+    email: "hello@rebuyengine.com",
+    status: "approved",
+    created_at: "2026-06-05T02:00:00Z",
+    detailed_overview: JSON.stringify({
+      overview: "Rebuy Engine increases Average Order Value (AOV) by seamlessly integrating AI-driven product recommendations throughout the entire customer journey, from the homepage to the post-purchase thank you page.",
+      title1: "Smart Cart Upsells",
+      desc1: "Turn your standard cart into a revenue engine with progress bars, free shipping thresholds, and targeted add-ons.",
+      title2: "Post-Purchase Offers",
+      desc2: "Present highly converting one-click upsell offers immediately after a customer completes checkout."
+    }),
+    key_features: ["AI Recommendation Engine", "Customizable Smart Cart", "One-Click Upsells"],
+    key_features_descriptions: [
+      "Machine learning models automatically suggest the most relevant products to each individual shopper.",
+      "A fully customizable slide-out cart that replaces the default Shopify cart for better conversions.",
+      "Maximize AOV by offering exclusive post-purchase deals that require zero friction to buy."
+    ],
+    rating: 4.8,
+    rating_count: 856,
+    integration_guide_1_label: "Smart Cart Setup",
+    integration_guide_1_url: "https://www.rebuyengine.com/features/smart-cart",
+    integration_guide_2_label: "Upsell Strategies",
+    integration_guide_2_url: "https://www.rebuyengine.com/features/upsells"
+  },
+  {
+    id: "1e5706f6-c04c-41d7-a9be-9a1f275e5d25",
+    title: "Triple Whale",
+    url: "https://www.triplewhale.com",
+    image_url: "https://logo.clearbit.com/triplewhale.com",
+    description: "The ultimate e-commerce operating system for tracking ROAS and attribution.",
+    category: "Automation",
+    email: "support@triplewhale.com",
+    status: "approved",
+    created_at: "2026-06-05T03:00:00Z",
+    detailed_overview: JSON.stringify({
+      overview: "Triple Whale centralizes all your e-commerce metrics into one beautiful dashboard. By bypassing iOS tracking limitations with first-party data, it gives founders the exact truth about which ads are actually driving profit.",
+      title1: "True Attribution",
+      desc1: "Stop guessing. Triple Pixel tracking accurately maps the entire customer journey from the first ad click to the final purchase.",
+      title2: "Profit Tracking",
+      desc2: "Automatically calculates your Net Profit by syncing COGS, shipping costs, and daily ad spend across all platforms."
+    }),
+    key_features: ["Triple Pixel Attribution", "Creative Cockpit", "Real-Time Profitability"],
+    key_features_descriptions: [
+      "Proprietary first-party tracking pixel that accurately attributes sales despite privacy updates.",
+      "Visually analyze the ROI of every single image and video ad creative across Meta and TikTok.",
+      "A live view of your Net Margin, Contribution Margin, and blended ROAS in one central hub."
+    ],
+    rating: 5.0,
+    rating_count: 1420,
+    integration_guide_1_label: "Attribution Setup",
+    integration_guide_1_url: "https://www.triplewhale.com/features/attribution",
+    integration_guide_2_label: "Profit Dashboard",
+    integration_guide_2_url: "https://www.triplewhale.com/features/profit-tracking"
+  },
+  {
+    id: "87eb5f48-e09d-4072-837d-5a8c9afc9586",
+    title: "Synthesia",
+    url: "https://www.synthesia.io",
+    image_url: "https://logo.clearbit.com/synthesia.io",
+    description: "Create professional AI video content for product tutorials and ads without a camera.",
+    category: "Visual & Design",
+    email: "support@synthesia.io",
+    status: "approved",
+    created_at: "2026-06-05T04:00:00Z",
+    detailed_overview: JSON.stringify({
+      overview: "Synthesia transforms text into engaging video content using hyper-realistic AI avatars. It is perfect for e-commerce brands looking to scale their video ads, product explainers, and customer onboarding tutorials without expensive studio shoots.",
+      title1: "Lifelike AI Avatars",
+      desc1: "Choose from over 140 diverse AI avatars to present your products naturally and professionally.",
+      title2: "Multilingual Scaling",
+      desc2: "Translate your video scripts into 120+ languages instantly to launch global marketing campaigns."
+    }),
+    key_features: ["Text-to-Video Engine", "Custom AI Avatars", "Auto-Translation"],
+    key_features_descriptions: [
+      "Type your script and generate a high-quality video with a human presenter in minutes.",
+      "Create a custom avatar of your brand's founder or spokesperson for consistent marketing.",
+      "Reach international markets effortlessly with automatic lip-syncing in over 120 languages."
+    ],
+    rating: 4.7,
+    rating_count: 2105,
+    integration_guide_1_label: "Video Ad Templates",
+    integration_guide_1_url: "https://www.synthesia.io/templates",
+    integration_guide_2_label: "Custom Avatars",
+    integration_guide_2_url: "https://www.synthesia.io/features/custom-avatars"
+  }
 ];
