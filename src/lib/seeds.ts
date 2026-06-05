@@ -598,7 +598,7 @@ export const SEED_ITEMS: SeedItem[] = [
     image_url: "https://res.cloudinary.com/ditb2aeea/image/upload/v1779548688/rtuob3nxctgywqkecfa5.png",
     description: "The ultimate email platform for SaaS teams. Handles both marketing and transactional emails effortlessly.",
     category: "Automation",
-    email: "nic@sequenzy.com",
+    email: "team@getsequenzy.com",
     status: "approved",
     created_at: "2026-06-05T00:00:00Z",
     detailed_overview: JSON.stringify({
