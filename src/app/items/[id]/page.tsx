@@ -284,19 +284,12 @@ export default async function Page({ params }: PageProps) {
               <div className="space-y-md text-on-surface-variant font-body-md leading-relaxed">
                 {(() => {
                   let overviewText = item.detailed_overview || '';
-                  let title1 = '';
-                  let desc1 = '';
-                  let title2 = '';
-                  let desc2 = '';
+                  let seoData: any = {};
 
                   if (overviewText.trim().startsWith('{')) {
                     try {
-                      const parsed = JSON.parse(overviewText);
-                      overviewText = parsed.overview || '';
-                      title1 = parsed.title1 || '';
-                      desc1 = parsed.desc1 || '';
-                      title2 = parsed.title2 || '';
-                      desc2 = parsed.desc2 || '';
+                      seoData = JSON.parse(overviewText);
+                      overviewText = seoData.overview || '';
                     } catch (e) {
                       console.error('Failed to parse detailed_overview JSON:', e);
                     }
@@ -306,28 +299,115 @@ export default async function Page({ params }: PageProps) {
                     overviewText = `${item.title} represents a next-generation utility tailored specifically for e-commerce operators and solo brands. By automating complex visual adjustments, description generations, or conversion rate optimization, this tool removes technical barriers and allows founders to focus entirely on high-level growth and scaling strategies.`;
                   }
 
-                  if (!title1 || !desc1 || !title2 || !desc2) {
-                    const hybrid = getHybridDetails(item.category, item.title);
-                    title1 = title1 || hybrid.title1;
-                    desc1 = desc1 || hybrid.desc1;
-                    title2 = title2 || hybrid.title2;
-                    desc2 = desc2 || hybrid.desc2;
-                  }
-
                   return (
-                    <>
-                      <p>{overviewText}</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
-                        <div className="space-y-base">
-                          <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{title1}</h3>
-                          <p>{desc1}</p>
+                    <div className="space-y-lg">
+                      <p className="text-[17px] leading-relaxed text-on-surface-variant font-medium">{overviewText}</p>
+                      
+                      {seoData.target_audience && (
+                        <div className="bg-primary/5 p-md rounded-xl border border-primary/10">
+                          <h3 className="font-headline-md text-[18px] text-primary font-bold mb-xs flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[20px]">group</span>
+                            Who is this for?
+                          </h3>
+                          <p className="text-on-surface-variant">{seoData.target_audience}</p>
                         </div>
-                        <div className="space-y-base">
-                          <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{title2}</h3>
-                          <p>{desc2}</p>
-                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-md mt-lg">
+                        {seoData.pros && seoData.pros.length > 0 && (
+                          <div className="space-y-xs bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+                            <h3 className="font-headline-md text-[18px] text-emerald-600 font-bold mb-sm flex items-center gap-2">
+                              <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                              Key Advantages
+                            </h3>
+                            <ul className="space-y-2">
+                              {seoData.pros.map((pro: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2 text-on-surface-variant text-sm">
+                                  <span className="material-symbols-outlined text-emerald-500 text-[18px] shrink-0">done</span>
+                                  <span>{pro}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {seoData.cons && seoData.cons.length > 0 && (
+                          <div className="space-y-xs bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+                            <h3 className="font-headline-md text-[18px] text-rose-600 font-bold mb-sm flex items-center gap-2">
+                              <span className="material-symbols-outlined text-[20px]">cancel</span>
+                              Potential Drawbacks
+                            </h3>
+                            <ul className="space-y-2">
+                              {seoData.cons.map((con: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2 text-on-surface-variant text-sm">
+                                  <span className="material-symbols-outlined text-rose-400 text-[18px] shrink-0">close</span>
+                                  <span>{con}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
-                    </>
+
+                      {seoData.pricing && (
+                        <div className="mt-md">
+                          <h3 className="font-headline-md text-[18px] text-on-surface font-bold mb-xs flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[20px]">payments</span>
+                            Pricing Model
+                          </h3>
+                          <p className="text-on-surface-variant text-sm bg-surface-container-low p-sm rounded-lg border border-outline-variant/50">{seoData.pricing}</p>
+                        </div>
+                      )}
+
+                      {seoData.alternatives && seoData.alternatives.length > 0 && (
+                        <div className="mt-md">
+                          <h3 className="font-headline-md text-[18px] text-on-surface font-bold mb-xs flex items-center gap-2">
+                            <span className="material-symbols-outlined text-[20px]">compare_arrows</span>
+                            Top Alternatives
+                          </h3>
+                          <div className="flex flex-wrap gap-2">
+                            {seoData.alternatives.map((alt: string, i: number) => (
+                              <span key={i} className="bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full text-xs font-semibold border border-outline-variant/30">
+                                {alt}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* DEEP DIVE LONG-FORM CONTENT */}
+                      {seoData.deep_dive && (Array.isArray(seoData.deep_dive) ? seoData.deep_dive.length > 0 : typeof seoData.deep_dive === 'string') && (
+                        <div className="mt-xl space-y-lg border-t border-outline-variant/30 pt-lg">
+                          <h2 className="font-headline-lg text-[24px] text-on-surface font-bold mb-md">In-Depth Review</h2>
+                          {Array.isArray(seoData.deep_dive) ? (
+                            seoData.deep_dive.map((section: any, idx: number) => (
+                              <div key={idx} className="space-y-sm">
+                                {section.title && <h3 className="font-headline-md text-[20px] text-on-surface font-bold">{section.title}</h3>}
+                                <p className="text-on-surface-variant text-[16px] leading-relaxed">{section.content || section}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="space-y-sm">
+                              <p className="text-on-surface-variant text-[16px] leading-relaxed">{seoData.deep_dive}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Render legacy title1/desc1 if they exist for backwards compatibility */}
+                      {seoData.title1 && (
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-lg mt-lg">
+                           <div className="space-y-base">
+                             <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{seoData.title1}</h3>
+                             <p>{seoData.desc1}</p>
+                           </div>
+                           <div className="space-y-base">
+                             <h3 className="font-headline-md text-[20px] text-on-surface font-semibold">{seoData.title2}</h3>
+                             <p>{seoData.desc2}</p>
+                           </div>
+                         </div>
+                      )}
+                    </div>
                   );
                 })()}
               </div>
