@@ -383,12 +383,12 @@ export default async function Page({ params }: PageProps) {
                             seoData.deep_dive.map((section: any, idx: number) => (
                               <div key={idx} className="space-y-sm">
                                 {section.title && <h3 className="font-headline-md text-[20px] text-on-surface font-bold">{section.title}</h3>}
-                                <p className="text-on-surface-variant text-[16px] leading-relaxed">{section.content || section}</p>
+                                <p className="text-on-surface-variant text-[16px] leading-relaxed whitespace-pre-line">{section.content || section}</p>
                               </div>
                             ))
                           ) : (
                             <div className="space-y-sm">
-                              <p className="text-on-surface-variant text-[16px] leading-relaxed">{seoData.deep_dive}</p>
+                              <p className="text-on-surface-variant text-[16px] leading-relaxed whitespace-pre-line">{seoData.deep_dive}</p>
                             </div>
                           )}
                         </div>
