@@ -1,3 +1,5 @@
+process.env.NODE_OPTIONS = '--max-old-space-size=2048';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
