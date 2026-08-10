@@ -50,8 +50,77 @@ export async function sendSubmissionEmail(email: string, title: string, tier: st
     } else {
       console.log(`✉️ Submission confirmation email sent to ${email} for ${title}`, data);
     }
+
+    // Automatically notify administrator of new pending submission
+    await sendAdminNewSubmissionEmail(email, title, tier);
   } catch (err) {
     console.error('❌ Failed to call Resend for submission email:', err);
+  }
+}
+
+/**
+ * Sends an alert email to the administrator when a new tool submission occurs.
+ */
+export async function sendAdminNewSubmissionEmail(customerEmail: string, title: string, tier: string) {
+  if (!resend) {
+    console.log('📬 Resend email skipped (API key not configured) for admin notification:', title);
+    return;
+  }
+
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || 'ohmdgh7375.01@gmail';
+  const tierLabel = tier ? tier.toUpperCase() : 'STANDARD';
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: `EcomStacks Alerts <${resendFromEmail}>`,
+      to: adminEmail,
+      subject: `🔔 [EcomStacks] New Tool Submission Pending Review: ${title}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333333;">
+          <h1 style="color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; font-size: 24px;">New Submission Pending Review 🚨</h1>
+          <p>A new customer has just submitted a tool listing on EcomStacks Directory and is awaiting your verification.</p>
+          
+          <div style="background-color: #f8fafc; border-radius: 8px; padding: 18px; margin: 20px 0; border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px; font-size: 16px;">Listing Details</h3>
+            <table style="width: 100%; font-size: 14px;">
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; width: 140px; color: #64748b;">Tool Title:</td>
+                <td style="padding: 6px 0; font-weight: bold; color: #0f172a;">${title}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #64748b;">Submitter Email:</td>
+                <td style="padding: 6px 0; color: #0f172a;"><a href="mailto:${customerEmail}">${customerEmail}</a></td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #64748b;">Plan Tier:</td>
+                <td style="padding: 6px 0; color: #0f172a;"><span style="background-color: #e2e8f0; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">${tierLabel}</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; font-weight: bold; color: #64748b;">Submitted At:</td>
+                <td style="padding: 6px 0; color: #0f172a;">${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://ecomstacksdirectory.com/admin" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; font-size: 15px; display: inline-block; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">Open Admin Panel to Approve ⚡</a>
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;" />
+          <p style="font-size: 12px; color: #64748b;">
+            &copy; 2026 EcomStacks Admin Notification System.
+          </p>
+        </div>
+      `
+    });
+
+    if (error) {
+      console.error('❌ Resend admin notification email error:', error);
+    } else {
+      console.log(`✉️ Admin notification email sent to ${adminEmail} for ${title}`, data);
+    }
+  } catch (err) {
+    console.error('❌ Failed to call Resend for admin notification email:', err);
   }
 }
 
