@@ -12,7 +12,8 @@ import ItemReviews from '@/components/ItemReviews';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-export const revalidate = 3600; // on-demand static generation with 1-hour background refresh fallback
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface PageProps {
   params: {
