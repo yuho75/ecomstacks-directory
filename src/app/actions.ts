@@ -94,8 +94,13 @@ export async function approveItem(id: string, secretKey: string | null) {
   }
 
   // Instantly revalidate the Landing Page and the Detail Page to invalidate Vercel CDN ISR cache
-  revalidatePath('/');
-  revalidatePath(`/items/${id}`);
+  try {
+    revalidatePath('/');
+    revalidatePath(`/items/${id}`);
+    revalidatePath('/admin');
+  } catch (revalErr) {
+    console.warn('Revalidation warning:', revalErr);
+  }
 
   return { success: true };
 }
