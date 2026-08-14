@@ -11,8 +11,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
-    const isBypass = process.env.NEXT_PUBLIC_PAYPAL_ENABLED !== 'true';
+    const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
+    const isBypass = !isPaypalEnabled;
     const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+
+    // Free phase: insert directly as 'pending' for review. Paid phase: insert as 'pending_payment'.
+    const initialStatus = isPaypalEnabled ? 'pending_payment' : 'pending';
 
     let item: any;
 
@@ -25,11 +29,11 @@ export async function POST(request: Request) {
         category,
         email,
         image_url,
-        status: 'pending',
+        status: initialStatus,
         tier
       });
     } else {
-      // 1. Insert item into Supabase with 'pending' status for admin review queue
+      // 1. Insert item into Supabase
       const { data, error: dbError } = await supabaseAdmin
         .from('items')
         .insert({
@@ -39,8 +43,8 @@ export async function POST(request: Request) {
           category,
           email,
           image_url,
-          status: 'pending',
-          paypal_order_id: `submission_${Date.now()}`,
+          status: initialStatus,
+          paypal_order_id: isPaypalEnabled ? null : `free_submission_${Date.now()}`,
           tier
         })
         .select()
@@ -53,12 +57,15 @@ export async function POST(request: Request) {
       item = data;
     }
 
-    // Immediately send email confirmation to submitter AND alert email to admin upon form submission
-    try {
-      const { sendSubmissionEmail } = await import('@/lib/emails');
-      await sendSubmissionEmail(email, title, tier);
-    } catch (emailErr) {
-      console.error('Failed to send submission email:', emailErr);
+    // FREE MODE: Send submission email & admin alert immediately upon registration.
+    // PAID MODE: Email is deferred until PayPal payment capture succeeds in /api/paypal/capture-success.
+    if (!isPaypalEnabled) {
+      try {
+        const { sendSubmissionEmail } = await import('@/lib/emails');
+        await sendSubmissionEmail(email, title, tier);
+      } catch (emailErr) {
+        console.error('Failed to send submission email:', emailErr);
+      }
     }
 
     // 2. Fetch PayPal Access Token if PayPal is active
