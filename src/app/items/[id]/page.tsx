@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 import { SEED_ITEMS } from '@/lib/seeds';
 import { getOptimizedCloudinaryUrl, formatDate, getHybridDetails } from '@/lib/utils';
 import type { Metadata } from 'next';
@@ -41,7 +41,7 @@ async function getToolById(id: string) {
 
   // 2. Fetch directly from live Supabase (now fully populated with rich details!)
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('items')
       .select('*')
       .eq('id', id)
@@ -70,7 +70,7 @@ async function getRecommendations(category: string, currentId: string) {
 
   if (!isPlaceholder && !isBypass) {
     try {
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from('items')
         .select('*')
         .eq('status', 'approved')
@@ -110,7 +110,7 @@ async function getReviewsByItemId(id: string) {
 
   if (!isPlaceholder && !isBypass) {
     try {
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from('reviews')
         .select('*')
         .eq('item_id', id)
