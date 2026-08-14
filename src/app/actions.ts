@@ -219,11 +219,16 @@ export async function approveReview(id: string, secretKey: string | null) {
     await updateMockReviewStatus(id, 'approved');
   } else {
     const { error } = await supabaseAdmin.from('reviews').update({ status: 'approved' }).eq('id', id);
-    if (error) throw new Error('Database error');
+    if (error) throw new Error(`Database error: ${error.message}`);
   }
-  revalidatePath('/');
-  revalidatePath('/admin');
-  revalidatePath('/items/[id]', 'page');
+
+  try {
+    revalidatePath('/');
+    revalidatePath('/admin');
+  } catch (e) {
+    console.warn('Revalidate warning:', e);
+  }
+  return { success: true };
 }
 
 export async function rejectReview(id: string, secretKey: string | null) {
@@ -244,9 +249,16 @@ export async function rejectReview(id: string, secretKey: string | null) {
     await updateMockReviewStatus(id, 'rejected');
   } else {
     const { error } = await supabaseAdmin.from('reviews').update({ status: 'rejected' }).eq('id', id);
-    if (error) throw new Error('Database error');
+    if (error) throw new Error(`Database error: ${error.message}`);
   }
-  revalidatePath('/admin');
+
+  try {
+    revalidatePath('/');
+    revalidatePath('/admin');
+  } catch (e) {
+    console.warn('Revalidate warning:', e);
+  }
+  return { success: true };
 }
 
 export async function deleteReview(id: string, secretKey: string | null) {
@@ -267,9 +279,14 @@ export async function deleteReview(id: string, secretKey: string | null) {
     await deleteMockReview(id);
   } else {
     const { error } = await supabaseAdmin.from('reviews').delete().eq('id', id);
-    if (error) throw new Error('Database error');
+    if (error) throw new Error(`Database error: ${error.message}`);
   }
-  revalidatePath('/');
-  revalidatePath('/admin');
-  revalidatePath('/items/[id]', 'page');
+
+  try {
+    revalidatePath('/');
+    revalidatePath('/admin');
+  } catch (e) {
+    console.warn('Revalidate warning:', e);
+  }
+  return { success: true };
 }
