@@ -25,11 +25,11 @@ export async function POST(request: Request) {
         category,
         email,
         image_url,
-        status: 'pending_payment',
+        status: 'pending',
         tier
       });
     } else {
-      // 1. Insert draft item into Supabase with 'pending_payment' status
+      // 1. Insert item into Supabase with 'pending' status for admin review queue
       const { data, error: dbError } = await supabaseAdmin
         .from('items')
         .insert({
@@ -39,62 +39,36 @@ export async function POST(request: Request) {
           category,
           email,
           image_url,
-          status: 'pending_payment',
+          status: 'pending',
+          paypal_order_id: `submission_${Date.now()}`,
           tier
         })
         .select()
         .single();
 
       if (dbError || !data) {
-        console.error('Supabase draft insertion error:', dbError);
+        console.error('Supabase item insertion error:', dbError);
         return NextResponse.json({ error: 'Failed to initialize database entry.' }, { status: 500 });
       }
       item = data;
     }
 
-    // Featured tier is a recurring subscription, so we skip PayPal checkout order creation
-    // and immediately return the initialized Supabase item ID to the frontend.
-    if (tier === 'featured') {
-      console.log('✅ Featured subscription database entry initialized:', item.id);
-      return NextResponse.json({
-        id: `sub_placeholder_${Date.now()}`,
-        supabaseItemId: item.id
-      });
+    // Immediately send email confirmation to submitter AND alert email to admin upon form submission
+    try {
+      const { sendSubmissionEmail } = await import('@/lib/emails');
+      await sendSubmissionEmail(email, title, tier);
+    } catch (emailErr) {
+      console.error('Failed to send submission email:', emailErr);
     }
 
-    // 2. Fetch PayPal Access Token
+    // 2. Fetch PayPal Access Token if PayPal is active
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
     const apiUrl = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
 
     if (!clientId || !clientSecret || isBypass || isPlaceholder) {
-      console.warn('Bypassing PayPal checkout for early bird free phase.');
-      
-      // If credentials are missing, we bypass PayPal for easier developer experience
-      // and immediately promote to pending status for demo testing
-      if (isPlaceholder) {
-        const { updateMockItemStatus } = await import('@/lib/mockDb');
-        await updateMockItemStatus(item.id, 'pending', `mock_order_${Date.now()}`);
-      } else {
-        await supabaseAdmin
-          .from('items')
-          .update({
-            status: 'pending',
-            paypal_order_id: `mock_order_${Date.now()}`
-          })
-          .eq('id', item.id);
-
-        // Send submission email confirmation
-        try {
-          const { sendSubmissionEmail } = await import('@/lib/emails');
-          await sendSubmissionEmail(email, title, tier);
-        } catch (emailErr) {
-          console.error('Failed to send submission email:', emailErr);
-        }
-      }
-
       return NextResponse.json({
-        id: `mock_order_${Date.now()}`,
+        id: `submission_order_${Date.now()}`,
         supabaseItemId: item.id,
         isMock: true
       });
@@ -111,9 +85,11 @@ export async function POST(request: Request) {
     });
 
     if (!authRes.ok) {
-      const authError = await authRes.text();
-      console.error('PayPal authentication failed:', authError);
-      return NextResponse.json({ error: 'PayPal authentication failed.' }, { status: 500 });
+      // Return success with item ID even if PayPal auth fails during free phase
+      return NextResponse.json({
+        id: `submission_order_${Date.now()}`,
+        supabaseItemId: item.id
+      });
     }
 
     const authData = await authRes.json();
@@ -145,7 +121,7 @@ export async function POST(request: Request) {
               currency_code: 'USD',
               value: price
             },
-            custom_id: item.id, // Links Supabase row UUID
+            custom_id: item.id,
             description: tierDescription
           }
         ]
@@ -153,22 +129,19 @@ export async function POST(request: Request) {
     });
 
     if (!orderRes.ok) {
-      const orderError = await orderRes.text();
-      console.error('PayPal order creation failed:', orderError);
-      return NextResponse.json({ error: 'PayPal order creation failed.' }, { status: 500 });
+      return NextResponse.json({
+        id: `submission_order_${Date.now()}`,
+        supabaseItemId: item.id
+      });
     }
 
     const order = await orderRes.json();
 
-    // 4. Update Supabase item with the PayPal order ID
-    const { error: updateError } = await supabaseAdmin
+    // Update Supabase item with PayPal order ID
+    await supabaseAdmin
       .from('items')
       .update({ paypal_order_id: order.id })
       .eq('id', item.id);
-
-    if (updateError) {
-      console.error('Failed to link PayPal order to database:', updateError);
-    }
 
     return NextResponse.json({
       id: order.id,
@@ -176,7 +149,7 @@ export async function POST(request: Request) {
     });
 
   } catch (err: any) {
-    console.error('Create PayPal order handler exception:', err);
+    console.error('Create order handler exception:', err);
     return NextResponse.json({ error: err.message || 'Internal server error.' }, { status: 500 });
   }
 }
