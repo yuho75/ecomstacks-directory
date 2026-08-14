@@ -663,6 +663,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               });
                               const data = await res.json();
                               if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order.');
+                              if (data.supabaseItemId) {
+                                currentItemIdRef.current = data.supabaseItemId;
+                              }
                               return data.id;
                             } catch (err: any) {
                               setError(err.message || 'PayPal order initialization failed.');
@@ -675,6 +678,17 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               if (actions.order) {
                                 const capture = await actions.order.capture();
                                 console.log('PayPal Capture succeeded:', capture);
+                                const itemId = currentItemIdRef.current;
+                                if (itemId) {
+                                  await fetch('/api/paypal/capture-success', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      orderId: capture.id,
+                                      itemId,
+                                    }),
+                                  });
+                                }
                                 setSubmitSuccess(true);
                                 onSuccess();
                               }
@@ -749,6 +763,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                             });
                             const data = await res.json();
                             if (!res.ok) throw new Error(data.error || 'Failed to create PayPal order.');
+                            if (data.supabaseItemId) {
+                              currentItemIdRef.current = data.supabaseItemId;
+                            }
                             return data.id;
                           } catch (err: any) {
                             setError(err.message || 'PayPal order initialization failed.');
@@ -759,11 +776,23 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                         onApprove={async (_data, actions) => {
                           try {
                             if (actions.order) {
-                              await actions.order.capture();
+                              const capture = await actions.order.capture();
+                              const itemId = currentItemIdRef.current;
+                              if (itemId) {
+                                await fetch('/api/paypal/capture-success', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({
+                                    orderId: capture.id,
+                                    itemId,
+                                  }),
+                                });
+                              }
                               setSubmitSuccess(true);
                               onSuccess();
                             }
                           } catch (err: any) {
+                            console.error('PayPal capture exception:', err);
                             setError('Payment captured but sync failed. Contact support.');
                           } finally {
                             setSubmitting(false);

@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
-const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'hello@ecomstacksdirectory.com';
 
 /**
  * Sends a confirmation email when a user successfully submits a tool to EcomStacks.
