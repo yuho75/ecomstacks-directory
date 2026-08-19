@@ -57,8 +57,16 @@ export async function POST(request: Request) {
       item = data;
     }
 
-    // FREE MODE: Send submission email & admin alert immediately upon registration.
-    // PAID MODE: Email is deferred until PayPal payment capture succeeds in /api/paypal/capture-success.
+    // ALWAYS send Admin Notification email unconditionally on EVERY submission!
+    try {
+      const { sendAdminNewSubmissionEmail } = await import('@/lib/emails');
+      await sendAdminNewSubmissionEmail(email, title, tier);
+    } catch (adminEmailErr) {
+      console.error('Failed to send admin notification email:', adminEmailErr);
+    }
+
+    // FREE MODE: Send customer confirmation email immediately.
+    // PAID MODE: Customer confirmation email is sent upon payment completion in /api/paypal/capture-success.
     if (!isPaypalEnabled) {
       try {
         const { sendSubmissionEmail } = await import('@/lib/emails');
