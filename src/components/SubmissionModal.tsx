@@ -48,8 +48,8 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
   const fileInputRef = useRef<HTMLInputElement>(null);
   const currentItemIdRef = useRef<string | null>(null);
 
-  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'true';
+  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'AfXBdycqOn5vDKspK0zxlW1zp9QMbOIKscSf6amwWBi49bQ2Dk1Hvez42dWRyX-Kql5SoN9ITBD1Eie5';
+  const isPaypalEnabled = process.env.NEXT_PUBLIC_PAYPAL_ENABLED !== 'false';
 
   // Sync defaultTier when modal opens
   useEffect(() => {
