@@ -15,8 +15,9 @@ export async function POST(request: Request) {
     const isBypass = !isPaypalEnabled;
     const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
 
-    // Free phase: insert directly as 'pending' for review. Paid phase: insert as 'pending_payment'.
-    const initialStatus = isPaypalEnabled ? 'pending_payment' : 'pending';
+    // Standard tier is ALWAYS Free during Early Bird phase. Featured & Premium are Paid tiers.
+    const isFreeSubmission = tier === 'standard';
+    const initialStatus = isFreeSubmission ? 'pending' : 'pending_payment';
 
     let item: any;
 
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
           email,
           image_url,
           status: initialStatus,
-          paypal_order_id: isPaypalEnabled ? null : `free_submission_${Date.now()}`,
+          paypal_order_id: isFreeSubmission ? `free_submission_${Date.now()}` : null,
           tier
         })
         .select()
@@ -65,23 +66,30 @@ export async function POST(request: Request) {
       console.error('Failed to send admin notification email:', adminEmailErr);
     }
 
-    // FREE MODE: Send customer confirmation email immediately.
-    // PAID MODE: Customer confirmation email is sent upon payment completion in /api/paypal/capture-success.
-    if (!isPaypalEnabled) {
+    // Standard Free: Send customer confirmation email immediately.
+    // Paid tiers (featured, premium): Customer confirmation is sent upon payment completion in capture-success / subscribe-success.
+    if (isFreeSubmission) {
       try {
         const { sendSubmissionEmail } = await import('@/lib/emails');
         await sendSubmissionEmail(email, title, tier);
       } catch (emailErr) {
         console.error('Failed to send submission email:', emailErr);
       }
+
+      // Early exit for free standard submission - no PayPal order needed!
+      return NextResponse.json({
+        id: `free_submission_${Date.now()}`,
+        supabaseItemId: item.id,
+        isFree: true
+      });
     }
 
-    // 2. Fetch PayPal Access Token if PayPal is active
+    // 2. Fetch PayPal Access Token if Paid Tier (Featured or Premium)
     const clientId = process.env.PAYPAL_CLIENT_ID;
     const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
     const apiUrl = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
 
-    if (!clientId || !clientSecret || isBypass || isPlaceholder) {
+    if (!clientId || !clientSecret || isPlaceholder) {
       return NextResponse.json({
         id: `submission_order_${Date.now()}`,
         supabaseItemId: item.id,

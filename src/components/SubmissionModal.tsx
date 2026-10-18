@@ -180,9 +180,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
     setTier('standard');
   };
 
-  // Whether user selected a paid tier in paid mode
-  const isPaidTier = isPaypalEnabled && tier !== 'standard';
-  const isStandardFreeMode = !isPaypalEnabled && tier === 'standard';
+  // Standard is Free in Early Bird mode; Featured & Premium are paid tiers
+  const isPaidTier = tier === 'featured' || tier === 'premium';
+  const isStandardFree = tier === 'standard';
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-md">
@@ -367,188 +367,105 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                 <p className="font-headline-md text-headline-md text-on-surface">Select Plan</p>
 
                 <div className="flex flex-col gap-sm">
-                  {/* ── Standard ── */}
-                  {isPaypalEnabled ? (
-                    /* PAID MODE — Standard $9.99 */
-                    <div
-                      id="plan-standard"
-                      onClick={() => setTier('standard')}
-                      className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
-                        tier === 'standard'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-outline-variant hover:border-outline'
-                      }`}
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                            tier === 'standard' ? 'border-primary' : 'border-outline-variant'
-                          }`}
-                        >
-                          {tier === 'standard' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                        </div>
-                        <div>
+                  {/* ── Standard (Free Early Bird) ── */}
+                  <div
+                    id="plan-standard-free"
+                    onClick={() => setTier('standard')}
+                    className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
+                      tier === 'standard'
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                        : 'border-outline-variant hover:border-outline'
+                    }`}
+                  >
+                    <div className="flex items-center gap-sm">
+                      <div
+                        className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                          tier === 'standard' ? 'border-primary' : 'border-outline-variant'
+                        }`}
+                      >
+                        {tier === 'standard' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-xs">
                           <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.standard}</p>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.standard}</p>
+                          <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                            Early Bird
+                          </span>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.standard}</span>
-                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
-                      </div>
-                    </div>
-                  ) : (
-                    /* FREE MODE — Standard is Free */
-                    <div
-                      id="plan-standard-free"
-                      onClick={() => setTier('standard')}
-                      className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
-                        tier === 'standard'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-outline-variant hover:border-outline'
-                      }`}
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                            tier === 'standard' ? 'border-primary' : 'border-outline-variant'
-                          }`}
-                        >
-                          {tier === 'standard' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                        </div>
-                        <div>
-                          <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.standard}</p>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.standard}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-xs justify-end">
-                          <span className="font-label-lg text-primary text-[16px]">Free</span>
-                          <span className="text-[11px] text-on-surface-variant line-through">${TIER_PRICES.standard}</span>
-                        </div>
-                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                        <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.standard}</p>
                       </div>
                     </div>
-                  )}
+                    <div className="text-right">
+                      <div className="flex items-center gap-xs justify-end">
+                        <span className="font-label-lg text-primary text-[16px]">Free</span>
+                        <span className="text-[11px] text-on-surface-variant line-through">${TIER_PRICES.standard}</span>
+                      </div>
+                      <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                    </div>
+                  </div>
 
-                  {/* ── Featured ── */}
-                  {isPaypalEnabled ? (
-                    /* PAID MODE — Featured $49 */
-                    <div
-                      id="plan-featured"
-                      onClick={() => setTier('featured')}
-                      className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
-                        tier === 'featured'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-outline-variant hover:border-outline'
-                      }`}
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                            tier === 'featured' ? 'border-primary' : 'border-outline-variant'
-                          }`}
-                        >
-                          {tier === 'featured' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-xs">
-                            <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.featured}</p>
-                            <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                              Most Popular
-                            </span>
-                          </div>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.featured}</p>
-                        </div>
+                  {/* ── Featured ($49 / mo) ── */}
+                  <div
+                    id="plan-featured"
+                    onClick={() => setTier('featured')}
+                    className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
+                      tier === 'featured'
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                        : 'border-outline-variant hover:border-outline'
+                    }`}
+                  >
+                    <div className="flex items-center gap-sm">
+                      <div
+                        className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                          tier === 'featured' ? 'border-primary' : 'border-outline-variant'
+                        }`}
+                      >
+                        {tier === 'featured' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                       </div>
-                      <div className="text-right">
-                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.featured}</span>
-                        <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
+                      <div>
+                        <div className="flex items-center gap-xs">
+                          <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.featured}</p>
+                          <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+                            Most Popular
+                          </span>
+                        </div>
+                        <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.featured}</p>
                       </div>
                     </div>
-                  ) : (
-                    /* FREE MODE — Featured Coming Soon */
-                    <div
-                      id="plan-featured-soon"
-                      className="relative flex items-center justify-between p-md border border-outline-variant rounded-xl opacity-55 cursor-not-allowed bg-surface-container-lowest select-none"
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div className="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center" />
-                        <div>
-                          <div className="flex items-center gap-xs">
-                            <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.featured}</p>
-                            <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                              Coming Soon
-                            </span>
-                          </div>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.featured}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-label-lg text-on-surface-variant text-[16px]">
-                          ${TIER_PRICES.featured}
-                        </span>
-                        <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
-                      </div>
+                    <div className="text-right">
+                      <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.featured}</span>
+                      <p className="text-[10px] text-on-surface-variant font-medium">/ month</p>
                     </div>
-                  )}
+                  </div>
 
-                  {/* ── Premium Launch ── */}
-                  {isPaypalEnabled ? (
-                    /* PAID MODE — Premium $199 */
-                    <div
-                      id="plan-premium"
-                      onClick={() => setTier('premium')}
-                      className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
-                        tier === 'premium'
-                          ? 'border-primary bg-primary/5 ring-1 ring-primary'
-                          : 'border-outline-variant hover:border-outline'
-                      }`}
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div
-                          className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                            tier === 'premium' ? 'border-primary' : 'border-outline-variant'
-                          }`}
-                        >
-                          {tier === 'premium' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
-                        </div>
-                        <div>
-                          <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.premium}</p>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.premium}</p>
-                        </div>
+                  {/* ── Premium Launch ($199 one-time) ── */}
+                  <div
+                    id="plan-premium"
+                    onClick={() => setTier('premium')}
+                    className={`relative flex items-center justify-between p-md border rounded-xl cursor-pointer transition-all ${
+                      tier === 'premium'
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                        : 'border-outline-variant hover:border-outline'
+                    }`}
+                  >
+                    <div className="flex items-center gap-sm">
+                      <div
+                        className={`w-5 h-5 rounded-full border flex items-center justify-center ${
+                          tier === 'premium' ? 'border-primary' : 'border-outline-variant'
+                        }`}
+                      >
+                        {tier === 'premium' && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                       </div>
-                      <div className="text-right">
-                        <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.premium}</span>
-                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
+                      <div>
+                        <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.premium}</p>
+                        <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.premium}</p>
                       </div>
                     </div>
-                  ) : (
-                    /* FREE MODE — Premium Coming Soon */
-                    <div
-                      id="plan-premium-soon"
-                      className="relative flex items-center justify-between p-md border border-outline-variant rounded-xl opacity-55 cursor-not-allowed bg-surface-container-lowest select-none"
-                    >
-                      <div className="flex items-center gap-sm">
-                        <div className="w-5 h-5 rounded-full border border-outline-variant flex items-center justify-center" />
-                        <div>
-                          <div className="flex items-center gap-xs">
-                            <p className="font-label-md text-on-surface text-[15px]">{TIER_LABELS.premium}</p>
-                            <span className="text-[10px] bg-neutral-200 text-neutral-600 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
-                              Coming Soon
-                            </span>
-                          </div>
-                          <p className="font-body-sm text-on-surface-variant">{TIER_DESCRIPTIONS.premium}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-label-lg text-on-surface-variant text-[16px]">
-                          ${TIER_PRICES.premium}
-                        </span>
-                        <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
-                      </div>
+                    <div className="text-right">
+                      <span className="font-label-lg text-primary text-[16px]">${TIER_PRICES.premium}</span>
+                      <p className="text-[10px] text-on-surface-variant font-medium">one-time</p>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
 
@@ -597,9 +514,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               // Save database ID in ref
                               currentItemIdRef.current = resData.supabaseItemId;
 
-                              return actions.subscription.create({
-                                plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-37M6441785535544V',
-                              });
+                               return actions.subscription.create({
+                                 plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-0RC15485C6868312TNIKSSHI',
+                               });
                             } catch (err: any) {
                               setError(err.message || 'Subscription initialization failed.');
                               setSubmitting(false);
@@ -708,7 +625,7 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                       </PayPalScriptProvider>
                     )}
                   </div>
-                ) : isStandardFreeMode || (!isPaypalEnabled && tier === 'standard') ? (
+                ) : isStandardFree || tier === 'standard' ? (
                   /* ── FREE MODE: Bypass Submit Button ── */
                   <button
                     type="button"

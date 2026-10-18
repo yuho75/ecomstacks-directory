@@ -123,21 +123,12 @@ export default function PricingPage() {
               </li>
             </ul>
 
-            {isPaypalEnabled ? (
-              <Link
-                href="/?submit=true&tier=featured"
-                className="w-full py-3 rounded-xl bg-primary text-white font-bold text-center transition-colors hover:brightness-110 active:scale-95"
-              >
-                Get Featured — $49/mo
-              </Link>
-            ) : (
-              <button
-                disabled
-                className="w-full py-3 rounded-xl bg-primary/40 text-white font-bold text-center cursor-not-allowed select-none"
-              >
-                Coming Soon
-              </button>
-            )}
+            <Link
+              href="/?submit=true&tier=featured"
+              className="w-full py-3 rounded-xl bg-primary text-white font-bold text-center transition-colors hover:brightness-110 active:scale-95 shadow-md"
+            >
+              Get Featured — $49/mo
+            </Link>
           </div>
 
           {/* ── Premium Launch ── */}
@@ -173,33 +164,22 @@ export default function PricingPage() {
               </li>
             </ul>
 
-            {isPaypalEnabled ? (
-              <Link
-                href="/?submit=true&tier=premium"
-                className="w-full py-3 rounded-xl bg-on-surface text-surface font-bold text-center transition-colors hover:brightness-90 active:scale-95"
-              >
-                Launch Premium — $199 (One-time)
-              </Link>
-            ) : (
-              <button
-                disabled
-                className="w-full py-3 rounded-xl bg-surface-container text-on-surface-variant font-bold text-center cursor-not-allowed select-none"
-              >
-                Coming Soon
-              </button>
-            )}
+            <Link
+              href="/?submit=true&tier=premium"
+              className="w-full py-3 rounded-xl bg-on-surface text-surface font-bold text-center transition-colors hover:brightness-90 active:scale-95 shadow-md"
+            >
+              Launch Premium — $199 (One-time)
+            </Link>
           </div>
 
         </div>
 
         {/* FAQ / Trust Signals */}
-        {!isPaypalEnabled && (
-          <div className="mt-16 max-w-2xl text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <p className="text-on-surface-variant text-sm">
-              ⚡ <strong>Early Bird Phase:</strong> We&apos;re in launch mode. Standard listings are completely free for a limited time while we launch and grow the directory. Featured &amp; Premium plans are coming soon.
-            </p>
-          </div>
-        )}
+        <div className="mt-16 max-w-2xl text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <p className="text-on-surface-variant text-sm">
+            ⚡ <strong>Early Bird Phase:</strong> Standard listings are completely free for a limited time while we launch and grow the directory. Featured &amp; Premium plans are available for immediate top placement and multi-channel reach.
+          </p>
+        </div>
       </main>
 
       <Footer />
