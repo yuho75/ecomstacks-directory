@@ -528,6 +528,10 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                                 plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-0RC15485C6868312TNIKSSHI',
                                 application_context: {
                                   brand_name: 'EcomStacks',
+                                  shipping_preference: 'NO_SHIPPING',
+                                  user_action: 'SUBSCRIBE_NOW',
+                                  return_url: 'https://ecomstacks.com',
+                                  cancel_url: 'https://ecomstacks.com',
                                 },
                               });
                             } catch (err: any) {
