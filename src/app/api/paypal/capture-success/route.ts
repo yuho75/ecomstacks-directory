@@ -10,8 +10,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Item ID is required.' }, { status: 400 });
     }
 
-    const isBypass = process.env.NEXT_PUBLIC_PAYPAL_ENABLED !== 'true';
     const isPlaceholder = !process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+    const isBypass = process.env.NEXT_PUBLIC_PAYPAL_ENABLED === 'false';
 
     let dbItem: any = null;
 

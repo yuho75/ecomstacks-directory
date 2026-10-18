@@ -119,17 +119,18 @@ export async function POST(request: Request) {
     const authData = await authRes.json();
     const accessToken = authData.access_token;
 
-    // 3. Create PayPal checkout order with custom_id linked to the Supabase item id
-    let price = '9.99';
-    let tierDescription = `EcomStacks Platform Standard lifetime listing: ${title}`;
-
+    // 3. For Featured tier, it is a subscription managed via PayPal Subscriptions API (using Plan ID).
+    // Return item ID immediately so client can launch subscription approval.
     if (tier === 'featured') {
-      price = '49.00';
-      tierDescription = `EcomStacks Platform Featured listing (30 days): ${title}`;
-    } else if (tier === 'premium' || tier === 'premium_launch') {
-      price = '199.00';
-      tierDescription = `EcomStacks Platform Premium Launch package: ${title}`;
+      return NextResponse.json({
+        id: `sub_init_${Date.now()}`,
+        supabaseItemId: item.id
+      });
     }
+
+    // 4. For Premium tier, create PayPal one-time checkout order ($199)
+    const price = '199.00';
+    const tierDescription = `EcomStacks Platform Premium Launch package: ${title}`;
 
     const orderRes = await fetch(`${apiUrl}/v2/checkout/orders`, {
       method: 'POST',
@@ -153,10 +154,9 @@ export async function POST(request: Request) {
     });
 
     if (!orderRes.ok) {
-      return NextResponse.json({
-        id: `submission_order_${Date.now()}`,
-        supabaseItemId: item.id
-      });
+      const errBody = await orderRes.text();
+      console.error('PayPal create order failed:', errBody);
+      return NextResponse.json({ error: 'Failed to initialize PayPal payment. Please try again.' }, { status: 500 });
     }
 
     const order = await orderRes.json();

@@ -486,10 +486,19 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                       {tier === 'featured' ? '/month (Auto-renewing)' : 'one-time'} via PayPal.
                     </p>
                     {tier === 'featured' ? (
-                      /* ── FEATURED SUBSCRIPTION BUTTON ── */
-                      <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US', vault: 'true' }}>
+                      /* ── FEATURED SUBSCRIPTION BUTTON (PayPal + Credit Card) ── */
+                      <PayPalScriptProvider
+                        key="paypal-provider-featured"
+                        options={{
+                          clientId: paypalClientId || 'AfXBdycqOn5vDKspK0zxlW1zp9QMbOIKscSf6amwWBi49bQ2Dk1Hvez42dWRyX-Kql5SoN9ITBD1Eie5',
+                          currency: 'USD',
+                          locale: 'en_US',
+                          vault: 'true',
+                          intent: 'subscription',
+                        }}
+                      >
                         <PayPalButtons
-                          style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'subscribe' }}
+                          style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'subscribe' }}
                           disabled={submitting}
                           createSubscription={async (data, actions) => {
                             setSubmitting(true);
@@ -514,9 +523,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               // Save database ID in ref
                               currentItemIdRef.current = resData.supabaseItemId;
 
-                               return actions.subscription.create({
-                                 plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-0RC15485C6868312TNIKSSHI',
-                               });
+                              return actions.subscription.create({
+                                plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-0RC15485C6868312TNIKSSHI',
+                              });
                             } catch (err: any) {
                               setError(err.message || 'Subscription initialization failed.');
                               setSubmitting(false);
@@ -556,10 +565,18 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                         />
                       </PayPalScriptProvider>
                     ) : (
-                      /* ── PREMIUM ONE-TIME CHECKOUT BUTTON ── */
-                      <PayPalScriptProvider options={{ clientId: paypalClientId || 'sb', currency: 'USD', locale: 'en_US' }}>
+                      /* ── PREMIUM ONE-TIME CHECKOUT BUTTON (PayPal + Credit Card) ── */
+                      <PayPalScriptProvider
+                        key="paypal-provider-premium"
+                        options={{
+                          clientId: paypalClientId || 'AfXBdycqOn5vDKspK0zxlW1zp9QMbOIKscSf6amwWBi49bQ2Dk1Hvez42dWRyX-Kql5SoN9ITBD1Eie5',
+                          currency: 'USD',
+                          locale: 'en_US',
+                          intent: 'capture',
+                        }}
+                      >
                         <PayPalButtons
-                          style={{ layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay' }}
+                          style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' }}
                           disabled={submitting}
                           createOrder={async () => {
                             setSubmitting(true);
