@@ -493,13 +493,14 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           clientId: paypalClientId || 'AfXBdycqOn5vDKspK0zxlW1zp9QMbOIKscSf6amwWBi49bQ2Dk1Hvez42dWRyX-Kql5SoN9ITBD1Eie5',
                           currency: 'USD',
                           locale: 'en_US',
-                          vault: 'true',
+                          vault: true,
                           intent: 'subscription',
+                          components: 'buttons',
                         }}
                       >
                         <PayPalButtons
                           style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'subscribe' }}
-                          disabled={submitting}
+                          forceReRender={[tier, isFormValid]}
                           createSubscription={async (data, actions) => {
                             setSubmitting(true);
                             setError(null);
@@ -525,6 +526,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
 
                               return actions.subscription.create({
                                 plan_id: process.env.NEXT_PUBLIC_PAYPAL_FEATURED_PLAN_ID || 'P-0RC15485C6868312TNIKSSHI',
+                                application_context: {
+                                  brand_name: 'EcomStacks',
+                                },
                               });
                             } catch (err: any) {
                               setError(err.message || 'Subscription initialization failed.');
@@ -557,6 +561,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                               setSubmitting(false);
                             }
                           }}
+                          onCancel={() => {
+                            setSubmitting(false);
+                          }}
                           onError={(err) => {
                             console.error('PayPal Subscription error:', err);
                             setError('PayPal checkout encountered an error. Please try again.');
@@ -573,11 +580,12 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                           currency: 'USD',
                           locale: 'en_US',
                           intent: 'capture',
+                          components: 'buttons',
                         }}
                       >
                         <PayPalButtons
                           style={{ layout: 'vertical', color: 'gold', shape: 'rect', label: 'pay' }}
-                          disabled={submitting}
+                          forceReRender={[tier, isFormValid]}
                           createOrder={async () => {
                             setSubmitting(true);
                             setError(null);
@@ -632,6 +640,9 @@ export default function SubmissionModal({ isOpen, onClose, onSuccess, defaultTie
                             } finally {
                               setSubmitting(false);
                             }
+                          }}
+                          onCancel={() => {
+                            setSubmitting(false);
                           }}
                           onError={(err) => {
                             console.error('PayPal checkout error:', err);

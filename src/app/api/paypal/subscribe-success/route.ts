@@ -105,12 +105,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to record subscription status.' }, { status: 500 });
     }
 
-    // Send submission email confirmation
+    // Send submission email confirmation to Customer and Admin
     try {
-      const { sendSubmissionEmail } = await import('@/lib/emails');
+      const { sendSubmissionEmail, sendAdminNewSubmissionEmail } = await import('@/lib/emails');
       await sendSubmissionEmail(dbData.email, dbData.title, dbData.tier);
+      await sendAdminNewSubmissionEmail(dbData.email, dbData.title, dbData.tier);
     } catch (emailErr) {
-      console.error('Failed to send submission email:', emailErr);
+      console.error('Failed to send subscription confirmation emails:', emailErr);
     }
 
     console.log(`✅ Subscription ${subscriptionId} successfully mapped to item ${itemId}.`);

@@ -58,22 +58,15 @@ export async function POST(request: Request) {
       item = data;
     }
 
-    // ALWAYS send Admin Notification email unconditionally on EVERY submission!
-    try {
-      const { sendAdminNewSubmissionEmail } = await import('@/lib/emails');
-      await sendAdminNewSubmissionEmail(email, title, tier);
-    } catch (adminEmailErr) {
-      console.error('Failed to send admin notification email:', adminEmailErr);
-    }
-
-    // Standard Free: Send customer confirmation email immediately.
-    // Paid tiers (featured, premium): Customer confirmation is sent upon payment completion in capture-success / subscribe-success.
+    // Standard Free: Send both Admin and Customer confirmation emails immediately.
+    // Paid tiers (featured, premium): Emails are sent upon confirmed payment completion in capture-success / subscribe-success.
     if (isFreeSubmission) {
       try {
-        const { sendSubmissionEmail } = await import('@/lib/emails');
+        const { sendSubmissionEmail, sendAdminNewSubmissionEmail } = await import('@/lib/emails');
         await sendSubmissionEmail(email, title, tier);
+        await sendAdminNewSubmissionEmail(email, title, tier);
       } catch (emailErr) {
-        console.error('Failed to send submission email:', emailErr);
+        console.error('Failed to send free submission email notifications:', emailErr);
       }
 
       // Early exit for free standard submission - no PayPal order needed!
@@ -147,9 +140,14 @@ export async function POST(request: Request) {
               value: price
             },
             custom_id: item.id,
-            description: tierDescription
+            description: tierDescription,
+            soft_descriptor: 'ECOMSTACKS'
           }
-        ]
+        ],
+        application_context: {
+          brand_name: 'EcomStacks',
+          user_action: 'PAY_NOW'
+        }
       })
     });
 
