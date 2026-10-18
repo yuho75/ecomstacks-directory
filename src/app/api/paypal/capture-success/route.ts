@@ -39,8 +39,9 @@ export async function POST(request: Request) {
     // Trigger instant email notification to both Customer and Admin
     if (dbItem) {
       try {
-        const { sendSubmissionEmail } = await import('@/lib/emails');
+        const { sendSubmissionEmail, sendAdminNewSubmissionEmail } = await import('@/lib/emails');
         await sendSubmissionEmail(dbItem.email, dbItem.title, dbItem.tier || 'standard');
+        await sendAdminNewSubmissionEmail(dbItem.email, dbItem.title, dbItem.tier || 'standard');
       } catch (emailErr) {
         console.error('❌ Failed to send submission/admin notification email:', emailErr);
       }
